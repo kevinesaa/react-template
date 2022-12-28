@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { Navigate } from "react-router-dom"
-import Strings from "../../../__Resources/strings";
+import Strings from "../../../_Resources/strings/strings";
 
 export default class Login extends Component 
 {
