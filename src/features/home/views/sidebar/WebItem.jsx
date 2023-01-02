@@ -1,10 +1,7 @@
 import React, { Fragment } from 'react';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { Link } from 'react-router-dom';
-import Box from '@mui/material/Box';
+import * as MaterialUI from "@mui/material";
+
 
 export default function WebItem(props) 
 {
@@ -19,22 +16,25 @@ export default function WebItem(props)
 
     return (
         <Fragment key={ props.id}>
-            <Link onClick={()=>onItemClickListener(props)} to={props.path} style={{ textDecoration: "none", color: "#9D9D9C" }}>
-                <ListItem   disablePadding>
-                    <ListItemButton  sx={{
+            <Link onClick={()=>onItemClickListener(props)}
+                to={props.path} 
+                style={{ textDecoration: "none", color: "#9D9D9C" }}>
+                
+                <MaterialUI.ListItem disablePadding>
+                    <MaterialUI.ListItemButton  sx={{
                                 minHeight: 45,
                                 px: 2.5,
                                 justifyContent: props.isOpen ? "initial" : "center",
                                 borderBottom: 1,
                                 borderColor: "secondary.light",
                             }}>
-                        <ListItemIcon sx={{
+                        <MaterialUI.ListItemIcon sx={{
                                     minWidth: 0,
                                     mr: 3,
                                     justifyContent: "center",
                                 }}>
                             
-                             <Box
+                            <MaterialUI.Box
                                 component="img"
                                 sx={{
                                     width: 20,
@@ -43,16 +43,16 @@ export default function WebItem(props)
                                 }}
                                 src={props.iconUrl?props.iconUrl:""}/>
 
-                        </ListItemIcon>
+                        </MaterialUI.ListItemIcon>
                         {
                             isSelected? 
-                                <ListItemText primary={props.title} 
+                                <MaterialUI.ListItemText primary={props.title} 
                                     sx={{ opacity: props.isOpen ? 1 : 0, color: "primary.main" }}/> 
-                                :<ListItemText primary={props.title} />
+                                :<MaterialUI.ListItemText primary={props.title} />
                         }
                         
-                    </ListItemButton>
-                </ListItem> 
+                    </MaterialUI.ListItemButton>
+                </MaterialUI.ListItem> 
             </Link>
         </Fragment>
     );

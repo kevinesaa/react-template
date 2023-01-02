@@ -1,8 +1,5 @@
 import React, { Fragment } from 'react';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import * as MaterialUI from "@mui/material";
 import { Link } from 'react-router-dom';
 
 
@@ -20,19 +17,19 @@ export default function MobileItem(props) {
     return (
         <Fragment key={props.id}>
             <Link onClick={()=>onItemClickListener(props)} to={props.path} style={{ textDecoration: "none", color: "#9D9D9C" }}>
-                <ListItem   disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
+                <MaterialUI.ListItem disablePadding>
+                    <MaterialUI.ListItemButton>
+                        <MaterialUI.ListItemIcon>
                             
-                        </ListItemIcon>
+                        </MaterialUI.ListItemIcon>
                         {
                             isSelected? 
-                                <ListItemText primary={props.title} 
+                                <MaterialUI.ListItemText primary={props.title} 
                                     sx={{ opacity: props.isOpen ? 1 : 0, color: "primary.main" }}/> 
-                                :<ListItemText primary={props.title} />
+                                :<MaterialUI.ListItemText primary={props.title} />
                         }
-                    </ListItemButton>
-                </ListItem> 
+                    </MaterialUI.ListItemButton>
+                </MaterialUI.ListItem> 
             </Link>
         </Fragment>
     );

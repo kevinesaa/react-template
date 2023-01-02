@@ -14,24 +14,24 @@ export default class Login extends Component
         this.handledButtonClick = this.handledButtonClick.bind(this);
         this.handledEmailInput = this.handledEmailInput.bind(this);
         this.handledPasswordInput = this.handledPasswordInput.bind(this);
-        this.onShowLoading = this.onShowLoading.bind(this);
+        this.showLoading = this.showLoading.bind(this);
         this.onLoginSuccessful = this.onLoginSuccessful.bind(this);
         this.onError = this.onError.bind(this);
     }
     
-    componentDidMount(){
+    componentDidMount() {
         this.viewModel.subscribeOnLoginSuccessful(this.onLoginSuccessful);
-        this.viewModel.subscribeOnLoading(this.onShowLoading);
+        this.viewModel.subscribeOnLoading(this.showLoading);
         this.viewModel.subscribeOnShowError(this.onError);
     }
 
     componentWillUnmount() {
         this.viewModel.unsubscribeOnLoginSuccessful(this.loginSuccessfulWrapper);
-        this.viewModel.unsubscribeOnLoading(this.loadingWrapper);
+        this.viewModel.unsubscribeOnLoading(this.showLoading);
         this.viewModel.unsubscribeOnShowError(this.onError);
     }
 
-    onShowLoading(value) {
+    showLoading(value) {
         this.setState ({loading : value});
     }
 
@@ -40,7 +40,7 @@ export default class Login extends Component
         this.setState({toHome:true})
     }
 
-    onError() {
+    onError(error) {
         console.log("ah que chimbo!")
     }
 

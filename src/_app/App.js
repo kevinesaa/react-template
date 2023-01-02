@@ -2,7 +2,7 @@
 import './App.css';
 import Login from '../features/login/views/LoginView';
 import LoginViewModel from "../features/login/viewModels/LoginViewModel"
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from '../features/home/views/HomeView';
 
 import MainMenu from '../_Resources/menu/mainMenu';
@@ -11,12 +11,12 @@ import MainMenu from '../_Resources/menu/mainMenu';
 
 export default function App(props) {
   
-  const location = useLocation();
+  const location = window.location;
   const currentPathIndex = MainMenu.findIndex(item => item.path == location.pathname);
   
   return (
    
-    <>
+    <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login viewModel={new LoginViewModel()}/>}/> 
         
@@ -29,6 +29,6 @@ export default function App(props) {
             
         </Route>
       </Routes>
-    </>
+    </BrowserRouter>
   );
 }

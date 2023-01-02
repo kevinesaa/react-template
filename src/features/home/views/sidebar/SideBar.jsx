@@ -1,10 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Drawer from "@mui/material/Drawer";
-import List from '@mui/material/List';
-
-
+import * as MaterialUI from "@mui/material";
 
 import DrawerHeader from './DrawerHeader';
 import MobileItem from './MobileItem';
@@ -82,13 +78,13 @@ const SideBar = (props) => {
     
     return (
         <>
-        <Box
+        <MaterialUI.Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders">
 
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <Drawer
+            <MaterialUI.Drawer
                 container={container}
                 variant="temporary"
                 open={mobileOpen}
@@ -110,7 +106,7 @@ const SideBar = (props) => {
                 justifyContent: "center",
               }}
             >
-              <Box
+              <MaterialUI.Box
                 component="img"
                 sx={{
                   width: 200,
@@ -121,16 +117,16 @@ const SideBar = (props) => {
                
               />
             </DrawerHeader>
-                <List>
+                <MaterialUI.List>
                     <MenuItemsMobile 
                             items={props.items?props.items:[]}
                             isOpen={mobileOpen}
                             selectedIndex = {selectedIndex}
                         />
-                </List>
-            </Drawer>
+                </MaterialUI.List>
+            </MaterialUI.Drawer>
 
-            <Drawer
+            <MaterialUI.Drawer
                 open={openMenu}
                 variant="permanent"
                 sx={{
@@ -147,7 +143,7 @@ const SideBar = (props) => {
                         justifyContent: "center",
                     }}
                 /*DrawerHeader*/ >
-                    <Box
+                    <MaterialUI.Box
                         component="img"
                         sx={{
                             width: 200,
@@ -159,16 +155,16 @@ const SideBar = (props) => {
                     />
                     
                 </DrawerHeader>
-                <List>
+                <MaterialUI.List>
                     <MenuItemsWeb 
                         items = {props.items?props.items:[]}
                         isOpen = {openMenu}
                         selectedIndex = {selectedIndex}
                         onItemClick = {handledItemClick}
                     />
-                </List>
-            </Drawer>
-        </Box>
+                </MaterialUI.List>
+            </MaterialUI.Drawer>
+        </MaterialUI.Box>
         </>
     );
 }

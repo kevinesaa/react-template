@@ -55,7 +55,7 @@ export default class LoginViewModel
             }
             else 
             {
-                this.#onError();
+                this.#onError({errorMessage:""});
             }
         }
     }
@@ -68,8 +68,8 @@ export default class LoginViewModel
         this.listenerLoginSuccessful?.forEach( callback => callback());
     }
 
-    #onError() {
-        this.listenerShowError?.forEach( callback => callback());
+    #onError(error) {
+        this.listenerShowError?.forEach( callback => callback(error));
     }
 
     async #simulateRequest(email,pass){
