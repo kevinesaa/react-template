@@ -1,3 +1,4 @@
+import ListListener from "../../../_commons/util/ListListenetContainer";
 
 
 export default class DocumentsViewModel
@@ -6,7 +7,9 @@ export default class DocumentsViewModel
         this.listenerOnLoading = [];
         this.listenerShowError = [];
         this.listenerOnDocumentsData = [];
-        this.listenerOnCompanyData = [];
+        this.listenerOnCompanyData = new ListListener();
+        this.listenerOnPageInfoData = new ListListener();
+        
     }
 
     unsubscribeOnLoading(func) {
@@ -34,16 +37,25 @@ export default class DocumentsViewModel
     }
 
     unsubscribeOnCompanyData(func) {
-        this.listenerOnCompanyData = this.listenerOnDocumentsData.filter( f => f !== func);
+        this.listenerOnCompanyData.unsubscribe(func);
     }
 
     subscribeOnCompanyData(func) {
-        this.listenerOnCompanyData.push(func);
+        this.listenerOnCompanyData.subscribe(func);
+    }
+
+    
+    unsubscribeOnPageInfoData(func) {
+        this.listenerOnPageInfoData.unsubscribe(func);
+    }
+
+    subscribeOnPageInfoData(func) {
+        this.listenerOnPageInfoData.subscribe(func);
     }
 
     async requestCompanies() {
         const companies = [{id:0,text:"empresa1"}, {id:1,text:"empresa2"}, {id:2,text:"empresa3"}];
-        this.listenerOnCompanyData?.forEach(callback => callback(companies));
+        this.listenerOnCompanyData.execute(companies);
     }
 
     async requestDocuments(company,filters) {
@@ -52,15 +64,17 @@ export default class DocumentsViewModel
             this.#onLoading(true);
             const response = await this.#simulateRequest(company,filters);
             this.#onLoading(false);
-            if (response.statusCode == 200)
+            if (response.statusCode != 200)
             {
-                let documents = response.data?response.data : [];
-                documents =  documents.documents?documents.documents:[];
-                this.#onLoadDocumentsData(documents)
+                this.#onError({errorMessage:""});
             }
             else 
             {
-                this.#onError({errorMessage:""});
+                const responseData = response.data ? response.data : {};
+                const documents =  responseData.documents ? responseData.documents:[];
+                const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: documents.length}
+                this.#onPageInfoData(pagination);
+                this.#onLoadDocumentsData(documents);
             }
         }
     }
@@ -77,19 +91,24 @@ export default class DocumentsViewModel
         this.listenerOnDocumentsData?.forEach( callback => callback(documents));
     }
 
+    #onPageInfoData(pageInfo) {
+        this.listenerOnPageInfoData.execute(pageInfo);
+    }
+
     async #simulateRequest() {
         await this.#delay(1000);
+        const items = [
+            {tipo_documento:2,detail:{}},{tipo_documento:1,detail:{}},{tipo_documento:2,detail:{}},{tipo_documento:1,detail:{}},{tipo_documento:2,detail:{}},{tipo_documento:1,detail:{}}
+        ];
         return { 
             statusCode:200,
             data:{
-                documents:[
-                        {tipo_documento:2,detail:{}},{tipo_documento:1,detail:{}},{tipo_documento:2,detail:{}},{tipo_documento:1,detail:{}},{tipo_documento:2,detail:{}},{tipo_documento:1,detail:{}}
-                ],
+                documents:items,
                 pagination:{
                     currentPage: 1,
                     limit: 30,
                     maxPages: 0,
-                    totalItems: 0,
+                    totalItems: items.length,
                     skip: 0
                 }
         }};
