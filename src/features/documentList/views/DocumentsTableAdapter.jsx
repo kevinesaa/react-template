@@ -1,6 +1,6 @@
 import AnexoTableRow from "./tableRowHolder/AnexoTableRow";
-import DocumentTableRow from "./tableRowHolder/DocumentTableRow";
 import ReciboTableRow from "./tableRowHolder/ReciboTableRow";
+
 const ANEXO_TYPE_ID = 1;
 const RECIBO_TYPE_ID = 2;
 

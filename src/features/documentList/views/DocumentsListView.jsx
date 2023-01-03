@@ -21,6 +21,7 @@ export default class DocumentsListView extends Component
         this.viewModel = props.viewModel;
         this.columns = [
                 {title:"Tipo"},
+                {title:"Fecha - Documento"},
                 {title:"Nro. Documento"},
                 {title:"Monto"},
                 {title:"Monto editado"},
