@@ -6,6 +6,7 @@ const RECIBO_TYPE_ID = 2;
 
 export default function DocumentsTableAdapter(props) 
 {
+    
     return (<>
         
         {props.items == null || props.items.length == 0 ? <></> : 
@@ -16,7 +17,8 @@ export default function DocumentsTableAdapter(props)
                     {
                         return (<AnexoTableRow 
                                     key={`doc-${index}`} 
-                                    item={item} />
+                                    item={item}
+                                    onItemClick={props.onItemClickListener} />
                             );
                     }
                     
@@ -24,7 +26,8 @@ export default function DocumentsTableAdapter(props)
                     {
                         return (<ReciboTableRow 
                                     key={`doc-${index}`} 
-                                    item={item} />
+                                    item={item}
+                                    onItemClick={props.onItemClickListener} />
                             );
                     }
                     

@@ -1,9 +1,21 @@
 import * as MaterialUI from "@mui/material";
 
+
+
 export default function DocumentTableRow(props) 
 {
+    const handleClick = (item) => {
+        
+        if(props.onItemClick) {
+            props.onItemClick(item)
+        }
+    }
+    
     return (
-        <MaterialUI.TableRow>
+        <MaterialUI.TableRow hover onClick={event => handleClick(props.item)}>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
+                {props.item.estatus < 3?"No conciliado":"Conciliado"}
+            </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.type}
             </MaterialUI.TableCell>
@@ -23,7 +35,16 @@ export default function DocumentTableRow(props)
                 {props.currency}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
+                {props.paymentType}
+            </MaterialUI.TableCell>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
+                {props.documentReference}
+            </MaterialUI.TableCell>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.bank}
+            </MaterialUI.TableCell>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
+                {props.bankAccount}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.clientName}
@@ -41,10 +62,7 @@ export default function DocumentTableRow(props)
                 {props.routeCode}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.status}
-            </MaterialUI.TableCell>
-            <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.update_at}
+                {props.item.estatus < 3?"-":`${props.item.update_at}`}
             </MaterialUI.TableCell>
         </MaterialUI.TableRow>
     );

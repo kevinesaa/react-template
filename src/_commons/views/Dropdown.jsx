@@ -6,8 +6,11 @@ export default function Dropdown(props){
     const handledOnSelectItem = (event) => {
 
         if(props.onSelectItem) {
+            if(!event.target.value.holderItem){
+                
+                props.onSelectItem(event.target.value);
+            }
             
-            props.onSelectItem(event.target.value)
         }
     }
 
@@ -23,8 +26,9 @@ export default function Dropdown(props){
             <MaterialUI.Select
                 id={props.id}
                 labelId={`label-${props.id}`}
-                defaultValue={props.defaultValue}
                 onChange={handledOnSelectItem}
+                defaultValue={props.defaultValue}
+                value={props.value}
                 label={props.label}
                 autoWidth={true}
                 MenuProps= { 
@@ -37,7 +41,7 @@ export default function Dropdown(props){
                     }
                 }>
                     
-                    <MaterialUI.MenuItem key={`placeholder-${props.id}`} value={undefined}>
+                    <MaterialUI.MenuItem key={`placeholder-${props.id}`} value={{id:-1,holderItem:1,text:props.placeholder}}>
                         {props.placeholder}
                     </MaterialUI.MenuItem>
                     {items}

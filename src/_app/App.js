@@ -12,7 +12,7 @@ import MainMenu from '../_Resources/menu/mainMenu';
 export default function App(props) {
   
   const location = window.location;
-  const currentPathIndex = MainMenu.findIndex(item => item.path == location.pathname);
+  const currentPathIndex = MainMenu.findIndex(item => item.path === location.pathname);
   
   return (
    
