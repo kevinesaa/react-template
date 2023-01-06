@@ -1,8 +1,7 @@
 import AnexoTableRow from "./tableRowHolder/AnexoTableRow";
 import ReciboTableRow from "./tableRowHolder/ReciboTableRow";
+import Constants from "../../../_commons/Constants";
 
-const ANEXO_TYPE_ID = 1;
-const RECIBO_TYPE_ID = 2;
 
 export default function DocumentsTableAdapter(props) 
 {
@@ -13,7 +12,7 @@ export default function DocumentsTableAdapter(props)
             props.items
                 .map((item,index ) => {
 
-                    if(item.tipo_documento == ANEXO_TYPE_ID) 
+                    if(item.tipo_documento == Constants.DOC_TYPE_ANEXO_ID) 
                     {
                         return (<AnexoTableRow 
                                     key={`doc-${index}`} 
@@ -22,7 +21,7 @@ export default function DocumentsTableAdapter(props)
                             );
                     }
                     
-                    if(item.tipo_documento == RECIBO_TYPE_ID) 
+                    if(item.tipo_documento == Constants.DOC_TYPE_RECIBO_ID) 
                     {
                         return (<ReciboTableRow 
                                     key={`doc-${index}`} 

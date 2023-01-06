@@ -173,7 +173,10 @@ export default class DocumentsViewModel
                 NUMERO_CUENTA_BANCARIA: "00000000000000000000",
                 NOMBRE_ZONA: "Z154",
                 VENDEDOR: "VENDEDOR 3",
-                CLIENTES:[{RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "0000000", RAZON_SOCIAL_CLIENTE: "Empresa C.A"}]
+                CLIENTES:[
+                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"},
+                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"}
+                ]
         }};
     }
 
@@ -201,8 +204,11 @@ export default class DocumentsViewModel
                 USUARIO_CREACION:"k2110",
                 NRO_ANEXO_ZONA:"00000000",
                 MONTO_ANEXO:"40.0000",
-                MONTO_EDITADO:null,
-                CLIENTES:[{RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"}]
+                MONTO_EDITADO:"40.0000",
+                CLIENTES:[
+                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"},
+                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"}
+                ]
         }};
     }
 }

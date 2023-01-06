@@ -5,6 +5,7 @@ import Dropdown from "../../../_commons/views/Dropdown";
 import TableHeader from "../../../_commons/views/tableComponents/TableHeader";
 import DocumentsTableAdapter from "./DocumentsTableAdapter";
 import DocumentDetailView from "../../documentDetails/views/DocumentDetailView";
+import LoadingScreen from "../../../_commons/views/LoadingScreen";
 
 const DOCUMENT_PER_PAGE = 30;
 
@@ -25,25 +26,18 @@ export default class DocumentsListView extends Component
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
         this.columns = [
-                {title:"Estatus"},
-                {title:"Tipo"},
-                {title:"Fecha Documento"},
+                {title:"Tipo"},    
                 {title:"Nro. Documento"},
+                {title:"Fecha Conciliación"},
+                {title:"Estatus"},
+                {title:"Ruta"},
+                {title:"Fecha Documento"},
+                {title:"Referencia"},
                 {title:"Monto"},
                 {title:"Monto editado"},
-                {title:"Moneda"},
-                {title:"Forma de pago"},
-                {title:"Referencia"},
                 {title:"Banco"}, 
-                {title:"Nro. Cuenta"},
-                {title:"Cliente"}, 
-                {title:"Código Cliente"},
-                {title:"RIF Cliente"},
-                {title:"Vendedor"},
-                {title:"Ruta"}, 
-                {title:"Fecha Conciliación"}
+                {title:"Nro. Cuenta"}
             ];
-        
     }
 
     showSelectCompany(company){
@@ -105,6 +99,7 @@ export default class DocumentsListView extends Component
         this.viewModel.subscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.subscribeOnSelectCompany(this.showSelectCompany);
+        
         this.viewModel.requestCompanies();
     }
 
@@ -129,7 +124,7 @@ export default class DocumentsListView extends Component
                     pb: 5,
                 }}
             >
-                {this.state.loading && <h2>loading</h2>}
+                
                 <MaterialUI.Grid item sx={{ pt: 2, pl: 2 }}>
                     <MaterialUI.Typography variant="subtitles">Aqui va el texto del subtitulo</MaterialUI.Typography>
                 </MaterialUI.Grid>
@@ -200,12 +195,17 @@ export default class DocumentsListView extends Component
                     </MaterialUI.Box>
                 </MaterialUI.Box>
             </MaterialUI.Paper>
-            <DocumentDetailView
-                viewModel={this.props.detailViewModel}
-                handleClose={this.handleOnCloseDetails}
-                open={this.state.seeDetail}
-                document={this.state.currentDocument}
-            />
+            {
+                !this.state.seeDetail?<></>:
+                <DocumentDetailView
+                    viewModel={this.props.detailViewModel}
+                    handleClose={this.handleOnCloseDetails}
+                    open={this.state.seeDetail}
+                    document={this.state.currentDocument}
+                    company={this.state.currentCompany}
+                />
+            }
+            <LoadingScreen loading={this.state.loading}/>
         </>);
     }
 }
