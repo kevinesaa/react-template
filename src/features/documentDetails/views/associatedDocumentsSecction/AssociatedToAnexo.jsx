@@ -9,10 +9,10 @@ export default function AssociatedToAnexo(props)
         <>
         <MaterialUI.TableRow >
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.anexo.RECIBO}
+                {props.anexo.DOCUMENTO}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {`${props.anexo.MONTO} ${props.anexo.MONEDA}`}
+                {`${Number(props.anexo.MONTO).toFixed(2)} ${props.currency}`}
             </MaterialUI.TableCell>
            
         </MaterialUI.TableRow>

@@ -14,6 +14,9 @@ export default function DocumentTableRow(props)
     return (
         <MaterialUI.TableRow hover onClick={event => handleClick(props.item)}>
             <MaterialUI.TableCell component="th" scope="row" align="center">
+                {props.id}
+            </MaterialUI.TableCell>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.type}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
@@ -29,7 +32,7 @@ export default function DocumentTableRow(props)
                 {props.routeCode}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.document_date}
+                {props.document_date.substring(0,10)}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.documentReference}

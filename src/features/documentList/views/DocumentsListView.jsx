@@ -26,6 +26,7 @@ export default class DocumentsListView extends Component
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
         this.columns = [
+                {title:"id"},
                 {title:"Tipo"},    
                 {title:"Nro. Documento"},
                 {title:"Fecha Conciliación"},

@@ -5,6 +5,8 @@ import * as MaterialUI from "@mui/material";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import ClientFromDocDetail from "./clientsSection/ClientFromDocDetail";
 import AssociatedDocumentsAdapter from "./associatedDocumentsSecction/AssociatedDocumentsAdapter";
+import Constants from "../../../_commons/Constants";
+import AmountSectionAdapter from "./amountSection/AmountSectionAdapter";
 
 export default class DocumentDetailView extends React.Component {
 
@@ -67,28 +69,41 @@ export default class DocumentDetailView extends React.Component {
             scroll={"paper"}>
                 
                 <MaterialUI.DialogTitle >
-                    {`Detalles del documento - ${this.state.docDetail?.id_documento_afv}`}
+                    {Constants.DOC_TYPE_ANEXO_ID == this.state.docDetail?.tipo_documento? 'Anexo':'Recibo'}
+                    {` - ${this.state.docDetail?.id_documento_afv}`}
                 </MaterialUI.DialogTitle>
                 
                 <MaterialUI.DialogContent dividers={true} sx={{ minWidth: 700 }}>
-                    <MaterialUI.Typography variant="body2"><b>Vendedor:</b> {this.state.docDetail.detail?.VENDEDOR}</MaterialUI.Typography>
-                    <MaterialUI.Box sx={{ p: 2 }}>
-                        <MaterialUI.Stack direction="row" spacing={2}>
-                                <MaterialUI.Typography variant="body2"><b>Monto:</b> {Number(this.state.docDetail.detail?.MONTO_ANEXO).toFixed(2)} {this.state.docDetail.detail?.MONEDA}</MaterialUI.Typography>
-                                {!this.state.docDetail.detail?.MONTO_EDITADO?<></>:
-                                    <MaterialUI.Typography variant="body2"><b>Monto editado:</b> {this.state.docDetail.detail?.MONTO_EDITADO}</MaterialUI.Typography>
-                                }
-                                <MaterialUI.Typography variant="body2"><b>Sobrepago:</b> {Number(this.state.docDetail.detail?.MONTO_ANEXO).toFixed(2)} {this.state.docDetail.detail?.MONEDA}</MaterialUI.Typography>
-                        </MaterialUI.Stack>
+                    
+                    <MaterialUI.Stack direction="row" spacing={2}>
+                        <MaterialUI.Typography variant="body2"><b>ID:</b> {this.state.docDetail?.id_documento}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>Creador por:</b> {this.state.docDetail?.usuario_creacion}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>Ruta:</b> {this.state.docDetail?.id_zona}</MaterialUI.Typography>
+                    </MaterialUI.Stack>
+                    <MaterialUI.Stack direction="row" spacing={2}>
+                        <MaterialUI.Typography variant="body2"><b>Conciliado:</b> {this.state.docDetail?.estatus > 3?'Sí':'No'}</MaterialUI.Typography>
+                        {
+                            this.state.docDetail?.estatus > 3 && <MaterialUI.Typography variant="body2"><b>Fecha: </b> {this.state.docDetail?.update_at?.substring(0,10)}</MaterialUI.Typography>
+                        }
+                        
+                    </MaterialUI.Stack>   
+                        <MaterialUI.Box sx={{ p: 1 }}>
+                        <MaterialUI.Typography variant="body2"><b>Vendedor:</b> {this.state.docDetail.detail?.VENDEDOR}</MaterialUI.Typography>
+                    </MaterialUI.Box> 
+                    
+                    <MaterialUI.Box sx={{ p: 1 }}>
+                        <AmountSectionAdapter 
+                            document={this.state.docDetail}/>    
                     </MaterialUI.Box>
-                    <MaterialUI.Box sx={{ p: 2 }}>
+                    <MaterialUI.Box sx={{ p: 1 }}>
+                    <MaterialUI.Typography variant="body2"><b>Fecha Documento:</b> {this.state.docDetail?.detail?.FECHA_DOCUMENTO?.substring(0,10)} </MaterialUI.Typography>
                         <MaterialUI.Stack direction="row" spacing={2}>
-                            <MaterialUI.Typography variant="body2"><b>Banco:</b> {}</MaterialUI.Typography>
-                            <MaterialUI.Typography variant="body2"><b>Cuenta:</b> {}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>Banco:</b> {this.state.docDetail?.detail?.BANCO}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>Cuenta:</b> {this.state.docDetail?.detail?.NUMERO_CUENTA_BANCARIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                         <MaterialUI.Stack direction="row" spacing={2}>
-                            <MaterialUI.Typography variant="body2"><b>Forma de pago:</b> {}</MaterialUI.Typography>
-                            <MaterialUI.Typography variant="body2"><b>Referencia:</b> {}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>Forma de pago:</b> {this.state.docDetail?.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? 'Deposito': this.state.docDetail?.detail?.FORMA_PAGO}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>Referencia:</b> {this.state.docDetail?.detail?.REFERENCIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                     </MaterialUI.Box>
                     
@@ -105,7 +120,7 @@ export default class DocumentDetailView extends React.Component {
                                 <b>Documentos Asociados</b>
                             </MaterialUI.Typography>
 
-                            {this.state.docDetail?.detailList?.length > 0 &&
+                            {this.state.docDetail?.detail?.DOCUMENTOS_ASOCIADOS?.length > 0 &&
                                 <MaterialUI.Chip
                                     variant="outlined"
                                     icon={this.state.showListDocument?<ArrowUpwardIcon/>:<ArrowDownwardIcon/>} 
@@ -117,8 +132,10 @@ export default class DocumentDetailView extends React.Component {
                     
                     <AssociatedDocumentsAdapter
                         show_list={this.state.showListDocument}
-                        doc_type={this.document?.tipo_documento} 
-                        items={this.state.docDetail?.detailList}/>
+                        doc_type={this.document?.tipo_documento}
+                        currency={this.state.docDetail?.detail?.MONEDA} 
+                        currency_id={this.state.docDetail?.detail?.ID_MONEDA} 
+                        items={this.state.docDetail?.detail?.DOCUMENTOS_ASOCIADOS}/>
                     
                 </MaterialUI.DialogContent>
                 <LoadingScreen loading={this.state.loading}/>

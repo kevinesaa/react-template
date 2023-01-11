@@ -124,6 +124,8 @@ export default class DocumentsViewModel
         for(let i=0; i<30; i++){
             const type = Math.floor(Math.random() * 2);
             const doc = type !== 0 ?this.#fakeRecibo():this.#fakeAnexo();
+            //const doc = this.#fakeAnexo();
+            doc.estatus= Math.floor(Math.random() * 4) + 1;
             items.push(doc);
         }
 
@@ -158,25 +160,18 @@ export default class DocumentsViewModel
             update_at:"2022-12-26 19:11:19",
             usuario_creacion:"k2110",
             detail:{
-                id_documento_afv: 2,
-                ID_ZONA: 54,
-                FECHA_RECIBO: "2022-12-26",
-                USUARIO_CREACION: "k2110",
-                MONEDA: "VES",
-                ID_MONEDA: 205,
-                MONTO_DOLAR: "555.3500",
-                MONTO_BS: "9207.0000", 
-                FECHA_PAGO: "2022-10-25",
-                NUMERO_REFERENCIA: "50958611",
-                FORMA_PAGO: "TRANSFERENCIA BS",
-                BANCO: "banko coyote",
-                NUMERO_CUENTA_BANCARIA: "00000000000000000000",
-                NOMBRE_ZONA: "Z154",
-                VENDEDOR: "VENDEDOR 3",
-                CLIENTES:[
-                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"},
-                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"}
-                ]
+                id_documento_afv: 60015,
+                USUARIO_CREACION: "v0019",
+                ID_ZONA: 0,
+                NOMBRE_ZONA: "Z0",
+                FECHA_DOCUMENTO: "2023-01-09T00:00:00.000Z",
+                MONEDA: "USD",
+                ID_MONEDA: 100,
+                MONTO_DOLAR: "71.0000",
+                MONTO_LOCAL: "1065.0100",
+                REFERENCIA: "000000000",
+                BANCO: "Bconk",
+                NUMERO_CUENTA_BANCARIA: "00000000000000000000"
         }};
     }
 
@@ -188,27 +183,21 @@ export default class DocumentsViewModel
             tipo_documento:1,
             id_documento_afv: 1,
             id_zona:221,
-            update_at:"2022-12-26 19:11:19",
+            update_at:"2023-01-09 23:31:24",
             usuario_creacion:"k2110",
             detail:{
-                id_documento_afv:1,
-                ID_ZONA:1,
-                FECHA_EMISION_ANEXO:"2022-12-26",
-                NUMERO_DEPOSITO:"000000000",
-                BANCO:"superbancko",
-                NUMERO_CUENTA_BANCARIA:"00000000000000000000",
-                ID_MONEDA:100,
-                MONEDA:"USD",
-                VENDEDOR:"VENDEDOR 3",
-                NOMBRE_ZONA:"Z000",
-                USUARIO_CREACION:"k2110",
-                NRO_ANEXO_ZONA:"00000000",
-                MONTO_ANEXO:"40.0000",
-                MONTO_EDITADO:"40.0000",
-                CLIENTES:[
-                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"},
-                    {RIF_CLIENTE: "J000000000", CODIGO_DE_CLIENTE: "00000000", RAZON_SOCIAL_CLIENTE: "Empresa CA"}
-                ]
+                id_documento_afv: 60011,
+                USUARIO_CREACION: "v0882",
+                ID_ZONA: 1,
+                NOMBRE_ZONA: "Z221",
+                FECHA_DOCUMENTO: "2023-01-09T00:00:00.000Z",
+                REFERENCIA: "00000000",
+                BANCO: "BanUndGeo",
+                NUMERO_CUENTA_BANCARIA: "00000000000000000000",
+                ID_MONEDA: 100,
+                MONEDA: "USD",
+                MONTO: "148.0000",
+                MONTO_EDITADO: null
         }};
     }
 }

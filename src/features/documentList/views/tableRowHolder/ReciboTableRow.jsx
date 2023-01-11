@@ -2,7 +2,7 @@ import Constants from "../../../../_commons/Constants";
 import DocumentTableRow from "./DocumentTableRow";
 
 
-const ID_BOLIVAR_CURRENCY = Constants.ID_BOLIVAR_CURRENCY;
+const ID_DOLAR_CURRENCY = Constants.ID_DOLLAR_CURRENCY;
 
 export default function ReciboTableRow(props) 
 {
@@ -15,29 +15,23 @@ export default function ReciboTableRow(props)
 
     const item = props.item;
     let amount = item.detail.MONTO_DOLAR;
-    if( item.detail.ID_MONEDA === ID_BOLIVAR_CURRENCY)
+    if( item.detail.ID_MONEDA != ID_DOLAR_CURRENCY)
     {
-        amount = item.detail.MONTO_BS;
+        amount = item.detail.MONTO_LOCAL;
     }
     return (
         <DocumentTableRow
             onItemClick={handleClick}
             item={item}
+            id={item.id_documento}
             type="Recibo"
-            document_date={`${item.detail.FECHA_RECIBO}`}
+            document_date={`${item.detail.FECHA_DOCUMENTO}`}
             document_number={`${item.detail.id_documento_afv}`}
             amount={`${Number(amount).toFixed(2)} ${item.detail.MONEDA}`}
             amount_edit={"-"}
-            paymentType={`${item.detail.FORMA_PAGO}`}
-            documentReference={`${item.detail.NUMERO_REFERENCIA}`}
+            documentReference={`${item.detail.REFERENCIA}`}
             bank={`${item.detail.BANCO}`}
             bankAccount={`${item.detail.NUMERO_CUENTA_BANCARIA}`}
-            /*
-            clientName={`${item.detail.CLIENTES[0].RAZON_SOCIAL_CLIENTE}`}
-            clientCode={`${item.detail.CLIENTES[0].CODIGO_DE_CLIENTE}`}
-            clientDNI={`${item.detail.CLIENTES[0].RIF_CLIENTE}`}
-            sellerName={`${item.detail.VENDEDOR}`}
-            */
             routeCode={`${item.detail.ID_ZONA}`}
             status={item.estatus}
         />

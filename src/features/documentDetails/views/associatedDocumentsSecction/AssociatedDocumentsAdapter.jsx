@@ -40,12 +40,16 @@ export default function AssociatedDocumentsAdapter(props)
                                         items.map((item,index) => {
                                                 return <AssociatedToAnexo 
                                                     key={`asoc-doc-${index}`} 
-                                                    anexo={item} />
+                                                    anexo={item}
+                                                    currency_id = {props.currency_id} 
+                                                    currency={props.currency} />
                                             })
                                         :items.map((item,index) => {
                                             return <AssociatedToRecibo 
                                                 key={`asoc-doc-${index}`} 
-                                                recibo={item} />
+                                                recibo={item} 
+                                                currency_id = {props.currency_id} 
+                                                currency={props.currency} />
                                         })
                                 }
 

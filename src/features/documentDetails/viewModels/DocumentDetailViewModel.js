@@ -44,9 +44,12 @@ export default class DocumentDetailViewModel {
         }
         else 
         {
-            const list = response.data? (response.data.detail? response.data.detail:[]):[];
-            document.detailList = list;
-            this.#onDocumentDetailData({...document})
+            if(response.data) {
+                this.#onDocumentDetailData({...response.data})
+            }
+            else {
+                this.#onError({errorMessage:""});
+            }
         }
     }
 
@@ -82,41 +85,135 @@ export default class DocumentDetailViewModel {
 
     #fakeRecibo() {
         return {
-            data:{
-                id_documento:157,
-                estatus:3, 
-                casa:0, 
-                tipo_documento:2,
-                id_documento_afv: 2,
-                id_zona:54,
-                update_at:"2022-12-26 19:11:19",
-                usuario_creacion:"k2110",
-                detail:[
-                    {FACTURA:"00000001",ID_MONEDA:205,MONEDA:"VES",MONTO_DOLAR:"304.5500",MONTO_LOCAL:"5049.0200"},
-                    {FACTURA:"00000001",ID_MONEDA:205,MONEDA:"VES",MONTO_DOLAR:"304.5500",MONTO_LOCAL:"5049.0200"},
-                    {FACTURA:"00000001",ID_MONEDA:205,MONEDA:"VES",MONTO_DOLAR:"304.5500",MONTO_LOCAL:"5049.0200"}
-                ]
-            }
+            data: {
+                id_documento: "48",
+                id_documento_afv: 60012,
+                tipo_documento: 2,
+                id_zona: 225,
+                usuario_creacion: "v0053",
+                estatus: 2,
+                error: "DUPLICATE INSERT",
+                update_at: "2023-01-06 14:24:42",
+                detail: {
+                        id_documento_afv: 60012,
+                        ID_ZONA: 225,
+                        FECHA_RECIBO: "2023-01-06T00:00:00.000Z",
+                        USUARIO_CREACION: "v0053",
+                        MONEDA: "USD",
+                        ID_MONEDA: 100,
+                        MONTO_DOLAR: "200.0000",
+                        SOBRE_PAGO_DOLAR: "0.0000",
+                        MONTO_LOCAL: "2999.9400",
+                        SOBRE_PAGO_LOCAL: "520.7500",
+                        FECHA_PAGO: "2023-01-02T00:00:00.000Z",
+                        REFERENCIA: "0000000000",
+                        FORMA_PAGO: "DEPOSITO $",
+                        BANCO: "Ban",
+                        NUMERO_CUENTA_BANCARIA: "00000000000000000000",
+                        NOMBRE_ZONA: "Z053",
+                        VENDEDOR: "MIGUEL",
+                        DOCUMENTOS_ASOCIADOS: [
+                            {
+                                ID: 5266,
+                                DOCUMENTO: "0000000",
+                                MONTO_DOLAR: "200.0000",
+                                MONTO_LOCAL: "3520.6900"
+                            }
+                        ],
+                        CLIENTES: [
+                            {
+                                ID: 28309,
+                                RIF_CLIENTE: "J000000000",
+                                CODIGO_DE_CLIENTE: "00000000",
+                                RAZON_SOCIAL_CLIENTE: "cliente"
+                            }
+                        ]
+                    }
+                }
         }
     }
 
     #fakeAnexo() {
         return {
             data:{
-                id_documento:151,
-                estatus:2, 
-                casa:0, 
-                tipo_documento:1,
-                id_documento_afv: 1,
-                id_zona:221,
-                update_at:"2022-12-26 19:11:19",
-                usuario_creacion:"k2110",
-                detail:[
-                    {RECIBO:"00001", MONEDA:"USD",ID_MONEDA:100, MONTO:"40.0000"},
-                    {RECIBO:"00001", MONEDA:"USD",ID_MONEDA:100, MONTO:"40.0000"},
-                    {RECIBO:"00001", MONEDA:"USD",ID_MONEDA:100, MONTO:"40.0000"},
-                    {RECIBO:"00001", MONEDA:"USD",ID_MONEDA:100, MONTO:"40.0000"}
-                ]
+                id_documento: "227",
+                id_documento_afv: 60012,
+                tipo_documento: 1,
+                id_zona: 75,
+                usuario_creacion: "v0887",
+                estatus: 2,
+                error: "DUPLICATE INSERT",
+                update_at: "2023-01-09 11:20:42",
+                detail: {
+                    id_documento_afv: 60012,
+                    USUARIO_CREACION: "v0887",
+                    ID_ZONA: 75,
+                    NOMBRE_ZONA: "Z181",
+                    VENDEDOR: "J",
+                    FECHA_DOCUMENTO: "2023-01-08T00:00:00.000Z",
+                    REFERENCIA: "00000000",
+                    BANCO: "B",
+                    NUMERO_CUENTA_BANCARIA: "0000000000000000000000",
+                    ID_MONEDA: 100,
+                    MONEDA: "USD",
+                    MONTO: "1793.0000",
+                    SOBRE_PAGO: "0.0000",
+                    MONTO_EDITADO: null,
+                    SOBRE_PAGO_EDITADO: "0.0000",
+                    CLIENTES: [
+                        {
+                            ID: 15302,
+                            RIF_CLIENTE: "J0000000000",
+                            CODIGO_DE_CLIENTE: "00000000",
+                            RAZON_SOCIAL_CLIENTE: "MULTISERVICIOS"
+                        },
+                        {
+                            ID: 15331,
+                            RIF_CLIENTE: "J0000000001",
+                            CODIGO_DE_CLIENTE: "00000001",
+                            RAZON_SOCIAL_CLIENTE: "INVERSIONES"
+                        },
+                        {
+                            ID: 15304,
+                            RIF_CLIENTE: "J0000000002",
+                            CODIGO_DE_CLIENTE: "00000002",
+                            RAZON_SOCIAL_CLIENTE: "RODAMIENTOS"
+                        },
+                        {
+                            ID: 15326,
+                            RIF_CLIENTE: "J0000000003",
+                            CODIGO_DE_CLIENTE: "00000003",
+                            RAZON_SOCIAL_CLIENTE: "MOTOR C.A."
+                        }
+                    ],
+                    DOCUMENTOS_ASOCIADOS: [
+                        {
+                            MONTO: "440.0000",
+                            DOCUMENTO: 60001,
+                            MONTO_EDITADO: null
+                        },
+                        {
+                            MONTO: "340.0000",
+                            DOCUMENTO: 60003,
+                            MONTO_EDITADO: null
+                        },
+                        {
+                            MONTO: "208.0000",
+                            DOCUMENTO: 60004,
+                            MONTO_EDITADO: null
+                        },
+                        {
+                            MONTO: "800.0000",
+                            DOCUMENTO: 60005,
+                            MONTO_EDITADO: null
+                        },
+                        {
+                            MONTO: "5.0000",
+                            DOCUMENTO: 60008,
+                            MONTO_EDITADO: null
+                        }
+                    ]
+                }
             }
         }
     }
