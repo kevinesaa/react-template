@@ -1,6 +1,8 @@
 import ListListener from "../../../_commons/util/ListListenerContainer";
-
-
+import axios from 'axios';
+import SessionRepository from "../../../sessionManager/repository/SessionRepository";
+import ErrorCodes from "../../../_commons/InternalErrorCodes";
+const BASE_URL = process.env.REACT_APP_REMOTE_API_BASE_URL;
 export default class DocumentsViewModel
 {
     constructor() {
@@ -68,22 +70,39 @@ export default class DocumentsViewModel
 
     async requestDocuments(company,filters) {
         
-        if(company != null && company.id != null) {
-            this.#onSelectCompany(company);
-            this.#onLoading(true);
-            const response = await this.#simulateRequest(company,filters);
-            this.#onLoading(false);
-            if (response.statusCode != 200)
-            {
-                this.#onError({errorMessage:""});
-            }
-            else 
-            {
-                const responseData = response.data ? response.data : {};
-                const documents =  responseData.documents ? responseData.documents:[];
-                const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: documents.length}
-                this.#onPageInfoData(pagination);
-                this.#onLoadDocumentsData(documents);
+        if(!SessionRepository.isHaveSessionToken()) {
+            this.#onError({errorCode:ErrorCodes.MISSING_TOKEN});
+        }
+        else {
+
+            if(company != null && company.id != null) {
+                
+                const token = SessionRepository.getSessionToken();
+                this.#onSelectCompany(company);
+                this.#onLoading(true);
+                const response =  await this.#makeRequest({
+                    token,
+                    companyId:company.id, 
+                    page:filters.page
+                });
+                
+                this.#onLoading(false);
+                if (response.status != 200)
+                {
+                    
+                    this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
+                        sourceErrorCode:response.data.app_status,
+                        sourceErrorMessage:response.data.message
+                    });
+                }
+                else 
+                {
+                    const responseData = response?.data?.data ? response?.data?.data : {};
+                    const documents =  responseData.documents ? responseData.documents:[];
+                    const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: documents.length}
+                    this.#onPageInfoData(pagination);
+                    this.#onLoadDocumentsData(documents);
+                }
             }
         }
     }
@@ -117,87 +136,37 @@ export default class DocumentsViewModel
         this.listenerOnPageInfoData.execute(pageInfo);
     }
 
-    async #simulateRequest() {
-        await this.#delay(1000);
-        const items = [];
+    async #makeRequest(requestModel) {
+        try{
 
-        for(let i=0; i<30; i++){
-            const type = Math.floor(Math.random() * 2);
-            const doc = type !== 0 ?this.#fakeRecibo():this.#fakeAnexo();
-            //const doc = this.#fakeAnexo();
-            doc.estatus= Math.floor(Math.random() * 4) + 1;
-            items.push(doc);
-        }
+            const company = `company_id=${requestModel.companyId}`;
+            const page = `page=${requestModel.page}`;
+            let url = `${BASE_URL}/documentos?${company}&${page}`;
+            
+            if(requestModel.doc_type_id) {
+                const docType = `doc_type_id=${requestModel.doc_type_id}`;
+                url = url.concat(docType);
+            }
 
-        return { 
-            statusCode:200,
-            data:{
-                documents:items,
-                pagination:{
-                    currentPage: 1,
-                    limit: 30,
-                    maxPages: 0,
-                    totalItems: items.length,
-                    skip: 0
+            if(requestModel.status) {
+                const status = `status=${requestModel.status}`;
+                url = url.concat(status);
+            }
+
+            const response = await axios.get(url, { 
+                headers:{
+                    "Authorization": `Bearer ${requestModel.token}`,
+                    "Content-Type": "application/json"
                 }
-        }};
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
     }
 
-    #delay(milliseconds){
-        return new Promise(resolve => {
-            setTimeout(resolve, milliseconds);
-        });
-    }
-
-    #fakeRecibo() {
-        return {
-            id_documento:157,
-            estatus:3, 
-            casa:0, 
-            tipo_documento:2,
-            id_documento_afv: 2,
-            id_zona:54,
-            update_at:"2022-12-26 19:11:19",
-            usuario_creacion:"k2110",
-            detail:{
-                id_documento_afv: 60015,
-                USUARIO_CREACION: "v0019",
-                ID_ZONA: 0,
-                NOMBRE_ZONA: "Z0",
-                FECHA_DOCUMENTO: "2023-01-09T00:00:00.000Z",
-                MONEDA: "USD",
-                ID_MONEDA: 100,
-                MONTO_DOLAR: "71.0000",
-                MONTO_LOCAL: "1065.0100",
-                REFERENCIA: "000000000",
-                BANCO: "Bconk",
-                NUMERO_CUENTA_BANCARIA: "00000000000000000000"
-        }};
-    }
-
-    #fakeAnexo(){
-        return {
-            id_documento:151,
-            estatus:2, 
-            casa:0, 
-            tipo_documento:1,
-            id_documento_afv: 1,
-            id_zona:221,
-            update_at:"2023-01-09 23:31:24",
-            usuario_creacion:"k2110",
-            detail:{
-                id_documento_afv: 60011,
-                USUARIO_CREACION: "v0882",
-                ID_ZONA: 1,
-                NOMBRE_ZONA: "Z221",
-                FECHA_DOCUMENTO: "2023-01-09T00:00:00.000Z",
-                REFERENCIA: "00000000",
-                BANCO: "BanUndGeo",
-                NUMERO_CUENTA_BANCARIA: "00000000000000000000",
-                ID_MONEDA: 100,
-                MONEDA: "USD",
-                MONTO: "148.0000",
-                MONTO_EDITADO: null
-        }};
-    }
+    
 }

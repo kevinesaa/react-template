@@ -1,11 +1,11 @@
 import { Component } from "react";
 
-export default class T2 extends Component 
+export default class UserProfile extends Component 
 {
    
     render(){
         return (
-        <h1>Test 2</h1>
+        <h1>Mi perfil</h1>
         );
     }
 }

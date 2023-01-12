@@ -1,11 +1,11 @@
 import { Component } from "react";
 
-export default class T3 extends Component 
+export default class UserList extends Component 
 {
    
     render(){
         return (
-        <h1>Test 3</h1>
+        <h1>Lista de usuarios</h1>
         );
     }
 }

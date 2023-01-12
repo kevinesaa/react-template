@@ -1,7 +1,7 @@
 
 import DocumentsListView from "../../features/documentList/views/DocumentsListView";
-import T2 from "../../features/userList/views/t2";
-import T3 from "../../features/profile/views/t3";
+import UserList from "../../features/userList/views/UserList";
+import UserProfile from "../../features/profile/views/UserProfile";
 import DocumentsViewModel from "../../features/documentList/viewModels/DocumentsViewModel";
 import DocumentDetailViewModel from "../../features/documentDetails/viewModels/DocumentDetailViewModel";
 
@@ -14,14 +14,14 @@ export default Object.freeze([
         icon:""
     },
     {
-        path:'/t2', 
-        page: <T2/>, 
+        path:'/usuarios', 
+        page: <UserList/>, 
         title:"Usuarios", 
         icon:""
     },
     {
-        path:'/t3', 
-        page: <T3/>, 
+        path:'/perfil', 
+        page: <UserProfile/>, 
         title:"Mi perfil", 
         icon:""
     }
