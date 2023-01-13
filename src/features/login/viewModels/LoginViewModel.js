@@ -1,4 +1,8 @@
+import CompanyRepository from "../../../sessionManager/repository/CompanyRepository";
+import MainSessionRepository from "../../../sessionManager/repository/MainSessionRepository";
+import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import StringsUtil from "../../../_commons/util/StringsUtil";
+
 
 export default class LoginViewModel
 {
@@ -36,27 +40,36 @@ export default class LoginViewModel
 
     async loginWithMail(email,pass) {
 
+        
+
         if((!StringsUtil.isString(email) || StringsUtil.isEmptyOrNull(email))
             || (!StringsUtil.isString(pass) || StringsUtil.isEmptyOrNull(pass))) 
         {
             
-            this.#onError();
+            this.#onError({errorCode:"REQUIRE_EMAIL_AND_PASS"});
         }
         else {
 
             this.#onLoading(true);
-            const response = await this.#simulateRequest(email,pass);
+            const response = await this.#makeLoginRequest(email,pass);
             this.#onLoading(false);
-            if (response.statusCode == 200)
+            if (response.status != 200)
             {
-                window.localStorage.setItem("token",response.token );
-                this.#onLoginSuccessful();
+                this.#onError({errorCode:"fail_request"});
                
             }
             else 
             {
-                this.#onError({errorMessage:""});
+                const token = response?.data?.token;
+                if(token == null) {
+                    this.#onError({errorCode:"NOT_FOUND_TOKEN"});
+                    return ;
+                }
+                
+                MainSessionRepository.saveSession({token, data:response.data.data})
+                this.#onLoginSuccessful();
             }
+            
         }
     }
 
@@ -72,15 +85,61 @@ export default class LoginViewModel
         this.listenerShowError?.forEach( callback => callback(error));
     }
 
-    async #simulateRequest(email,pass){
-        await this.#delay(1000);
-        return { statusCode:200, token:"asdfasdfglhilñ"};
-    }
-
     #delay(milliseconds){
         return new Promise(resolve => {
             setTimeout(resolve, milliseconds);
         });
     }
+
+    async #makeLoginRequest(email,pass){
+        await this.#delay(1000);
+
+        return { 
+            status:200, 
+            data: {
+                token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55X2lkIjowLCJpYXQiOjE2NzAzNTQ4MTN9.-PrtTpgiconQkOjrZFyst7n2iLbaf1cYv0xYjlhVgRI",
+                data:{
+                    "user": {
+                      "user_id": 2,
+                      "userName": "alguien1",
+                      "userLastName": null,
+                      "email": "alguien@HOLA.COM"
+                    },
+                    "companies": [
+                      {
+                        "id": 0,
+                        "name": "COMAPAÑIA0"
+                      },
+                      {
+                        "id": 1,
+                        "name": "COMAPAÑIA1"
+                      }
+                    ],
+                    "permissions": [
+                      {
+                        "company_id": 1,
+                        "company_name": "COMAPAÑIA0",
+                        "permission_id": 4,
+                        "permission_name": "see document"
+                      },
+                      {
+                        "company_id": 2,
+                        "company_name": "COMAPAÑIA1",
+                        "permission_id": 3,
+                        "permission_name": "disable"
+                      },
+                      {
+                        "company_id": 2,
+                        "company_name": "COMAPAÑIA1",
+                        "permission_id": 2,
+                        "permission_name": "created"
+                      }
+                    ]
+                  }
+                }
+            };
+    }
+
+    
 }
 

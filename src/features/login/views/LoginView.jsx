@@ -41,7 +41,8 @@ export default class Login extends Component
     }
 
     onError(error) {
-        console.log("ah que chimbo!")
+        console.log("ah que chimbo!");
+        console.error(error);
     }
 
     handledEmailInput(event) {
@@ -62,7 +63,7 @@ export default class Login extends Component
     {
         return (
         <div>
-            {this.state.toHome && <Navigate to="/home"/>}
+            {this.state.toHome && <Navigate to="/"/>}
             <label >
                 {Strings.login_user_name_label}
                 <br/>

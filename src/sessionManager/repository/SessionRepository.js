@@ -15,10 +15,10 @@ function isHaveSessionToken() {
     return token != null && String(token).length > 0;
 }
 
-const SessionRepository = {
+const SessionRepository = Object.freeze({
     getSessionToken,
     saveSessionToken,
     isHaveSessionToken
-};
+});
 
 export default SessionRepository;
