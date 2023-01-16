@@ -32,7 +32,7 @@ export default class DocumentDetailView extends React.Component {
         
         if(this.props.open)
         {
-            this.viewModel.requestDocumentDetails(this.company.id,this.document);
+            this.viewModel.requestDocumentDetails(this.company.id,this.document.id_documento);
         }
         
     }

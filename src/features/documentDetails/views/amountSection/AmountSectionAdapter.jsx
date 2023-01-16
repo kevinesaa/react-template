@@ -21,7 +21,7 @@ function AmountSection(props) {
 export default function AmountSectionAdapter(props) {
 
     const doc = props.document;
-    console.log(doc);
+    
     return ( 
         <>
         {

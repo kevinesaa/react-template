@@ -1,6 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { Navigate } from "react-router-dom"
+import ROUTES from "../../../_commons/Routes";
 import Strings from "../../../_Resources/strings/strings";
 
 export default class Login extends Component 
@@ -63,7 +64,7 @@ export default class Login extends Component
     {
         return (
         <div>
-            {this.state.toHome && <Navigate to="/"/>}
+            {this.state.toHome && <Navigate to={ROUTES.FIRST_PAGE_APP}/>}
             <label >
                 {Strings.login_user_name_label}
                 <br/>

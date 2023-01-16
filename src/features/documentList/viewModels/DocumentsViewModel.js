@@ -1,8 +1,10 @@
-import ListListener from "../../../_commons/util/ListListenerContainer";
 import axios from 'axios';
+import ListListener from "../../../_commons/util/ListListenerContainer";
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import ErrorCodes from "../../../_commons/InternalErrorCodes";
-const BASE_URL = process.env.REACT_APP_REMOTE_API_BASE_URL;
+import API_END_POINTS from '../../../_commons/Api';
+
+
 export default class DocumentsViewModel
 {
     constructor() {
@@ -137,21 +139,22 @@ export default class DocumentsViewModel
     }
 
     async #makeRequest(requestModel) {
+        
+        const company = `company_id=${requestModel.companyId}`;
+        const page = `page=${requestModel.page}`;
+        let url = `${API_END_POINTS.GET_DOCUMENT_LIST}?${company}&${page}`;
+        
+        if(requestModel.doc_type_id) {
+            const docType = `doc_type_id=${requestModel.doc_type_id}`;
+            url = url.concat(docType);
+        }
+
+        if(requestModel.status) {
+            const status = `status=${requestModel.status}`;
+            url = url.concat(status);
+        }
+        
         try{
-
-            const company = `company_id=${requestModel.companyId}`;
-            const page = `page=${requestModel.page}`;
-            let url = `${BASE_URL}/documentos?${company}&${page}`;
-            
-            if(requestModel.doc_type_id) {
-                const docType = `doc_type_id=${requestModel.doc_type_id}`;
-                url = url.concat(docType);
-            }
-
-            if(requestModel.status) {
-                const status = `status=${requestModel.status}`;
-                url = url.concat(status);
-            }
 
             const response = await axios.get(url, { 
                 headers:{

@@ -6,7 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from '../features/home/views/HomeView';
 
 import MainMenu from '../_Resources/menu/mainMenu';
-
+import { SessionProvider } from '../sessionManager/views/SessionContext';
+import SessionViewModel from '../sessionManager/viewModels/SessionViewModel'
 
 
 export default function App(props) {
@@ -17,18 +18,20 @@ export default function App(props) {
   return (
    
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login viewModel={new LoginViewModel()}/>}/> 
-        
-      </Routes>
-      <Routes>
-        
-        <Route  path='/' element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
+      <SessionProvider currentPath={location.pathname} viewModel={new SessionViewModel()}>
+        <Routes>
+          <Route path="/login" element={<Login viewModel={new LoginViewModel()}/>}/> 
           
-          {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
+        </Routes>
+        <Routes>
+          
+          <Route  path='/app' element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
             
-        </Route>
-      </Routes>
+            {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
+              
+          </Route>
+        </Routes>
+      </SessionProvider>
     </BrowserRouter>
   );
 }

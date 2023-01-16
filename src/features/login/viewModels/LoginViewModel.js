@@ -1,6 +1,8 @@
-import CompanyRepository from "../../../sessionManager/repository/CompanyRepository";
+import axios from 'axios';
+
 import MainSessionRepository from "../../../sessionManager/repository/MainSessionRepository";
-import SessionRepository from "../../../sessionManager/repository/SessionRepository";
+import API_END_POINTS from '../../../_commons/Api';
+import ListListener from "../../../_commons/util/ListListenerContainer";
 import StringsUtil from "../../../_commons/util/StringsUtil";
 
 
@@ -8,40 +10,38 @@ export default class LoginViewModel
 {
 
     constructor() {
-        this.listenerOnLoading = [];
-        this.listenerShowError = [];
-        this.listenerLoginSuccessful = [];
+        this.listenerOnLoading = new ListListener();
+        this.listenerShowError = new ListListener();
+        this.listenerLoginSuccessful = new ListListener();
     }
 
     unsubscribeOnLoading(func) {
-        this.listenerOnLoading = this.listenerOnLoading.filter( f => f !== func);
+        this.listenerOnLoading.unsubscribe(func);
     }
 
     subscribeOnLoading(func) {
-        this.listenerOnLoading.push(func);
+        this.listenerOnLoading.subscribe(func);
     }
 
     unsubscribeOnShowError(func) {
-        this.listenerShowError = this.listenerShowError.filter( f => f !== func);
+        this.listenerShowError.unsubscribe(func);
     }
 
     subscribeOnShowError(func)
     {
-        this.listenerShowError.push(func);
+        this.listenerShowError.subscribe(func);
     }
 
     unsubscribeOnLoginSuccessful(func) {
-        this.listenerLoginSuccessful = this.listenerLoginSuccessful.filter( f => f !== func);
+        this.listenerLoginSuccessful.unsubscribe(func);
     }
 
     subscribeOnLoginSuccessful(func) {
-        this.listenerLoginSuccessful.push(func);
+        this.listenerLoginSuccessful.subscribe(func);
     }
 
     async loginWithMail(email,pass) {
-
         
-
         if((!StringsUtil.isString(email) || StringsUtil.isEmptyOrNull(email))
             || (!StringsUtil.isString(pass) || StringsUtil.isEmptyOrNull(pass))) 
         {
@@ -56,7 +56,6 @@ export default class LoginViewModel
             if (response.status != 200)
             {
                 this.#onError({errorCode:"fail_request"});
-               
             }
             else 
             {
@@ -66,7 +65,7 @@ export default class LoginViewModel
                     return ;
                 }
                 
-                MainSessionRepository.saveSession({token, data:response.data.data})
+                MainSessionRepository.saveSession({token, data:response.data.data});
                 this.#onLoginSuccessful();
             }
             
@@ -74,72 +73,37 @@ export default class LoginViewModel
     }
 
     #onLoading(value) {
-        this.listenerOnLoading?.forEach(callback => callback(value));
+        this.listenerOnLoading.execute(value);
     }
 
     #onLoginSuccessful() {
-        this.listenerLoginSuccessful?.forEach( callback => callback());
+        this.listenerLoginSuccessful.execute();
     }
 
     #onError(error) {
-        this.listenerShowError?.forEach( callback => callback(error));
-    }
-
-    #delay(milliseconds){
-        return new Promise(resolve => {
-            setTimeout(resolve, milliseconds);
-        });
+        this.listenerShowError.execute(error);
     }
 
     async #makeLoginRequest(email,pass){
-        await this.#delay(1000);
+        
+        try{
 
-        return { 
-            status:200, 
-            data: {
-                token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55X2lkIjowLCJpYXQiOjE2NzAzNTQ4MTN9.-PrtTpgiconQkOjrZFyst7n2iLbaf1cYv0xYjlhVgRI",
-                data:{
-                    "user": {
-                      "user_id": 2,
-                      "userName": "alguien1",
-                      "userLastName": null,
-                      "email": "alguien@HOLA.COM"
-                    },
-                    "companies": [
-                      {
-                        "id": 0,
-                        "name": "COMAPAÑIA0"
-                      },
-                      {
-                        "id": 1,
-                        "name": "COMAPAÑIA1"
-                      }
-                    ],
-                    "permissions": [
-                      {
-                        "company_id": 1,
-                        "company_name": "COMAPAÑIA0",
-                        "permission_id": 4,
-                        "permission_name": "see document"
-                      },
-                      {
-                        "company_id": 2,
-                        "company_name": "COMAPAÑIA1",
-                        "permission_id": 3,
-                        "permission_name": "disable"
-                      },
-                      {
-                        "company_id": 2,
-                        "company_name": "COMAPAÑIA1",
-                        "permission_id": 2,
-                        "permission_name": "created"
-                      }
-                    ]
-                  }
-                }
-            };
+            const response = await axios(API_END_POINTS.LOGIN, { 
+                method: 'post',    
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                data:JSON.stringify({
+                    "email": email,
+                    "password": pass
+                })
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
     }
-
-    
 }
-
