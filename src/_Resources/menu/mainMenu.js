@@ -5,25 +5,26 @@ import UserProfile from "../../features/profile/views/UserProfile";
 import DocumentsViewModel from "../../features/documentList/viewModels/DocumentsViewModel";
 import DocumentDetailViewModel from "../../features/documentDetails/viewModels/DocumentDetailViewModel";
 import ROUTES from "../../_commons/Routes";
+import Strings from "../strings/strings";
 
 
 export default Object.freeze([
     {
         path:ROUTES.DOCUMENTS, 
         page: <DocumentsListView detailViewModel={new DocumentDetailViewModel()} viewModel={new DocumentsViewModel()}/>, 
-        title:"Documentos", 
+        title:Strings.side_bar_documents, 
         icon:""
     },
     {
         path:ROUTES.USERS, 
         page: <UserList/>, 
-        title:"Usuarios", 
+        title:Strings.side_bar_users, 
         icon:""
     },
     {
         path:ROUTES.PROFILE, 
         page: <UserProfile/>, 
-        title:"Mi perfil", 
+        title:Strings.side_bar_user_profile, 
         icon:""
     }
 ]);
