@@ -6,6 +6,7 @@ import TableHeader from "../../../_commons/views/tableComponents/TableHeader";
 import DocumentsTableAdapter from "./DocumentsTableAdapter";
 import DocumentDetailView from "../../documentDetails/views/DocumentDetailView";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
+import Strings from "../../../_Resources/strings/strings";
 
 const DOCUMENT_PER_PAGE = 30;
 
@@ -25,19 +26,20 @@ export default class DocumentsListView extends Component
         this.showLoading = this.showLoading.bind(this);
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
+       
         this.columns = [
-                {title:"id"},
-                {title:"Tipo"},    
-                {title:"Nro. Documento"},
-                {title:"Fecha Conciliación"},
-                {title:"Estatus"},
-                {title:"Ruta"},
-                {title:"Fecha Documento"},
-                {title:"Referencia"},
-                {title:"Monto"},
-                {title:"Monto editado"},
-                {title:"Banco"}, 
-                {title:"Nro. Cuenta"}
+                {title:Strings.documents_list_column_id},
+                {title:Strings.documents_list_column_doc_type},    
+                {title:Strings.documents_list_column_doc_number},
+                {title:Strings.documents_list_column_date_conciliated},
+                {title:Strings.documents_list_column_status},
+                {title:Strings.documents_list_column_zone},
+                {title:Strings.documents_list_column_document_date},
+                {title:Strings.documents_list_column_document_ref},
+                {title:Strings.documents_list_column_document_amount},
+                {title:Strings.documents_list_column_document_edit_amount},
+                {title:Strings.documents_list_column_document_bank_name}, 
+                {title:Strings.documents_list_column_document_bank_account_number}
             ];
     }
 
@@ -127,7 +129,7 @@ export default class DocumentsListView extends Component
             >
                 
                 <MaterialUI.Grid item sx={{ pt: 2, pl: 2 }}>
-                    <MaterialUI.Typography variant="subtitles">Aqui va el texto del subtitulo</MaterialUI.Typography>
+                    <MaterialUI.Typography variant="subtitles">{Strings.documents_list_title}</MaterialUI.Typography>
                 </MaterialUI.Grid>
                 <MaterialUI.Divider variant="middle"/>
                 
@@ -143,7 +145,7 @@ export default class DocumentsListView extends Component
 
                             <Dropdown 
                                 id="drop-company" 
-                                label="Compañias"
+                                label={Strings.text_companies}
                                 onSelectItem={this.handledOnSelectCompany}
                                 defaultValue={this.state.currentCompany}
                                 value={this.state.currentCompany}

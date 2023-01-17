@@ -1,5 +1,5 @@
-import AnexoTableRow from "./tableRowHolder/AnexoTableRow";
-import ReciboTableRow from "./tableRowHolder/ReciboTableRow";
+import CashDocumentTableRow from "./tableRowHolder/CashDocumentTableRow";
+import ElectronicDocumentTableRow from "./tableRowHolder/ElectronicDocumentTableRow";
 import Constants from "../../../_commons/Constants";
 
 
@@ -14,7 +14,7 @@ export default function DocumentsTableAdapter(props)
 
                     if(item.tipo_documento == Constants.DOC_TYPE_ANEXO_ID) 
                     {
-                        return (<AnexoTableRow 
+                        return (<CashDocumentTableRow 
                                     key={`doc-${index}`} 
                                     item={item}
                                     onItemClick={props.onItemClickListener} />
@@ -23,7 +23,7 @@ export default function DocumentsTableAdapter(props)
                     
                     if(item.tipo_documento == Constants.DOC_TYPE_RECIBO_ID) 
                     {
-                        return (<ReciboTableRow 
+                        return (<ElectronicDocumentTableRow 
                                     key={`doc-${index}`} 
                                     item={item}
                                     onItemClick={props.onItemClickListener} />

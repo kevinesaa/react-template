@@ -1,6 +1,7 @@
+import Strings from "../../../../_Resources/strings/strings";
 import DocumentTableRow from "./DocumentTableRow";
 
-export default function AnexoTableRow(props) 
+export default function CashDocumentTableRow(props) 
 {
     const handleClick = (item) => {
         
@@ -16,7 +17,7 @@ export default function AnexoTableRow(props)
             onItemClick={handleClick}
             item={item}
             id={item.id_documento}
-            type="Anexo"
+            type={Strings.text_cash_document}
             document_date={`${item.detail.FECHA_DOCUMENTO}`}
             document_number={`${item.detail.id_documento_afv}`}
             amount={`${Number(item.detail.MONTO).toFixed(2)} ${item.detail.MONEDA}`}

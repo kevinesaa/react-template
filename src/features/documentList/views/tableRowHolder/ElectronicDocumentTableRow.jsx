@@ -1,10 +1,11 @@
 import Constants from "../../../../_commons/Constants";
+import Strings from "../../../../_Resources/strings/strings";
 import DocumentTableRow from "./DocumentTableRow";
 
 
 const ID_DOLAR_CURRENCY = Constants.ID_DOLLAR_CURRENCY;
 
-export default function ReciboTableRow(props) 
+export default function ElectronicDocumentTableRow(props) 
 {
     const handleClick = (item) => {
         
@@ -24,7 +25,7 @@ export default function ReciboTableRow(props)
             onItemClick={handleClick}
             item={item}
             id={item.id_documento}
-            type="Recibo"
+            type={Strings.text_electronic_document}
             document_date={`${item.detail.FECHA_DOCUMENTO}`}
             document_number={`${item.detail.id_documento_afv}`}
             amount={`${Number(amount).toFixed(2)} ${item.detail.MONEDA}`}
