@@ -1,17 +1,18 @@
 import * as MaterialUI from "@mui/material";
 import Constants from "../../../../_commons/Constants";
+import Strings from "../../../../_Resources/strings/strings";
 
 function AmountSection(props) {
     
 
     return (<>
         <MaterialUI.Stack direction="row" spacing={2}>
-            <MaterialUI.Typography variant="body2"><b>Monto:</b> {Number(props.amount).toFixed(2)} {props.currency}</MaterialUI.Typography>
+            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_amount_title}</b> {Number(props.amount).toFixed(2)} {props.currency}</MaterialUI.Typography>
             {props.show_edit_amount && Number(props.edit_amount) > 0 &&
-                <MaterialUI.Typography variant="body2"><b>Monto editado:</b> {Number(props.edit_amount).toFixed(2)} {props.currency}</MaterialUI.Typography>
+                <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_edit_amount_title}</b> {Number(props.edit_amount).toFixed(2)} {props.currency}</MaterialUI.Typography>
             }
             { props.show_overpayment && Number(props.overpayment) > 0 &&
-                <MaterialUI.Typography variant="body2"><b>Sobrepago:</b> {Number(props.overpayment).toFixed(2)} {props.currency}</MaterialUI.Typography>
+                <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_overpayment_title}</b> {Number(props.overpayment).toFixed(2)} {props.currency}</MaterialUI.Typography>
             }
             
         </MaterialUI.Stack>

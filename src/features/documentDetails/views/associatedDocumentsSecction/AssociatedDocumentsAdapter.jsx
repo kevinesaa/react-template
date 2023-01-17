@@ -3,6 +3,7 @@ import * as MaterialUI from "@mui/material";
 import TableHeader from "../../../../_commons/views/tableComponents/TableHeader";
 import AssociatedToAnexo from "./AssociatedToAnexo";
 import AssociatedToRecibo from "./AssociatedToRecibo";
+import Strings from "../../../../_Resources/strings/strings";
 
 
 export default function AssociatedDocumentsAdapter(props)
@@ -17,12 +18,12 @@ export default function AssociatedDocumentsAdapter(props)
             {
                 items.length === 0 ? <>
                     <MaterialUI.Typography variant="body2">
-                        <b>Documentos no encontrados</b>
+                        <b>{Strings.documents_details_attachments_not_found_title}</b>
                     </MaterialUI.Typography>
                 </> :
                 <> {!showByType &&
                     <MaterialUI.Typography variant="body2">
-                        <b>Documentos desconocidos</b>
+                        <b>{Strings.documents_details_attachments_unknown_type_title}</b>
                     </MaterialUI.Typography>
                 }
                
@@ -33,7 +34,9 @@ export default function AssociatedDocumentsAdapter(props)
                                 aria-label="sticky table"
                                 size="small">
                                 
-                                <TableHeader columns={[{title:"Documento"},{title:"Monto"}]}/>
+                                <TableHeader columns={[
+                                    {title:Strings.documents_details_attachment_id_title},
+                                    {title:Strings.documents_details_attachment_amount_title}]}/>
                                 <MaterialUI.TableBody>
                                 {
                                     props.doc_type == Constants.DOC_TYPE_ANEXO_ID ?

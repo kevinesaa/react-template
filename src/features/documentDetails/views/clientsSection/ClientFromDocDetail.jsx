@@ -3,19 +3,20 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useState } from "react";
 import TableHeader from "../../../../_commons/views/tableComponents/TableHeader";
+import Strings from "../../../../_Resources/strings/strings";
 
 function OneClient(props) {
 
     return (
         <>
             <MaterialUI.Typography variant="body2">
-                    <b>Cliente</b>
+                    <b>{Strings.documents_details_one_client_title}</b>
             </MaterialUI.Typography>
             <MaterialUI.Box sx={{ p: 2 }}>
                 <MaterialUI.Stack direction="row" spacing={2}>
                     <MaterialUI.Typography variant="body2">{props.name}</MaterialUI.Typography>
-                    <MaterialUI.Typography variant="body2"><b>RIF: </b>{props.dni}</MaterialUI.Typography>
-                    <MaterialUI.Typography variant="body2"><b>Código: </b>{props.code}</MaterialUI.Typography>
+                    <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_one_client_dni_title} </b>{props.dni}</MaterialUI.Typography>
+                    <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_one_client_code_title} </b>{props.code}</MaterialUI.Typography>
                 </MaterialUI.Stack>
             </MaterialUI.Box>
         </>
@@ -54,7 +55,7 @@ export default function ClientFromDocDetail(props) {
             {clients.length === 0 ? 
                     <>
                         <MaterialUI.Typography variant="body2">
-                            <b>Cliente no encontrado</b>
+                            <b>{Strings.documents_details_client_not_found_title}</b>
                         </MaterialUI.Typography>
                     </> :
             clients.length === 1 ?
@@ -72,7 +73,7 @@ export default function ClientFromDocDetail(props) {
                             spacing={1}>
                             
                             <MaterialUI.Typography variant="body2">
-                                <b>Clientes</b>
+                                <b>{Strings.documents_details_many_clients_title}</b>
                             </MaterialUI.Typography>
                             <MaterialUI.Chip
                                  variant="outlined"
@@ -89,7 +90,9 @@ export default function ClientFromDocDetail(props) {
                                 aria-label="sticky table"
                                 size="small">
                                 
-                                <TableHeader columns={[{title:"RIF"},{title:"Cliente"},{title:"Código"}]}/>
+                                <TableHeader columns={[{title:Strings.documents_details_many_clients_dni_title},
+                                    {title:Strings.documents_details_one_client_title},
+                                    {title:Strings.documents_details_many_clients_code_title}]}/>
                                 <MaterialUI.TableBody>
                                     {
                                         clients.map((item,index) => 

@@ -1,4 +1,5 @@
 import * as MaterialUI from "@mui/material";
+import Strings from "../../../../_Resources/strings/strings";
 
 
 
@@ -26,7 +27,7 @@ export default function DocumentTableRow(props)
                 {props.item.estatus < 3?"-":`${props.item.update_at.substring(0,10)}`}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.item.estatus < 3?"No conciliado":"Conciliado"}
+                {props.item.estatus < 3 ? Strings.documents_list_status_no_conciliated:Strings.documents_list_status_conciliated}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.routeCode}

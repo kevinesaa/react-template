@@ -3,6 +3,9 @@ const users = "Usuarios";
 const user_profile = "Mi perfil";
 
 const Strings = Object.freeze({
+    text_yes:"Sí",
+    text_no:"No",
+    text_date_title:"Fecha:",
     text_companies:"Compañias",
     text_electronic_document:"Recibo", 
     text_cash_document:"Anexo", 
@@ -27,6 +30,34 @@ const Strings = Object.freeze({
     documents_list_column_document_edit_amount:"Monto editado",
     documents_list_column_document_bank_name:"Banco",
     documents_list_column_document_bank_account_number:"Nro. Cuenta",
+    documents_list_status_conciliated:"Conciliado",
+    documents_list_status_no_conciliated:"Conciliado",
+    documents_details_doc_id_title:"ID:",
+    documents_details_created_by_title:"Creador por:",
+    documents_details_zone_title:"Ruta:",
+    documents_details_conciliated_title:"Conciliado:",
+    documents_details_vendor_title:"Vendedor:",
+    documents_details_document_date_title:"Fecha Documento:",
+    documents_details_bank_name_title:"Banco:",
+    documents_details_bank_account_number_title:"Cuenta:",
+    documents_details_payment_type_title:"Forma de pago:",
+    documents_details_document_reference_title:"Referencia:",
+    documents_details_document_attachments_title:"Documentos Asociados",
+    documents_details_client_not_found_title:"Cliente no encontrado",
+    documents_details_one_client_title:"Cliente",
+    documents_details_one_client_dni_title:"RIF:",
+    documents_details_one_client_code_title:"Código:",
+    documents_details_many_clients_title:"Clientes",
+    documents_details_many_clients_dni_title:"RIF",
+    documents_details_many_clients_code_title:"Código",
+    documents_details_amount_title:"Monto:",
+    documents_details_edit_amount_title:"Monto editado:",
+    documents_details_overpayment_title:"Sobrepago:",
+    documents_details_attachments_not_found_title:"Documentos no encontrados",
+    documents_details_attachments_unknown_type_title:"Documentos desconocidos",
+    documents_details_attachment_id_title:"Documento",
+    documents_details_attachment_amount_title:"Documento",
 });
+
 
 export default Strings;

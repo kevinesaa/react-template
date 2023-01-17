@@ -7,6 +7,7 @@ import ClientFromDocDetail from "./clientsSection/ClientFromDocDetail";
 import AssociatedDocumentsAdapter from "./associatedDocumentsSecction/AssociatedDocumentsAdapter";
 import Constants from "../../../_commons/Constants";
 import AmountSectionAdapter from "./amountSection/AmountSectionAdapter";
+import Strings from "../../../_Resources/strings/strings";
 
 export default class DocumentDetailView extends React.Component {
 
@@ -69,26 +70,26 @@ export default class DocumentDetailView extends React.Component {
             scroll={"paper"}>
                 
                 <MaterialUI.DialogTitle >
-                    {Constants.DOC_TYPE_ANEXO_ID == this.state.docDetail?.tipo_documento? 'Anexo':'Recibo'}
+                    {Constants.DOC_TYPE_ANEXO_ID == this.state.docDetail?.tipo_documento? Strings.text_cash_document:Strings.text_electronic_document}
                     {` - ${this.state.docDetail?.id_documento_afv}`}
                 </MaterialUI.DialogTitle>
                 
                 <MaterialUI.DialogContent dividers={true} sx={{ minWidth: 700 }}>
                     
                     <MaterialUI.Stack direction="row" spacing={2}>
-                        <MaterialUI.Typography variant="body2"><b>ID:</b> {this.state.docDetail?.id_documento}</MaterialUI.Typography>
-                        <MaterialUI.Typography variant="body2"><b>Creador por:</b> {this.state.docDetail?.usuario_creacion}</MaterialUI.Typography>
-                        <MaterialUI.Typography variant="body2"><b>Ruta:</b> {this.state.docDetail?.detail?.NOMBRE_ZONA}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_doc_id_title}</b> {this.state.docDetail?.id_documento}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_created_by_title}</b> {this.state.docDetail?.usuario_creacion}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_zone_title}</b> {this.state.docDetail?.detail?.NOMBRE_ZONA}</MaterialUI.Typography>
                     </MaterialUI.Stack>
                     <MaterialUI.Stack direction="row" spacing={2}>
-                        <MaterialUI.Typography variant="body2"><b>Conciliado:</b> {this.state.docDetail?.estatus > 2?'Sí':'No'}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_conciliated_title}</b> {this.state.docDetail?.estatus > 2 ? Strings.text_yes:Strings.text_no}</MaterialUI.Typography>
                         {
-                            this.state.docDetail?.estatus > 2 && <MaterialUI.Typography variant="body2"><b>Fecha: </b> {this.state.docDetail?.update_at?.substring(0,10)}</MaterialUI.Typography>
+                            this.state.docDetail?.estatus > 2 && <MaterialUI.Typography variant="body2"><b>{Strings.text_date_title} </b> {this.state.docDetail?.update_at?.substring(0,10)}</MaterialUI.Typography>
                         }
                         
                     </MaterialUI.Stack>   
                         <MaterialUI.Box sx={{ p: 1 }}>
-                        <MaterialUI.Typography variant="body2"><b>Vendedor:</b> {this.state.docDetail.detail?.VENDEDOR}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_vendor_title}</b> {this.state.docDetail.detail?.VENDEDOR}</MaterialUI.Typography>
                     </MaterialUI.Box> 
                     
                     <MaterialUI.Box sx={{ p: 1 }}>
@@ -96,14 +97,14 @@ export default class DocumentDetailView extends React.Component {
                             document={this.state.docDetail}/>    
                     </MaterialUI.Box>
                     <MaterialUI.Box sx={{ p: 1 }}>
-                    <MaterialUI.Typography variant="body2"><b>Fecha Documento:</b> {this.state.docDetail?.detail?.FECHA_DOCUMENTO?.substring(0,10)} </MaterialUI.Typography>
+                    <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_document_date_title}</b> {this.state.docDetail?.detail?.FECHA_DOCUMENTO?.substring(0,10)} </MaterialUI.Typography>
                         <MaterialUI.Stack direction="row" spacing={2}>
-                            <MaterialUI.Typography variant="body2"><b>Banco:</b> {this.state.docDetail?.detail?.BANCO}</MaterialUI.Typography>
-                            <MaterialUI.Typography variant="body2"><b>Cuenta:</b> {this.state.docDetail?.detail?.NUMERO_CUENTA_BANCARIA}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_bank_name_title}</b> {this.state.docDetail?.detail?.BANCO}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_bank_account_number_title}</b> {this.state.docDetail?.detail?.NUMERO_CUENTA_BANCARIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                         <MaterialUI.Stack direction="row" spacing={2}>
-                            <MaterialUI.Typography variant="body2"><b>Forma de pago:</b> {this.state.docDetail?.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? 'Deposito': this.state.docDetail?.detail?.FORMA_PAGO}</MaterialUI.Typography>
-                            <MaterialUI.Typography variant="body2"><b>Referencia:</b> {this.state.docDetail?.detail?.REFERENCIA}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_payment_type_title}</b> {this.state.docDetail?.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? 'Deposito': this.state.docDetail?.detail?.FORMA_PAGO}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_document_reference_title}</b> {this.state.docDetail?.detail?.REFERENCIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                     </MaterialUI.Box>
                     
@@ -117,7 +118,7 @@ export default class DocumentDetailView extends React.Component {
                     <MaterialUI.Box >
                         <MaterialUI.Stack alignItems="center" direction="row" spacing={1}>
                             <MaterialUI.Typography variant="body2">
-                                <b>Documentos Asociados</b>
+                                <b>{Strings.documents_details_document_attachments_title}</b>
                             </MaterialUI.Typography>
 
                             {this.state.docDetail?.detail?.DOCUMENTOS_ASOCIADOS?.length > 0 &&
