@@ -1,3 +1,5 @@
+import axios from 'axios';
+import API_END_POINTS from "../../_commons/Api";
 import ListListener from "../../_commons/util/ListListenerContainer";
 import MainSessionRepository from "../repository/MainSessionRepository";
 import SessionRepository from "../repository/SessionRepository";
@@ -70,57 +72,24 @@ export default class SessionViewModel
     }
 
     async #makeSessionRequest(token) {
-        await this.#delay(1000);
-
-        return { 
-            status:200, 
-            data: {
-                token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55X2lkIjowLCJpYXQiOjE2NzAzNTQ4MTN9.-PrtTpgiconQkOjrZFyst7n2iLbaf1cYv0xYjlhVgRI",
-                data:{
-                    "user": {
-                      "user_id": 2,
-                      "userName": "alguien1",
-                      "userLastName": null,
-                      "email": "alguien@HOLA.COM"
-                    },
-                    "companies": [
-                      {
-                        "id": 0,
-                        "name": "COMAPAÑIA0"
-                      },
-                      {
-                        "id": 1,
-                        "name": "COMAPAÑIA1"
-                      }
-                    ],
-                    "permissions": [
-                      {
-                        "company_id": 1,
-                        "company_name": "COMAPAÑIA0",
-                        "permission_id": 4,
-                        "permission_name": "see document"
-                      },
-                      {
-                        "company_id": 2,
-                        "company_name": "COMAPAÑIA1",
-                        "permission_id": 3,
-                        "permission_name": "disable"
-                      },
-                      {
-                        "company_id": 2,
-                        "company_name": "COMAPAÑIA1",
-                        "permission_id": 2,
-                        "permission_name": "created"
-                      }
-                    ]
-                  }
+        const url = API_END_POINTS.VERIFY_TOKEN_SESSION;
+        try{
+            
+            const response = await axios(url, { 
+                method: 'post',
+                headers:{
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
                 }
-            };
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
     }
 
-    #delay(milliseconds){
-        return new Promise(resolve => {
-            setTimeout(resolve, milliseconds);
-        });
-    }
+    
 }

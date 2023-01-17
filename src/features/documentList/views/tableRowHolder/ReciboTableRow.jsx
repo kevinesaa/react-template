@@ -32,7 +32,7 @@ export default function ReciboTableRow(props)
             documentReference={`${item.detail.REFERENCIA}`}
             bank={`${item.detail.BANCO}`}
             bankAccount={`${item.detail.NUMERO_CUENTA_BANCARIA}`}
-            routeCode={`${item.detail.ID_ZONA}`}
+            routeCode={`${item.detail.NOMBRE_ZONA}`}
             status={item.estatus}
         />
     );

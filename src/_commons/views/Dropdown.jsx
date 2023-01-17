@@ -13,8 +13,8 @@ export default function Dropdown(props){
             
         }
     }
-
-    const items = props.items ? props.items.map(item => {
+    
+    const items = props.items && props.items.length > 0? props.items.map(item => {
         return <MaterialUI.MenuItem key={item.id} value={item}>{item.text}</MaterialUI.MenuItem>
     }):<></>;
     

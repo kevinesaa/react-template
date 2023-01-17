@@ -78,12 +78,12 @@ export default class DocumentDetailView extends React.Component {
                     <MaterialUI.Stack direction="row" spacing={2}>
                         <MaterialUI.Typography variant="body2"><b>ID:</b> {this.state.docDetail?.id_documento}</MaterialUI.Typography>
                         <MaterialUI.Typography variant="body2"><b>Creador por:</b> {this.state.docDetail?.usuario_creacion}</MaterialUI.Typography>
-                        <MaterialUI.Typography variant="body2"><b>Ruta:</b> {this.state.docDetail?.id_zona}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>Ruta:</b> {this.state.docDetail?.detail?.NOMBRE_ZONA}</MaterialUI.Typography>
                     </MaterialUI.Stack>
                     <MaterialUI.Stack direction="row" spacing={2}>
-                        <MaterialUI.Typography variant="body2"><b>Conciliado:</b> {this.state.docDetail?.estatus > 3?'Sí':'No'}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>Conciliado:</b> {this.state.docDetail?.estatus > 2?'Sí':'No'}</MaterialUI.Typography>
                         {
-                            this.state.docDetail?.estatus > 3 && <MaterialUI.Typography variant="body2"><b>Fecha: </b> {this.state.docDetail?.update_at?.substring(0,10)}</MaterialUI.Typography>
+                            this.state.docDetail?.estatus > 2 && <MaterialUI.Typography variant="body2"><b>Fecha: </b> {this.state.docDetail?.update_at?.substring(0,10)}</MaterialUI.Typography>
                         }
                         
                     </MaterialUI.Stack>   

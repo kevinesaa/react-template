@@ -5,7 +5,7 @@ import UserRepository from "./UserRepository";
 
 
 function saveSession(sessionObject) {
-    console.log(sessionObject)
+    
     const companies = sessionObject.data?.companies;
     const permissions = sessionObject.data?.permissions;
     const user = sessionObject.data?.user;

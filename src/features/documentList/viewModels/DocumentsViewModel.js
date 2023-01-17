@@ -3,6 +3,10 @@ import ListListener from "../../../_commons/util/ListListenerContainer";
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import ErrorCodes from "../../../_commons/InternalErrorCodes";
 import API_END_POINTS from '../../../_commons/Api';
+import CompanyRepository from '../../../sessionManager/repository/CompanyRepository';
+import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
+import Constants from '../../../_commons/Constants';
+import Permissions from '../../../_commons/Permissions';
 
 
 export default class DocumentsViewModel
@@ -66,8 +70,35 @@ export default class DocumentsViewModel
     }
 
     async requestCompanies() {
-        const companies = [{id:0,text:"empresa1"}, {id:1,text:"empresa2"}, {id:2,text:"empresa3"}];
-        this.listenerOnCompanyData.execute(companies);
+        const companiesDictionary = new Map();
+        const companies = [];
+        const permissions = PermissionRepository.getPermissionList();
+        permissions.forEach(element => {
+            if(Permissions.ID_ALL_PERMISSIONS == element.permission_id 
+                || Permissions.ID_SEE_DOCUMENTS_PERMISSION == element.permission_id) 
+            {
+                const company = {
+                    id:element.company_id,
+                    text:element.company_name
+                }
+                companiesDictionary.set(company.id,company);
+            }
+        });
+        if(companiesDictionary.size > 0) {
+            const validCompanies = companiesDictionary.values();
+            
+            let c;
+            do{
+                c = validCompanies.next()
+                if(c.value) 
+                {
+                    companies.push(c.value);
+                }
+            }
+            while(!c.done);
+        }
+        
+        this.listenerOnCompanyData.execute(companies.sort((a,b) => a.id - b.id));
     }
 
     async requestDocuments(company,filters) {
