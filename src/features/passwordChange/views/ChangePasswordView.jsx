@@ -2,9 +2,8 @@
 
 import { Component } from "react";
 import * as MaterialUI from "@mui/material";
-import LoadingScreen from "../../../_commons/views/LoadingScreen";
-import Strings from "../../../_Resources/strings/strings";
 
+import Strings from "../../../_Resources/strings/strings";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
 import PasswordInput from "../../../_commons/views/PasswordInput";
 import TitleSection from "../../../_commons/views/TitleSection";
@@ -48,7 +47,7 @@ export default class ChangePasswordView extends Component {
     }
 
     changePassSuccessful() {
-
+        this.setState({loading:false, currentPass:"", newPass:"",confirmPass:""})
     }
 
     onError(error) {
@@ -66,7 +65,7 @@ export default class ChangePasswordView extends Component {
     render() {
         return (
             <>
-                <TitleSection text={"Cambiar mi contraseña"} />
+                <TitleSection text={Strings.change_pass_title} />
                 <MaterialUI.Divider />
                 <form onSubmit={this.handledChangePassWordClick}>
                     <MaterialUI.Box sx={{ flexGrow: 1, m: 2 }}
@@ -79,26 +78,26 @@ export default class ChangePasswordView extends Component {
                             <PasswordInput
                                 onChangeText={this.handledCurrentPassChange}
                                 textValue={this.state.currentPass} 
-                                label={"Contraseña Actual"} 
-                                tooltipHideText={"Ocultar"}
-                                tooltipShowText={"Mostrar"}/>
+                                label={Strings.change_pass_current_pass} 
+                                tooltipHideText={Strings.text_hide}
+                                tooltipShowText={Strings.text_show}/>
                             
                             <PasswordInput
                                 onChangeText={this.handledNewPassChange}
                                 textValue={this.state.newPass} 
-                                label={"Nueva Contraseña"} 
-                                tooltipHideText={"Ocultar"}
-                                tooltipShowText={"Mostrar"}/>
+                                label={Strings.change_pass_new_pass} 
+                                tooltipHideText={Strings.text_hide}
+                                tooltipShowText={Strings.text_show}/>
                             
                             <PasswordInput
                                 onChangeText={this.handledNewPassChange}
                                 textValue={this.state.newPass} 
-                                label={"Confirmar Contraseña"} 
-                                tooltipHideText={"Ocultar"}
-                                tooltipShowText={"Mostrar"}/>
+                                label={Strings.change_pass_confirm_pass} 
+                                tooltipHideText={Strings.text_hide}
+                                tooltipShowText={Strings.text_show}/>
 
                             <CustomButtonForm
-                                text={"Guardar"} />
+                                text={Strings.text_save} />
 
                         </MaterialUI.Grid>
                     </MaterialUI.Box>

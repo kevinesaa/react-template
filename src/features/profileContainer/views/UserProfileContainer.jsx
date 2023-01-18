@@ -2,7 +2,7 @@ import { Component } from "react";
 import * as MaterialUI from "@mui/material";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import Strings from "../../../_Resources/strings/strings";
-import ChangePasswordView from "../../changePassword/views/ChangePasswordView";
+import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
 import UserProfile from "../../profile/views/UserProfile";
 
 export default class UserProfileContainer extends Component 
@@ -33,7 +33,7 @@ export default class UserProfileContainer extends Component
                 }}>
                 
                 <MaterialUI.Grid item sx={{ pt: 2, pl: 2 }}>
-                    <MaterialUI.Typography variant="subtitles">Mi Perfil</MaterialUI.Typography>
+                    <MaterialUI.Typography variant="subtitles">{Strings.user_profile_container_title}</MaterialUI.Typography>
                 </MaterialUI.Grid>
                 <MaterialUI.Divider variant="middle"/>
 

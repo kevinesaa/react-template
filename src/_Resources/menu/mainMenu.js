@@ -7,7 +7,7 @@ import ROUTES from "../../_commons/Routes";
 import Strings from "../strings/strings";
 import UserProfileContainer from "../../features/profileContainer/views/UserProfileContainer"
 import UserProfileViewModel from "../../features/profile/viewModels/UserProfileViewModel";
-import ChangePasswordViewModel from "../../features/changePassword/viewModels/ChangePasswordViewModel";
+import ChangePasswordViewModel from "../../features/passwordChange/viewModels/ChangePasswordViewModel";
 
 
 

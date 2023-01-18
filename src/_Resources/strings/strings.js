@@ -1,16 +1,23 @@
 const documents = "Documentos";
 const users = "Usuarios";
 const user_profile = "Mi perfil";
+const emailText="Correo electrónico";
 
 const Strings = Object.freeze({
     text_yes:"Sí",
     text_no:"No",
+    text_hide:"Ocultar",
+    text_show:"Mostrar",
+    text_email:emailText,
+    text_name:"Nombre",
+    text_last_name:"Apellido",
+    text_save:"Guardar",
     text_date_title:"Fecha:",
     text_companies:"Compañias",
     text_electronic_document:"Recibo", 
     text_cash_document:"Anexo", 
     loading:"Cargando...",
-    login_user_name_label:"Email",
+    login_user_name_label:emailText,
     login_user_password_label:"Contraseña",
     login_button:"Ingresar",
     side_bar_documents:documents,
@@ -56,7 +63,13 @@ const Strings = Object.freeze({
     documents_details_attachments_not_found_title:"Documentos no encontrados",
     documents_details_attachments_unknown_type_title:"Documentos desconocidos",
     documents_details_attachment_id_title:"Documento",
-    documents_details_attachment_amount_title:"Documento",
+    documents_details_attachment_amount_title:"Monto",
+    user_profile_container_title:user_profile,
+    user_profile_title:"Mi información",
+    change_pass_title:"Cambiar mi contraseña",
+    change_pass_current_pass:"Contraseña Actual",
+    change_pass_new_pass:"Nueva Contraseña",
+    change_pass_confirm_pass:"Confirmar Contraseña",
 });
 
 

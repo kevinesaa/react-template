@@ -3,6 +3,7 @@ import * as MaterialUI from "@mui/material";
 import TitleSection from "../../../_commons/views/TitleSection";
 import CustomTextField from "../../../_commons/views/CustomTextField";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
+import Strings from "../../../_Resources/strings/strings";
 
 
 export default class UserProfile extends Component 
@@ -55,7 +56,8 @@ export default class UserProfile extends Component
     }
 
     onError(error) {
-
+        console.error("ah que chimbo!");
+        console.error(error);
     }
 
     componentDidMount() {
@@ -76,7 +78,7 @@ export default class UserProfile extends Component
 
     render() {
         return (<>
-            <TitleSection text={"Mi información"} />
+            <TitleSection text={Strings.user_profile_title} />
             <MaterialUI.Divider />
             
             <form onSubmit={this.handledChangeUserProfileClick}>
@@ -94,24 +96,24 @@ export default class UserProfile extends Component
                             onChangeText ={this.handledEmailChangeText}
                             type="email"
                             textValue={this.state.email}
-                            label={"Correo electronico"}/>
+                            label={Strings.text_email}/>
                         
                         <CustomTextField
                             required = {true} 
                             onChangeText ={this.handledUserNameChangeText}
                             type="text"
                             textValue={this.state.user_name}
-                            label={"Nombre"}/>
+                            label={Strings.text_name}/>
 
                         <CustomTextField
                             required = {true} 
                             onChangeText={this.handledUserLastNameChangeText}
                             type="text"
                             textValue={this.state.user_last_name}
-                            label={"Apellido"}/>
+                            label={Strings.text_last_name}/>
 
                         <CustomButtonForm
-                            text={"Guardar"} />
+                            text={Strings.text_save} />
 
                     </MaterialUI.Grid> 
                 </MaterialUI.Box>
