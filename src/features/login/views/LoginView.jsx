@@ -78,7 +78,7 @@ export default class Login extends Component
             </label>
             <br/>
             <button onClick={this.handledButtonClick}>{Strings.login_button}</button>
-            {this.state.loading? <p> {Strings.loading} </p> : null}
+            {this.state.loading? <p> {Strings.loading} </p> : <></>}
         </div>
         );
     }
