@@ -9,6 +9,8 @@ import MainMenu from '../_Resources/menu/mainMenu';
 import { SessionProvider } from '../sessionManager/views/SessionContext';
 import SessionViewModel from '../sessionManager/viewModels/SessionViewModel'
 import ROUTES from '../_commons/Routes';
+import AddNewUserView from '../features/userAddNew/views/AddNewUserView';
+import UserDetailsView from '../features/userDetails/views/UserDetailsView';
 
 
 export default function App(props) {
@@ -24,14 +26,18 @@ export default function App(props) {
           <Route path={ROUTES.LOGIN} element={<Login viewModel={new LoginViewModel()}/>}/> 
           
         </Routes>
-        <Routes>
-          
-          <Route  path={ROUTES.BASE_APP_ROUTE} element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
+          <>
+          <Routes>
             
-            {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
+            <Route  path={ROUTES.BASE_APP_ROUTE} element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
               
-          </Route>
-        </Routes>
+              {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
+              <Route path={ROUTES.USER_NEW} element={<AddNewUserView />} />
+              <Route path={ROUTES.USER_DETAILS} element={<UserDetailsView />} />
+
+            </Route>
+          </Routes>
+          </>
       </SessionProvider>
     </BrowserRouter>
   );

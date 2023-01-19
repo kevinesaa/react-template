@@ -8,6 +8,7 @@ const Constants = Object.freeze({
     DOC_TYPE_RECIBO_ID:2,
     ID_BOLIVAR_CURRENCY:205,
     ID_DOLLAR_CURRENCY:100,
+    REGISTER_PER_PAGE:30,
 });
 
 export default Constants;

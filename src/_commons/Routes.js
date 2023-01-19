@@ -8,6 +8,8 @@ const ROUTES = Object.freeze({
     FIRST_PAGE_APP:documents,
     DOCUMENTS:documents,
     USERS:app + "usuarios",
+    USER_DETAILS:app + "usuarios/:id",
+    USER_NEW:app + "usuarios/nuevo",
     PROFILE:app + "perfil"
 });
 

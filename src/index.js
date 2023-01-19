@@ -4,6 +4,9 @@ import './index.css';
 import App from './_app/App';
 import reportWebVitals from './reportWebVitals';
 
+const APP_TITLE = process.env.REACT_APP_TITLE;
+const titleTag = document.getElementById("my_title");
+titleTag.innerText = APP_TITLE;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

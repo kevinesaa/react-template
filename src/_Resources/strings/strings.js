@@ -70,6 +70,8 @@ const Strings = Object.freeze({
     change_pass_current_pass:"Contraseña Actual",
     change_pass_new_pass:"Nueva Contraseña",
     change_pass_confirm_pass:"Confirmar Contraseña",
+    user_list_title:users,
+    user_list_button_new:"Nuevo Usuario",
 });
 
 

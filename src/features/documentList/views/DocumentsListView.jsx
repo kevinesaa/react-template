@@ -7,8 +7,9 @@ import DocumentsTableAdapter from "./DocumentsTableAdapter";
 import DocumentDetailView from "../../documentDetails/views/DocumentDetailView";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import Strings from "../../../_Resources/strings/strings";
+import Constants from "../../../_commons/Constants";
 
-const DOCUMENT_PER_PAGE = 30;
+const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 
 export default class DocumentsListView extends Component 
 {
@@ -185,7 +186,7 @@ export default class DocumentsListView extends Component
                         {this.state.documents.length === 0?<></>:
                            <MaterialUI.TablePagination
                                 rowsPerPageOptions={[
-                                    30,
+                                    DOCUMENT_PER_PAGE,
                                     //{ value: -1, label: "Todas" },
                                 ]}
                                 component="div" 
