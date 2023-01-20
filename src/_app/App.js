@@ -24,20 +24,17 @@ export default function App(props) {
       <SessionProvider currentPath={location.pathname} viewModel={new SessionViewModel()}>
         <Routes>
           <Route path={ROUTES.LOGIN} element={<Login viewModel={new LoginViewModel()}/>}/> 
-          
-        </Routes>
-          <>
-          <Routes>
-            
-            <Route  path={ROUTES.BASE_APP_ROUTE} element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
+
+          <Route path={ROUTES.BASE_APP_ROUTE} element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
               
               {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
               <Route path={ROUTES.USER_NEW} element={<AddNewUserView />} />
               <Route path={ROUTES.USER_DETAILS} element={<UserDetailsView />} />
 
-            </Route>
-          </Routes>
-          </>
+          </Route>
+          
+        </Routes>
+          
       </SessionProvider>
     </BrowserRouter>
   );
