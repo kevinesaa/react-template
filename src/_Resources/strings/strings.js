@@ -17,6 +17,8 @@ const Strings = Object.freeze({
     text_electronic_document:"Recibo", 
     text_cash_document:"Anexo", 
     loading:"Cargando...",
+    login_title:"Monitor de conciliaciones",
+    login_subtitle:"Inicio de sesión",
     login_user_name_label:emailText,
     login_user_password_label:"Contraseña",
     login_button:"Ingresar",

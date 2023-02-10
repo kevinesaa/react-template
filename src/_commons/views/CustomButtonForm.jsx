@@ -9,7 +9,6 @@ export default function CustomButtonForm(props) {
             <MaterialUI.Paper elevation={0} align="center">
                 <MaterialUI.Button
                     type={"submit"}
-                    
                     align="center"
                     variant="contained"
                     sx={{
