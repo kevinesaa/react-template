@@ -11,6 +11,9 @@ import SessionViewModel from '../sessionManager/viewModels/SessionViewModel'
 import ROUTES from '../_commons/Routes';
 import AddNewUserView from '../features/userAddNew/views/AddNewUserView';
 import UserDetailsView from '../features/userDetails/views/UserDetailsView';
+import LogoutView from '../features/logout/views/LogoutView';
+import LogoutViewModel from '../features/logout/viewModels/LogoutViewModel';
+import ButtonLogoutSideBar from '../features/logout/views/ButtonLogoutSideBar';
 
 
 export default function App(props) {
@@ -25,11 +28,17 @@ export default function App(props) {
         <Routes>
           <Route path={ROUTES.LOGIN} element={<Login viewModel={new LoginViewModel()}/>}/> 
 
-          <Route path={ROUTES.BASE_APP_ROUTE} element={<Home selectedItem = {currentPathIndex} menuItems = {MainMenu}/>} >
-              
-              {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
-              <Route path={ROUTES.USER_NEW} element={<AddNewUserView />} />
-              <Route path={ROUTES.USER_DETAILS} element={<UserDetailsView />} />
+          <Route path={ROUTES.BASE_APP_ROUTE} 
+            element={<Home 
+                        logoutWebButton = {{component:ButtonLogoutSideBar, props:{ title:"Cerrar sesión"}}}
+                        //logoutMobileButton = {}
+                        logoutElement = {{component:LogoutView, props:{ viewModel:new LogoutViewModel()}}} 
+                        selectedItem = {currentPathIndex} 
+                        menuItems = {MainMenu}/>} >
+                
+                {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
+                <Route path={ROUTES.USER_NEW} element={<AddNewUserView />} />
+                <Route path={ROUTES.USER_DETAILS} element={<UserDetailsView />} />
 
           </Route>
           

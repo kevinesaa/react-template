@@ -5,6 +5,7 @@ import * as MaterialUI from "@mui/material";
 import DrawerHeader from './DrawerHeader';
 import MobileItem from './MobileItem';
 import WebItem from './WebItem';
+import ButtonLogoutSideBar from '../../../logout/views/ButtonLogoutSideBar';
 
 
 
@@ -75,6 +76,8 @@ const SideBar = (props) => {
     const handledItemClick = (item) => {
         setSelectedIndex(item.id);
     }
+
+    const LogoutWebButton = props.logoutWebButton.component;
     
     return (
         <>
@@ -119,10 +122,12 @@ const SideBar = (props) => {
             </DrawerHeader>
                 <MaterialUI.List>
                     <MenuItemsMobile 
-                            items={props.items?props.items:[]}
-                            isOpen={mobileOpen}
-                            selectedIndex = {selectedIndex}
+                        items={props.items?props.items:[]}
+                        isOpen={mobileOpen}
+                        selectedIndex = {selectedIndex}
                         />
+
+                    
                 </MaterialUI.List>
             </MaterialUI.Drawer>
 
@@ -162,6 +167,12 @@ const SideBar = (props) => {
                         selectedIndex = {selectedIndex}
                         onItemClick = {handledItemClick}
                     />
+                    
+                    <LogoutWebButton
+                        {...props.logoutWebButton.props}
+                        id="side-bar-logout-button-web"
+                        isOpen = {openMenu}/>
+                    
                 </MaterialUI.List>
             </MaterialUI.Drawer>
         </MaterialUI.Box>

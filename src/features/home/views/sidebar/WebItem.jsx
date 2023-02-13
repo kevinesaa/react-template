@@ -44,6 +44,7 @@ export default function WebItem(props)
                                 src={props.iconUrl?props.iconUrl:""}/>
 
                         </MaterialUI.ListItemIcon>
+                        
                         {
                             isSelected? 
                                 <MaterialUI.ListItemText primary={props.title} 
