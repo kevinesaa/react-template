@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import * as MaterialUI from "@mui/material";
 
 
-export default function ButtonLogoutSideBar(props) {
+export default function ButtonWebLogoutSideBar(props) {
 
     const onItemClickListener = (item) => {
         

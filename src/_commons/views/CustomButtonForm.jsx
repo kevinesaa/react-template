@@ -5,7 +5,7 @@ export default function CustomButtonForm(props) {
 
     
     return (<>
-        <MaterialUI.Grid item xs={12} sm={12} md={3} lg={2}>
+        <MaterialUI.Grid item>
             <MaterialUI.Paper elevation={0} align="center">
                 <MaterialUI.Button
                     type={"submit"}

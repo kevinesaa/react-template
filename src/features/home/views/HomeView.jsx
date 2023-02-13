@@ -11,7 +11,7 @@ export default function Home (props)
     const drawerWidth = 240;
     const selectedItem = props.selectedItem;
     const [openLogout, setOpenLogout] = React.useState(false);
-    const LogoutElement = props.logoutElement.component;
+    const LogoutElement = props.logoutElement?.component;
 
     const handlendShowLogout = (item) => {
         setOpenLogout(!openLogout);
@@ -20,6 +20,7 @@ export default function Home (props)
     
 
     props.logoutWebButton.props.onItemClick = handlendShowLogout;
+    props.logoutMobileButton.props.onItemClick = handlendShowLogout;
 
     return (
         <>
@@ -32,7 +33,8 @@ export default function Home (props)
                 items={props.menuItems}
                 selectedItem = {selectedItem}
                 headerImage={logo}
-                logoutWebButton={props.logoutWebButton}
+                logoutWebButton={props?.logoutWebButton}
+                logoutMobileButton={props?.logoutMobileButton}
             />
             <MaterialUI.Box component="main"
                 sx={{
@@ -45,12 +47,13 @@ export default function Home (props)
                 </MaterialUI.Box>              
             </MaterialUI.Box>
             
-            <LogoutElement
-                 {...props.logoutElement.props}
-                 open={openLogout}
-                 onNegativeOptionListener ={()=> setOpenLogout(false)}
-                />
-
+            {LogoutElement && 
+                <LogoutElement
+                    {...props.logoutElement?.props}
+                    open={openLogout}
+                    onNegativeOptionListener ={()=> setOpenLogout(false)}
+                    />
+            }
         </MaterialUI.Box>
         </>
     );

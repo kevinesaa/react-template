@@ -5,7 +5,7 @@ import * as MaterialUI from "@mui/material";
 import DrawerHeader from './DrawerHeader';
 import MobileItem from './MobileItem';
 import WebItem from './WebItem';
-import ButtonLogoutSideBar from '../../../logout/views/ButtonLogoutSideBar';
+import ButtonLogoutSideBar from '../../../logout/views/ButtonWebLogoutSideBar';
 
 
 
@@ -77,14 +77,15 @@ const SideBar = (props) => {
         setSelectedIndex(item.id);
     }
 
-    const LogoutWebButton = props.logoutWebButton.component;
-    
+    const LogoutWebButton = props.logoutWebButton?.component;
+    const LogoutMobileButton = props.logoutMobileButton?.component;
+
     return (
         <>
         <MaterialUI.Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders">
+            component="nav"
+            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+            aria-label="mailbox folders">
 
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
             <MaterialUI.Drawer
@@ -127,6 +128,12 @@ const SideBar = (props) => {
                         selectedIndex = {selectedIndex}
                         />
 
+                    {LogoutMobileButton &&
+                        <LogoutMobileButton 
+                            {...props.logoutMobileButton?.props}
+                            id="side-bar-logout-button-mobile"
+                            isOpen = {mobileOpen}/>
+                    }
                     
                 </MaterialUI.List>
             </MaterialUI.Drawer>
@@ -168,11 +175,12 @@ const SideBar = (props) => {
                         onItemClick = {handledItemClick}
                     />
                     
-                    <LogoutWebButton
-                        {...props.logoutWebButton.props}
-                        id="side-bar-logout-button-web"
-                        isOpen = {openMenu}/>
-                    
+                    {LogoutWebButton &&
+                        <LogoutWebButton
+                            {...props.logoutWebButton?.props}
+                            id="side-bar-logout-button-web"
+                            isOpen = {openMenu}/>
+                    }
                 </MaterialUI.List>
             </MaterialUI.Drawer>
         </MaterialUI.Box>

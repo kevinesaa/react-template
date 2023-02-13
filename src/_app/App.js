@@ -13,7 +13,9 @@ import AddNewUserView from '../features/userAddNew/views/AddNewUserView';
 import UserDetailsView from '../features/userDetails/views/UserDetailsView';
 import LogoutView from '../features/logout/views/LogoutView';
 import LogoutViewModel from '../features/logout/viewModels/LogoutViewModel';
-import ButtonLogoutSideBar from '../features/logout/views/ButtonLogoutSideBar';
+import ButtonWebLogoutSideBar from '../features/logout/views/ButtonWebLogoutSideBar';
+import ButtonMobileLogoutSideBar from '../features/logout/views/ButtonMobileLogoutSideBar';
+import Strings from '../_Resources/strings/strings';
 
 
 export default function App(props) {
@@ -24,14 +26,15 @@ export default function App(props) {
   return (
    
     <BrowserRouter>
+    
       <SessionProvider currentPath={location.pathname} viewModel={new SessionViewModel()}>
         <Routes>
           <Route path={ROUTES.LOGIN} element={<Login viewModel={new LoginViewModel()}/>}/> 
 
           <Route path={ROUTES.BASE_APP_ROUTE} 
             element={<Home 
-                        logoutWebButton = {{component:ButtonLogoutSideBar, props:{ title:"Cerrar sesión"}}}
-                        //logoutMobileButton = {}
+                        logoutWebButton = {{component:ButtonWebLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
+                        logoutMobileButton = {{component:ButtonMobileLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
                         logoutElement = {{component:LogoutView, props:{ viewModel:new LogoutViewModel()}}} 
                         selectedItem = {currentPathIndex} 
                         menuItems = {MainMenu}/>} >

@@ -10,8 +10,9 @@ export default function CustomTextField(props) {
         }
     }
 
+    
     return (<>
-        <MaterialUI.Grid item xs={12} sm={12} md={5} lg={12}>
+        <MaterialUI.Grid item>
             <MaterialUI.Paper elevation={0}>
                 <MaterialUI.TextField
                     required = {props.required}

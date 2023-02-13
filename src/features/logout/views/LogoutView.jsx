@@ -30,13 +30,13 @@ export default class LogoutView extends React.Component {
                 open={this.props.open} >
                 
                 <MaterialUI.DialogTitle >
-                    {"Cerrar Sesión"}
+                    {Strings.logout_view_title}
                 </MaterialUI.DialogTitle>
                 
                 <MaterialUI.DialogContent dividers={true} sx={{ minWidth: 300 }}>
                     
                     <MaterialUI.Typography variant="body1">
-                        <b>{"¿Estás seguro que quieres cerrar la sesión?"}</b>
+                        <b>{Strings.logout_view_message}</b>
                     </MaterialUI.Typography>
                     <MaterialUI.Box >
                         <MaterialUI.Stack alignItems="center" direction="row" spacing={1}>

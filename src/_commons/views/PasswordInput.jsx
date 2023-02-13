@@ -18,7 +18,7 @@ export default function PasswordInput(props) {
     }
 
     return (<>
-        <MaterialUI.Grid item xs={12} sm={12} md={3} lg={12}>
+        <MaterialUI.Grid item>
             <MaterialUI.Paper elevation={0}>
                 <MaterialUI.FormControl required fullWidth>
                     <MaterialUI.InputLabel>{props.label}</MaterialUI.InputLabel>

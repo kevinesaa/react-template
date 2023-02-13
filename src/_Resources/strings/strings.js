@@ -74,6 +74,8 @@ const Strings = Object.freeze({
     change_pass_confirm_pass:"Confirmar Contraseña",
     user_list_title:users,
     user_list_button_new:"Nuevo Usuario",
+    logout_view_title:"Cerrar Sesión",
+    logout_view_message:"¿Estás seguro que quieres cerrar la sesión?"
 });
 
 
