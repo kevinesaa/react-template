@@ -1,21 +1,45 @@
 import React from "react";
 import * as MaterialUI from "@mui/material";
 import Strings from "../../../_Resources/strings/strings";
+import LoadingScreen from "../../../_commons/views/LoadingScreen";
+import { Navigate } from "react-router-dom";
+import ROUTES from "../../../_commons/Routes";
 
 export default class LogoutView extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {loading:false,logout_completed:false};
         this.viewModel = props.viewModel;
+        this.handledOnPositiveOption = this.handledOnPositiveOption.bind(this);
         this.handledOnNegativeOption = this.handledOnNegativeOption.bind(this);
+        this.showLoading = this.showLoading.bind(this);
+        this.onError = this.onError.bind(this);
+        this.logoutCompleted = this.logoutCompleted.bind(this);
     }
     
     componentDidMount() {
-        
+        this.viewModel.subscribeOnLoading(this.showLoading);
+        this.viewModel.subscribeOnShowError(this.onError);
+        this.viewModel.subscribeOnLogoutCompleted(this.logoutCompleted);
     }
 
     componentWillUnmount() {
+        this.viewModel.unsubscribeOnLoading(this.showLoading);
+        this.viewModel.unsubscribeOnShowError(this.onError);
+        this.viewModel.unsubscribeOnLogoutCompleted(this.logoutCompleted);
+    }
 
+    showLoading(value) {
+        this.setState({ loading: value });
+    }
+
+    logoutCompleted() {
+        this.setState({ logout_completed: true });
+    }
+
+    handledOnPositiveOption() {
+        this.viewModel.logoutSession();
     }
 
     handledOnNegativeOption() {
@@ -24,8 +48,15 @@ export default class LogoutView extends React.Component {
         }
     }
 
+    onError(error) {
+        console.log("ah que chimbo!");
+        console.error(error);
+    }
+
     render() {
         return (<>
+
+            {this.state.logout_completed && <Navigate to={ROUTES.LOGIN} />}
             <MaterialUI.Dialog
                 open={this.props.open} >
                 
@@ -41,6 +72,7 @@ export default class LogoutView extends React.Component {
                     <MaterialUI.Box >
                         <MaterialUI.Stack alignItems="center" direction="row" spacing={1}>
                             <MaterialUI.Button
+                                onClick={this.handledOnPositiveOption}
                                 fullWidth
                                 variant="contained"
                                 sx={{
@@ -72,6 +104,9 @@ export default class LogoutView extends React.Component {
                         </MaterialUI.Stack>
                     </MaterialUI.Box >
                 </MaterialUI.DialogContent>
+                
+                <LoadingScreen loading={this.state.loading}/>
+
             </MaterialUI.Dialog>
         </>); 
     }

@@ -32,12 +32,12 @@ export default function App(props) {
           <Route path={ROUTES.LOGIN} element={<Login viewModel={new LoginViewModel()}/>}/> 
 
           <Route path={ROUTES.BASE_APP_ROUTE} 
-            element={<Home 
-                        logoutWebButton = {{component:ButtonWebLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
-                        logoutMobileButton = {{component:ButtonMobileLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
-                        logoutElement = {{component:LogoutView, props:{ viewModel:new LogoutViewModel()}}} 
-                        selectedItem = {currentPathIndex} 
-                        menuItems = {MainMenu}/>} >
+              element={<Home 
+                          logoutWebButton = {{component:ButtonWebLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
+                          logoutMobileButton = {{component:ButtonMobileLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
+                          logoutElement = {{component:LogoutView, props:{ viewModel:new LogoutViewModel()}}} 
+                          selectedItem = {currentPathIndex} 
+                          menuItems = {MainMenu}/>} >
                 
                 {MainMenu.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
                 <Route path={ROUTES.USER_NEW} element={<AddNewUserView />} />

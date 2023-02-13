@@ -17,10 +17,9 @@ function saveSession(sessionObject) {
 }
 
 function closeLocalSession() {
-
     SessionRepository.saveSessionToken(null);
     CompanyRepository.saveCompanyList([]);
-    UserRepository.saveUser(null);
+    UserRepository.saveCurrentUser(null);
     PermissionRepository.savePermissionList([]);
 }
 
