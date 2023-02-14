@@ -15,8 +15,6 @@ export class SessionProvider extends React.Component {
         this.routerHelper = this.routerHelper.bind(this);
         this.goToHome = this.goToHome.bind(this);
         this.goToLogin = this.goToLogin.bind(this);
-        this.myNavigate = this.myNavigate.bind(this);
-
     }
 
     routerHelper(goTo,pathToCompare) {
@@ -38,19 +36,6 @@ export class SessionProvider extends React.Component {
         this.routerHelper(ROUTES.LOGIN,ROUTES.LOGIN);
     }
     
-    myNavigate() {
-        const path = this.state.currentPath;
-
-        if(this.nav) {
-            this.nav = false;
-            return <Navigate to={path}/>
-        }
-        else {
-            
-            return <></>
-        }
-    }
-    
     componentDidMount() {
         this.viewModel.subscribeOnShowHome(this.goToHome);
         this.viewModel.subscribeOnShowLogin(this.goToLogin);
@@ -69,12 +54,17 @@ export class SessionProvider extends React.Component {
     }
     
     render() {
-        
+        const path = this.state.currentPath;
+
+        if(this.nav) {
+            this.nav = false;
+            return <Navigate to={path}/>
+        }
         
         return (
             <>
                 
-                {this.myNavigate()}
+                
                 <Context.Provider value={
                     { 
                         checkUserSession:this.checkUserSession,

@@ -39,7 +39,8 @@ export default class SessionViewModel
 
     async checkUserSession() {
         
-        if(!SessionRepository.isHaveSessionToken()) 
+        const hasSessionToken = SessionRepository.isHaveSessionToken();
+        if(!hasSessionToken) 
         {
             this.#goToLogin();
             return;

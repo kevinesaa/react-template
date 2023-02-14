@@ -1,11 +1,13 @@
 import Constants from "../../_commons/Constants";
 
 function savePermissionList(permissionList) {
-    if(permissionList == null) {
-        window.localStorage.setItem(Constants.PERMISSIONS_KEY,null);
-        return;
+    
+    if(permissionList) {
+        window.localStorage.setItem(Constants.PERMISSIONS_KEY,JSON.stringify(permissionList));
     }
-    window.localStorage.setItem(Constants.PERMISSIONS_KEY,JSON.stringify(permissionList));
+    else {
+        window.localStorage.removeItem(Constants.PERMISSIONS_KEY);
+    }
 }
 
 function getPermissionList() {

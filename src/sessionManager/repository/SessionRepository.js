@@ -6,7 +6,13 @@ function getSessionToken() {
 }
 
 function saveSessionToken(token) {
-    window.localStorage.setItem(Constants.TOKEN_KEY,token);
+    
+    if(token) {
+        window.localStorage.setItem(Constants.TOKEN_KEY,token);
+    }
+    else {
+        window.localStorage.removeItem(Constants.TOKEN_KEY);
+    }
 }
 
 function isHaveSessionToken() {

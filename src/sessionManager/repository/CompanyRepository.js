@@ -2,11 +2,13 @@ import Constants from "../../_commons/Constants";
 
 function saveCompanyList(companies) {
     
-    if(companies == null) {
-        window.localStorage.setItem(Constants.COMPANIES_KEY,null);
-        return;
+    if(companies) {
+        window.localStorage.setItem(Constants.COMPANIES_KEY,JSON.stringify(companies));
     }
-    window.localStorage.setItem(Constants.COMPANIES_KEY,JSON.stringify(companies));
+    else {
+        window.localStorage.removeItem(Constants.COMPANIES_KEY);
+    }
+    
 }
 
 function getCompanyList() {
