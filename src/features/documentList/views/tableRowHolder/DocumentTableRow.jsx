@@ -11,6 +11,9 @@ export default function DocumentTableRow(props)
             props.onItemClick(item)
         }
     }
+
+
+    const clientCode = props.clients?.map(c => c.CODIGO_DE_CLIENTE).join(" ; ")
     
     return (
         <MaterialUI.TableRow hover onClick={event => handleClick(props.item)}>
@@ -52,6 +55,9 @@ export default function DocumentTableRow(props)
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.bankAccount}
+            </MaterialUI.TableCell>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
+                {clientCode}
             </MaterialUI.TableCell>
         </MaterialUI.TableRow>
     );

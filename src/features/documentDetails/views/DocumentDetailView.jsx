@@ -107,7 +107,7 @@ export default class DocumentDetailView extends React.Component {
                             <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_bank_account_number_title}</b> {this.state.docDetail?.detail?.NUMERO_CUENTA_BANCARIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                         <MaterialUI.Stack direction="row" spacing={2}>
-                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_payment_type_title}</b> {this.state.docDetail?.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? 'Deposito': this.state.docDetail?.detail?.FORMA_PAGO}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_payment_type_title}</b> {this.state.docDetail?.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? Strings.document_type_cash: this.state.docDetail?.detail?.FORMA_PAGO}</MaterialUI.Typography>
                             <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_document_reference_title}</b> {this.state.docDetail?.referencia? this.state.docDetail.referencia: this.state.docDetail?.detail?.REFERENCIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                     </MaterialUI.Box>

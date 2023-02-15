@@ -41,7 +41,8 @@ export default class DocumentsListView extends Component
                 {title:Strings.documents_list_column_document_amount},
                 {title:Strings.documents_list_column_document_edit_amount},
                 {title:Strings.documents_list_column_document_bank_name}, 
-                {title:Strings.documents_list_column_document_bank_account_number}
+                {title:Strings.documents_list_column_document_bank_account_number},
+                {title:Strings.documents_list_column_document_client_code}
             ];
     }
 

@@ -36,6 +36,7 @@ export default function ElectronicDocumentTableRow(props)
             routeCode={`${item.detail.NOMBRE_ZONA}`}
             createBy={`${item.detail.USUARIO_CREACION}`}
             status={item.estatus}
+            clients={item.detail?.CLIENTES}
         />
     );
 }
