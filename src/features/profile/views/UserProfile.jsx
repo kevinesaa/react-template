@@ -92,7 +92,7 @@ export default class UserProfile extends Component
                       spacing={{ xs: 1, md: 1 }}>
 
                         <CustomTextField
-                            required = {true} 
+                            disabled = {true}
                             onChangeText ={this.handledEmailChangeText}
                             type="email"
                             textValue={this.state.email}

@@ -10,11 +10,13 @@ export default function CustomTextField(props) {
         }
     }
 
-    
+    const disabled = props.disabled == null ? false : props.disabled;
+
     return (<>
         <MaterialUI.Grid item>
             <MaterialUI.Paper elevation={0}>
                 <MaterialUI.TextField
+                    disabled ={disabled}
                     required = {props.required}
                     fullWidth
                     onChange={onChangeText}
