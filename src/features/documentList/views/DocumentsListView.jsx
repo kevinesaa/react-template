@@ -34,6 +34,7 @@ export default class DocumentsListView extends Component
                 {title:Strings.documents_list_column_doc_number},
                 {title:Strings.documents_list_column_date_conciliated},
                 {title:Strings.documents_list_column_status},
+                {title:Strings.documents_list_column_created_by},
                 {title:Strings.documents_list_column_zone},
                 {title:Strings.documents_list_column_document_date},
                 {title:Strings.documents_list_column_document_ref},

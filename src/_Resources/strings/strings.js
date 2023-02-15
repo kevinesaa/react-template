@@ -33,6 +33,7 @@ const Strings = Object.freeze({
     documents_list_column_date_conciliated:"Fecha Conciliación",
     documents_list_column_status:"Estatus",
     documents_list_column_zone:"Ruta",
+    documents_list_column_created_by:"Creado por",
     documents_list_column_document_date:"Fecha Documento",
     documents_list_column_document_ref:"Referencia",
     documents_list_column_document_amount:"Monto",

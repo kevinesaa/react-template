@@ -23,10 +23,11 @@ export default function CashDocumentTableRow(props)
             amount={`${Number(item.detail.MONTO).toFixed(2)} ${item.detail.MONEDA}`}
             amount_edit={item.detail.MONTO_EDITADO == null? "-" : `${Number(item.detail.MONTO_EDITADO).toFixed(2)} ${item.detail.MONEDA}`}
             paymentType={"DEPOSITO"}
-            documentReference={`${item.detail.REFERENCIA}`}
+            documentReference={item.referencia? `${item.referencia}`: `${item.detail.REFERENCIA}`}
             bank={`${item.detail.BANCO}`}
             bankAccount={`${item.detail.NUMERO_CUENTA_BANCARIA}`}
             routeCode={`${item.detail.NOMBRE_ZONA}`}
+            createBy={`${item.detail.USUARIO_CREACION}`}
             status={item.estatus}
         />
     );

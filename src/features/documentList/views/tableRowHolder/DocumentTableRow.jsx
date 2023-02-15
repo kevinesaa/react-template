@@ -30,6 +30,9 @@ export default function DocumentTableRow(props)
                 {props.item.estatus < 3 ? Strings.documents_list_status_no_conciliated:Strings.documents_list_status_conciliated}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
+                {props.createBy}
+            </MaterialUI.TableCell>
+            <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.routeCode}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">

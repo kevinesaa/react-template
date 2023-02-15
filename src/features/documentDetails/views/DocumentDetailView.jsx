@@ -51,6 +51,7 @@ export default class DocumentDetailView extends React.Component {
 
     showDocumentsDetails(docDetails) {
         this.setState ({docDetail : docDetails});
+        
     }
     
     showLoading(value) {
@@ -84,7 +85,10 @@ export default class DocumentDetailView extends React.Component {
                     <MaterialUI.Stack direction="row" spacing={2}>
                         <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_conciliated_title}</b> {this.state.docDetail?.estatus > 2 ? Strings.text_yes:Strings.text_no}</MaterialUI.Typography>
                         {
-                            this.state.docDetail?.estatus > 2 && <MaterialUI.Typography variant="body2"><b>{Strings.text_date_title} </b> {this.state.docDetail?.update_at?.substring(0,10)}</MaterialUI.Typography>
+                            this.state.docDetail?.estatus > 2 && 
+                            <MaterialUI.Typography variant="body2"><b>{Strings.text_date_title} </b> 
+                                { this.state.docDetail?.fecha_conciliacion? `${this.state.docDetail.fecha_conciliacion.substring(0,10)}`: `${this.state.docDetail?.update_at?.substring(0,10)}`}
+                            </MaterialUI.Typography>
                         }
                         
                     </MaterialUI.Stack>   
@@ -104,7 +108,7 @@ export default class DocumentDetailView extends React.Component {
                         </MaterialUI.Stack>
                         <MaterialUI.Stack direction="row" spacing={2}>
                             <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_payment_type_title}</b> {this.state.docDetail?.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? 'Deposito': this.state.docDetail?.detail?.FORMA_PAGO}</MaterialUI.Typography>
-                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_document_reference_title}</b> {this.state.docDetail?.detail?.REFERENCIA}</MaterialUI.Typography>
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_document_reference_title}</b> {this.state.docDetail?.referencia? this.state.docDetail.referencia: this.state.docDetail?.detail?.REFERENCIA}</MaterialUI.Typography>
                         </MaterialUI.Stack>
                     </MaterialUI.Box>
                     

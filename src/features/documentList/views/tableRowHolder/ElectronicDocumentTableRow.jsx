@@ -30,10 +30,11 @@ export default function ElectronicDocumentTableRow(props)
             document_number={`${item.detail.id_documento_afv}`}
             amount={`${Number(amount).toFixed(2)} ${item.detail.MONEDA}`}
             amount_edit={"-"}
-            documentReference={`${item.detail.REFERENCIA}`}
+            documentReference={item.referencia? `${item.referencia}`: `${item.detail.REFERENCIA}`}
             bank={`${item.detail.BANCO}`}
             bankAccount={`${item.detail.NUMERO_CUENTA_BANCARIA}`}
             routeCode={`${item.detail.NOMBRE_ZONA}`}
+            createBy={`${item.detail.USUARIO_CREACION}`}
             status={item.estatus}
         />
     );
