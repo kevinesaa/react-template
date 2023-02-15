@@ -3,29 +3,59 @@ import DocumentsListView from "../../features/documentList/views/DocumentsListVi
 import UserList from "../../features/userList/views/UserList";
 import DocumentsViewModel from "../../features/documentList/viewModels/DocumentsViewModel";
 import DocumentDetailViewModel from "../../features/documentDetails/viewModels/DocumentDetailViewModel";
+import AddNewUserView from "../../features/userAddNew/views/AddNewUserView";
+import UserDetailsView from "../../features/userDetails/views/UserDetailsView";
 import ROUTES from "../../_commons/Routes";
 import Strings from "../strings/strings";
 import UserProfileContainer from "../../features/profileContainer/views/UserProfileContainer"
 import UserProfileViewModel from "../../features/profile/viewModels/UserProfileViewModel";
 import ChangePasswordViewModel from "../../features/passwordChange/viewModels/ChangePasswordViewModel";
+import Permissions from "../../_commons/Permissions";
 
 
 
 export default Object.freeze([
     {
         path:ROUTES.DOCUMENTS, 
+        isSideBarItem:true,
+        isNeedPermission:true,
+        permissions:[Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_DOCUMENTS_PERMISSION],
         page: <DocumentsListView detailViewModel={new DocumentDetailViewModel()} viewModel={new DocumentsViewModel()}/>, 
         title:Strings.side_bar_documents, 
         icon:""
     },
     {
-        path:ROUTES.USERS, 
+        path:ROUTES.USERS,
+        isSideBarItem:true,
+        isNeedPermission:true,
+        permissions:[Permissions.ID_ALL_PERMISSIONS], 
         page: <UserList/>, 
         title:Strings.side_bar_users, 
         icon:""
     },
     {
-        path:ROUTES.PROFILE, 
+        path:ROUTES.USER_NEW,
+        isSideBarItem:false,
+        isNeedPermission:true,
+        permissions:[Permissions.ID_ALL_PERMISSIONS], 
+        page: <AddNewUserView />, 
+        title:"Agregar usuario", 
+        icon:""
+    },
+    {
+        path:ROUTES.USER_DETAILS,
+        isSideBarItem:false,
+        isNeedPermission:true,
+        permissions:[Permissions.ID_ALL_PERMISSIONS], 
+        page: <UserDetailsView />, 
+        title:"Detalles del usuario", 
+        icon:""
+    },
+    {
+        path:ROUTES.PROFILE,
+        isSideBarItem:true,
+        isNeedPermission:false,
+        permissions:[], 
         page: <UserProfileContainer userViewModel={new UserProfileViewModel()} changePassViewModel={new ChangePasswordViewModel()}/>, 
         title:Strings.side_bar_user_profile, 
         icon:""

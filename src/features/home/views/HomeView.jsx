@@ -31,7 +31,6 @@ export default function Home (props)
             <SideBar 
                 drawerWidth = {drawerWidth }  
                 items={props.menuItems}
-                selectedItem = {selectedItem}
                 headerImage={logo}
                 logoutWebButton={props?.logoutWebButton}
                 logoutMobileButton={props?.logoutMobileButton}

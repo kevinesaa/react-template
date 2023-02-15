@@ -5,7 +5,7 @@ const documents = app + "documentos";
 const ROUTES = Object.freeze({ 
     LOGIN:"/login",
     BASE_APP_ROUTE:app,
-    FIRST_PAGE_APP:documents,
+    FIRST_PAGE_APP:app + "perfil",
     DOCUMENTS:documents,
     USERS:app + "usuarios",
     USER_DETAILS:app + "usuarios/:id",

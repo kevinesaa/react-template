@@ -36,6 +36,9 @@ export default class LogoutView extends React.Component {
 
     logoutCompleted() {
         this.setState({ logout_completed: true });
+        if(this.props.onSessionClose) {
+            this.props.onSessionClose(false);
+        }
     }
 
     handledOnPositiveOption() {

@@ -2,6 +2,7 @@ import axios from 'axios';
 import API_END_POINTS from "../../_commons/Api";
 import ListListener from "../../_commons/util/ListListenerContainer";
 import MainSessionRepository from "../repository/MainSessionRepository";
+import PermissionRepository from '../repository/PermissionsRepository';
 import SessionRepository from "../repository/SessionRepository";
 
 
@@ -58,6 +59,21 @@ export default class SessionViewModel
             this.#goToHome();
         }
         this.#onLoading(false);
+    }
+
+    async requestPermissions(callback) {
+        
+        const hasSessionToken = SessionRepository.isHaveSessionToken();
+        if(!hasSessionToken) 
+        {
+            this.#goToLogin();
+            return;
+        }
+        
+        if(callback) {
+            
+            callback(PermissionRepository.getPermissionList());
+        }
     }
 
     #onLoading(value) {

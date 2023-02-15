@@ -4,7 +4,7 @@ import ROUTES from "../../_commons/Routes";
 
 const Context = React.createContext({});
 
-export class SessionProvider extends React.Component {
+class SessionProvider extends React.Component {
     
     constructor(props){
         super(props);
@@ -15,6 +15,7 @@ export class SessionProvider extends React.Component {
         this.routerHelper = this.routerHelper.bind(this);
         this.goToHome = this.goToHome.bind(this);
         this.goToLogin = this.goToLogin.bind(this);
+        this.requestPermissions = this.requestPermissions.bind(this);
     }
 
     routerHelper(goTo,pathToCompare) {
@@ -52,6 +53,11 @@ export class SessionProvider extends React.Component {
 
         this.viewModel.checkUserSession();
     }
+
+    requestPermissions(callback) {
+       
+        this.viewModel.requestPermissions(callback);
+    }
     
     render() {
         const path = this.state.currentPath;
@@ -63,12 +69,10 @@ export class SessionProvider extends React.Component {
         
         return (
             <>
-                
-                
                 <Context.Provider value={
                     { 
                         checkUserSession:this.checkUserSession,
-                        
+                        requestPermissions:this.requestPermissions
                 }}>
                     
                     {this.props.children}
@@ -76,4 +80,9 @@ export class SessionProvider extends React.Component {
             </>
         );
     }
+}
+
+export {
+    SessionProvider,
+    Context
 }

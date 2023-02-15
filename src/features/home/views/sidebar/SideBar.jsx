@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { useEffect,Fragment } from 'react';
+import { useLocation  } from "react-router-dom";
 import PropTypes from 'prop-types';
 import * as MaterialUI from "@mui/material";
 
 import DrawerHeader from './DrawerHeader';
 import MobileItem from './MobileItem';
 import WebItem from './WebItem';
-import ButtonLogoutSideBar from '../../../logout/views/ButtonWebLogoutSideBar';
 
 
 
@@ -16,14 +16,19 @@ function MenuItemsWeb(props) {
             props.onItemClick(item);
         }
     }
-
+    
+    const location = useLocation();
+    const currentPathIndex = props.items? props.items.findIndex(item => 
+        location.pathname.startsWith(item.path)
+    ):-1;
+    
     const menuItems = props.items.map((item, index) => {
         
         return (
             <WebItem isOpen={props.isOpen}
                 key={index} 
                 id={index}
-                selectedIndex={ props.selectedIndex} 
+                selectedIndex={ currentPathIndex} 
                 path={item.path} 
                 title={item.title} 
                 iconUrl={item.icon} 
@@ -62,21 +67,21 @@ function MenuItemsMobile(props) {
 
 const SideBar = (props) => {
 
+    
+
     const drawerWidth = props.drawerWidth?props.drawerWidth:240;
     const { window } = props;
     const [openMenu] = React.useState(true);
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [selectedIndex,setSelectedIndex] = React.useState(props.selectedItem);
+    
+    
     const container = window !== undefined ? () => window().document.body : undefined;
     
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
     };
     
-    const handledItemClick = (item) => {
-        setSelectedIndex(item.id);
-    }
-
+    
     const LogoutWebButton = props.logoutWebButton?.component;
     const LogoutMobileButton = props.logoutMobileButton?.component;
 
@@ -124,9 +129,7 @@ const SideBar = (props) => {
                 <MaterialUI.List>
                     <MenuItemsMobile 
                         items={props.items?props.items:[]}
-                        isOpen={mobileOpen}
-                        selectedIndex = {selectedIndex}
-                        />
+                        isOpen={mobileOpen} />
 
                     {LogoutMobileButton &&
                         <LogoutMobileButton 
@@ -171,8 +174,6 @@ const SideBar = (props) => {
                     <MenuItemsWeb 
                         items = {props.items?props.items:[]}
                         isOpen = {openMenu}
-                        selectedIndex = {selectedIndex}
-                        onItemClick = {handledItemClick}
                     />
                     
                     {LogoutWebButton &&
@@ -197,3 +198,4 @@ SideBar.propTypes = {
 };
 
 export default SideBar;
+

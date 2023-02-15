@@ -42,7 +42,12 @@ export default class Login extends Component {
 
     onLoginSuccessful() {
         //redirect
+        
         this.setState({ toHome: true })
+        if(this.props.onSessionInit) {
+            this.props.onSessionInit(true);
+        }
+        
     }
 
     onError(error) {
