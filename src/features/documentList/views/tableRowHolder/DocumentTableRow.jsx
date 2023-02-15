@@ -24,7 +24,7 @@ export default function DocumentTableRow(props)
                 {props.document_number}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.item.estatus < 3?"-":`${props.item.update_at.substring(0,10)}`}
+                {props.item.estatus < 3?"-":props.item.fecha_conciliacion?`${props.item.fecha_conciliacion.substring(0,10)}`: `${props.item.update_at.substring(0,10)}`}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
                 {props.item.estatus < 3 ? Strings.documents_list_status_no_conciliated:Strings.documents_list_status_conciliated}

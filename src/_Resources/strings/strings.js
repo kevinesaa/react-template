@@ -40,7 +40,7 @@ const Strings = Object.freeze({
     documents_list_column_document_bank_name:"Banco",
     documents_list_column_document_bank_account_number:"Nro. Cuenta",
     documents_list_status_conciliated:"Conciliado",
-    documents_list_status_no_conciliated:"Conciliado",
+    documents_list_status_no_conciliated:"No Conciliado",
     documents_details_doc_id_title:"ID:",
     documents_details_created_by_title:"Creador por:",
     documents_details_zone_title:"Ruta:",
