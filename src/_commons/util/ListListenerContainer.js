@@ -8,7 +8,7 @@ export default class ListListener {
     }
 
     subscribe(func) {
-        if(func){
+        if(func != null){
             this.listeners.push(func);
             if(this.firstExecuteCompleted) {
                 //reactive is more complicated
@@ -18,7 +18,7 @@ export default class ListListener {
     }
 
     unsubscribe(func) {
-        if(func){
+        if(func != null){
             this.listeners = this.listeners.filter( f => f !== func);
         }
     }

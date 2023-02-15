@@ -28,7 +28,7 @@ export default Object.freeze([
         path:ROUTES.USERS,
         isSideBarItem:true,
         isNeedPermission:true,
-        permissions:[Permissions.ID_ALL_PERMISSIONS], 
+        permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_SEE_USERS ], 
         page: <UserList/>, 
         title:Strings.side_bar_users, 
         icon:""
@@ -37,7 +37,7 @@ export default Object.freeze([
         path:ROUTES.USER_NEW,
         isSideBarItem:false,
         isNeedPermission:true,
-        permissions:[Permissions.ID_ALL_PERMISSIONS], 
+        permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_CREATE_USERS], 
         page: <AddNewUserView />, 
         title:"Agregar usuario", 
         icon:""
@@ -46,7 +46,7 @@ export default Object.freeze([
         path:ROUTES.USER_DETAILS,
         isSideBarItem:false,
         isNeedPermission:true,
-        permissions:[Permissions.ID_ALL_PERMISSIONS], 
+        permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_SEE_USERS], 
         page: <UserDetailsView />, 
         title:"Detalles del usuario", 
         icon:""
