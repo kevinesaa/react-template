@@ -1,8 +1,9 @@
-import React, { useEffect,Fragment } from 'react';
+import React  from 'react';
 import { useLocation  } from "react-router-dom";
 import PropTypes from 'prop-types';
 import * as MaterialUI from "@mui/material";
-
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import DrawerHeader from './DrawerHeader';
 import MobileItem from './MobileItem';
 import WebItem from './WebItem';
@@ -68,23 +69,15 @@ function MenuItemsMobile(props) {
 const SideBar = (props) => {
 
     
-
-    const drawerWidth = props.drawerWidth?props.drawerWidth:240;
-    const { window } = props;
-    const [openMenu] = React.useState(true);
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    
-    
-    const container = window !== undefined ? () => window().document.body : undefined;
-    
-    const handleDrawerToggle = () => {
-      setMobileOpen(!mobileOpen);
+    const drawerWidth = props.drawerWidth;
+    const handleDrawerToggleWeb = () => {
+        if(props.handleDrawerToggleWeb) {
+            props.handleDrawerToggleWeb();
+        }
     };
     
-    
     const LogoutWebButton = props.logoutWebButton?.component;
-    const LogoutMobileButton = props.logoutMobileButton?.component;
-
+   
     return (
         <>
         <MaterialUI.Box
@@ -93,71 +86,33 @@ const SideBar = (props) => {
             aria-label="mailbox folders">
 
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <MaterialUI.Drawer
-                container={container}
-                variant="temporary"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                ModalProps={{
-                  keepMounted: true, // Better open performance on mobile.
-                }}
-                sx={{
-                  display: { xs: "block", sm: "none" },
-                  "& .MuiDrawer-paper": {
-                    boxSizing: "border-box",
-                    width: drawerWidth,
-                  },
-                }}
-            /*Drawer*/ >
 
-            <DrawerHeader
-              sx={{
-                justifyContent: "center",
-              }}
-            >
-              <MaterialUI.Box
-                component="img"
-                sx={{
-                  width: 200,
-                  maxHeight: { xs: 233, md: 167 },
-                  maxWidth: { xs: 350, md: 250 },
-                }}
-                src={props.headerImage}
-               
-              />
-            </DrawerHeader>
-                <MaterialUI.List>
-                    <MenuItemsMobile 
-                        items={props.items?props.items:[]}
-                        isOpen={mobileOpen} />
-
-                    {LogoutMobileButton &&
-                        <LogoutMobileButton 
-                            {...props.logoutMobileButton?.props}
-                            id="side-bar-logout-button-mobile"
-                            isOpen = {mobileOpen}/>
-                    }
-                    
-                </MaterialUI.List>
-            </MaterialUI.Drawer>
 
             <MaterialUI.Drawer
-                open={openMenu}
-                variant="permanent"
+            
+                open={props.openMenu}
+                onClose={handleDrawerToggleWeb}
+                anchor="left"
+                variant="persistent"
                 sx={{
-                    display: { xs: "none", sm: "block" },
-                    "& .MuiDrawer-paper": {
-                        boxSizing: "border-box",
                         width: drawerWidth,
-                    },
-                }}
+                        flexShrink: 0,
+                        '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box'
+                        }
+                  }}
             /*Drawer*/ >
 
                 <DrawerHeader
                     sx={{
                         justifyContent: "center",
-                    }}
-                /*DrawerHeader*/ >
+                    }}>
+                    
+                    <IconButton onClick={handleDrawerToggleWeb}>
+                        <MenuIcon />
+                    </IconButton>
+
                     <MaterialUI.Box
                         component="img"
                         sx={{
@@ -165,22 +120,20 @@ const SideBar = (props) => {
                             maxHeight: { xs: 233, md: 167 },
                             maxWidth: { xs: 350, md: 250 },
                         }}
-                        
-                        src={props.headerImage}
-                    />
+                        src={props.headerImage} />
                     
                 </DrawerHeader>
                 <MaterialUI.List>
                     <MenuItemsWeb 
                         items = {props.items?props.items:[]}
-                        isOpen = {openMenu}
+                        isOpen = {props.openMenu}
                     />
                     
                     {LogoutWebButton &&
                         <LogoutWebButton
                             {...props.logoutWebButton?.props}
                             id="side-bar-logout-button-web"
-                            isOpen = {openMenu}/>
+                            isOpen = {props.openMenu}/>
                     }
                 </MaterialUI.List>
             </MaterialUI.Drawer>
@@ -188,14 +141,6 @@ const SideBar = (props) => {
         </>
     );
 }
-
-SideBar.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: PropTypes.func,
-};
 
 export default SideBar;
 
