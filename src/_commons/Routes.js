@@ -4,6 +4,7 @@ const documents = app + "documentos";
 
 const ROUTES = Object.freeze({ 
     LOGIN:"/login",
+    CHANGE_PASS_EXTERNAL:"/reset_pass",
     BASE_APP_ROUTE:app,
     FIRST_PAGE_APP:documents,
     DOCUMENTS:documents,

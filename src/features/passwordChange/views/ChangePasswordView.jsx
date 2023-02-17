@@ -1,5 +1,3 @@
-
-
 import { Component } from "react";
 import * as MaterialUI from "@mui/material";
 
@@ -8,6 +6,7 @@ import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
 import PasswordInput from "../../../_commons/views/PasswordInput";
 import TitleSection from "../../../_commons/views/TitleSection";
 
+
 export default class ChangePasswordView extends Component {
 
 
@@ -15,11 +14,13 @@ export default class ChangePasswordView extends Component {
         super(props);
         this.state = {loading:false, currentPass:"", newPass:"",confirmPass:""};
         this.viewModel = props.viewModel;
+        this.changePassSuccessful = this.changePassSuccessful.bind(this);
         this.showLoading = this.showLoading.bind(this);
         this.onError = this.onError.bind(this);
         this.handledCurrentPassChange = this.handledCurrentPassChange.bind(this);
         this.handledNewPassChange = this.handledNewPassChange.bind(this);
         this.handledConfirmPassChange = this.handledConfirmPassChange.bind(this);
+        this.handledChangePassWordClick = this.handledChangePassWordClick.bind(this);
     }
 
 
@@ -37,6 +38,7 @@ export default class ChangePasswordView extends Component {
     
     handledChangePassWordClick(event) {
         event.preventDefault();
+        this.viewModel.changePassword(this.state.currentPass, this.state.newPass, this.state.confirmPass);
     }
 
     showLoading(value) {
@@ -47,7 +49,10 @@ export default class ChangePasswordView extends Component {
     }
 
     changePassSuccessful() {
-        this.setState({loading:false, currentPass:"", newPass:"",confirmPass:""})
+        this.setState({loading:false, currentPass:"", newPass:"",confirmPass:""});
+        if(this.props.onChangePassSuccessful) {
+            this.props.onChangePassSuccessful();
+        }
     }
 
     onError(error) {
@@ -56,11 +61,15 @@ export default class ChangePasswordView extends Component {
     }
 
     componentDidMount() {
-
+        this.viewModel.subscribeOnLoading(this.showLoading);
+        this.viewModel.subscribeOnShowError(this.onError);
+        this.viewModel.subscribeOnChangePassSuccessful(this.changePassSuccessful);
     }
 
     componentWillUnmount() {
-
+        this.viewModel.unsubscribeOnLoading(this.showLoading);
+        this.viewModel.unsubscribeOnShowError(this.onError);
+        this.viewModel.unsubscribeOnChangePassSuccessful(this.changePassSuccessful);
     }
 
     render() {
@@ -91,8 +100,8 @@ export default class ChangePasswordView extends Component {
                                 tooltipShowText={Strings.text_show}/>
                             
                             <PasswordInput
-                                onChangeText={this.handledNewPassChange}
-                                textValue={this.state.newPass} 
+                                onChangeText={this.handledConfirmPassChange}
+                                textValue={this.state.confirmPass} 
                                 label={Strings.change_pass_confirm_pass} 
                                 tooltipHideText={Strings.text_hide}
                                 tooltipShowText={Strings.text_show}/>
@@ -103,6 +112,8 @@ export default class ChangePasswordView extends Component {
                         </MaterialUI.Grid>
                     </MaterialUI.Box>
                 </form>
+
+                
             </>
         );
     }

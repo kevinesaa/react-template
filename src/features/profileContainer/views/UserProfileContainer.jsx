@@ -4,6 +4,7 @@ import Strings from "../../../_Resources/strings/strings";
 import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
 import UserProfile from "../../profile/views/UserProfile";
 import FeatureContainer from "../../../_commons/views/FeatureContainer";
+import LoadingScreen from "../../../_commons/views/LoadingScreen";
 
 export default class UserProfileContainer extends Component 
 {
@@ -41,7 +42,7 @@ export default class UserProfileContainer extends Component
                     </MaterialUI.Grid>
             </FeatureContainer>
             
-            
+            <LoadingScreen loading={this.state.loading}/>
         </>);
     }
 }

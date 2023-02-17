@@ -17,6 +17,8 @@ import ButtonMobileLogoutSideBar from '../features/logout/views/ButtonMobileLogo
 import Strings from '../_Resources/strings/strings';
 import SessionRepository from '../sessionManager/repository/SessionRepository';
 import ForgotPasswordViewModel from '../features/passwordForgot/viewModels/ForgotPasswordViewModel';
+import HomeViewModel from '../features/home/viewModels/HomeViewModel';
+import ChangePasswordViewModel from '../features/passwordChange/viewModels/ChangePasswordViewModel';
 
 function AppRoutesWrapper(props) {
   
@@ -55,6 +57,8 @@ function AppRoutesWrapper(props) {
 
       <Route path={ROUTES.BASE_APP_ROUTE} 
           element={<Home 
+                      viewModel = {new HomeViewModel()}
+                      changePassViewModel = {new ChangePasswordViewModel()}
                       logoutWebButton = {{component:ButtonWebLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
                       logoutMobileButton = {{component:ButtonMobileLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
                       logoutElement = {{component:LogoutView, props:{ onSessionClose:setIsHaveSession, viewModel:new LogoutViewModel()}}} 

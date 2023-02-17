@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 import * as MaterialUI from "@mui/material";
 import {  Outlet  } from "react-router-dom";
@@ -7,10 +7,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SideBar from "./sidebar/SideBar";
 import logo from "../../../_Resources/images/logo.png"
 
+import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
+import LoadingScreen from '../../../_commons/views/LoadingScreen';
 
-export default function Home (props)
+export default function Home(props)
 {
-    
+    const viewModel = props.viewModel;
+    const changePassViewModel = props.changePassViewModel;
+    const [firstPasswordLoading,setFirstPasswordLoading] = useState(false);
+    const [showFirstPass,setShowFirstPass] = useState(false);
     const [drawerWidth,setDrawerWidth ] = useState(240); 
     const [openLogout,setOpenLogout] = React.useState(false);
     const [openMenu,setOpenMenu] = React.useState(true);
@@ -30,6 +35,23 @@ export default function Home (props)
         setOpenMenu(true);
     }
 
+    const showFirstTimeChangePassword = () => {
+        setShowFirstPass(true);
+    }
+
+    const onChangePassSuccesful = () => {
+        setShowFirstPass(false);
+    }
+
+    useEffect(() => {
+        viewModel.subscribeOnShowFirstTimePass(showFirstTimeChangePassword);
+        viewModel.checkFirstPasswordState();
+        return () => {
+            viewModel.unsubscribeOnShowFirstTimePass(showFirstTimeChangePassword);
+        }
+    },[]);
+
+  
     props.logoutWebButton.props.onItemClick = handlendShowLogout;
     props.logoutMobileButton.props.onItemClick = handlendShowLogout;
 
@@ -81,7 +103,25 @@ export default function Home (props)
                     onNegativeOptionListener ={()=> setOpenLogout(false)}
                     />
             }
+
+            {showFirstPass &&
+                <MaterialUI.Dialog
+                    open={showFirstPass}>
+                    
+                    <MaterialUI.DialogContent dividers={true} sx={{ width: 350 }}>
+                        <ChangePasswordView 
+                            viewModel={changePassViewModel}
+                            onLoadingChangeListener ={setFirstPasswordLoading}
+                            onChangePassSuccessful = {onChangePassSuccesful}/>
+                            
+                    </MaterialUI.DialogContent>
+                    <LoadingScreen loading={firstPasswordLoading}/>
+                </MaterialUI.Dialog>
+            }
+
+           
         </MaterialUI.Box>
+        
         </>
     );
     
