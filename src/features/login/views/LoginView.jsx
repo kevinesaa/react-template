@@ -8,17 +8,19 @@ import PasswordInput from "../../../_commons/views/PasswordInput";
 import CustomTextField from "../../../_commons/views/CustomTextField";
 import Strings from "../../../_Resources/strings/strings";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
+import ForgotPasswordView from "../../passwordForgot/views/ForgotPasswordView";
 
 export default class Login extends Component {
 
     constructor(props) {
         super(props);
         this.viewModel = props.viewModel
-        this.state = { email: "", pass: "", loading: false, toHome: false };
+        this.state = { email: "", pass: "", loading: false, toHome: false,show_forgot_pass:false };
 
         this.handledSubmit = this.handledSubmit.bind(this);
         this.handledEmailInput = this.handledEmailInput.bind(this);
         this.handledPasswordInput = this.handledPasswordInput.bind(this);
+        this.handledOnForgotPassClick = this.handledOnForgotPassClick.bind(this);
         this.showLoading = this.showLoading.bind(this);
         this.onLoginSuccessful = this.onLoginSuccessful.bind(this);
         this.onError = this.onError.bind(this);
@@ -71,8 +73,12 @@ export default class Login extends Component {
         this.viewModel.loginWithMail(email, pass);
     }
 
+    handledOnForgotPassClick() {
+        this.setState({show_forgot_pass:!this.state.show_forgot_pass});
+    }
+
     render() {
-        return (<div>
+        return (<>
 
             {this.state.toHome && <Navigate to={ROUTES.FIRST_PAGE_APP} />}
 
@@ -157,6 +163,12 @@ export default class Login extends Component {
                                                     text={Strings.login_button} />
                                             </MaterialUI.Box>
                                         </form>
+                                        <MaterialUI.Button
+                                            onClick={this.handledOnForgotPassClick}
+                                            >
+                                            {Strings.login_fotgot_pass_button}
+                                        </MaterialUI.Button>
+                                        <br/>
                                 </MaterialUI.Box>
                             </MaterialUI.Grid>
                         </MaterialUI.Grid>
@@ -164,8 +176,14 @@ export default class Login extends Component {
                 </MaterialUI.Box>
           
             </MaterialUI.Container >
+            
+            <ForgotPasswordView 
+                open={this.state.show_forgot_pass}
+                handleClose={this.handledOnForgotPassClick}
+                viewModel={this.props.forgotPasswordViewModel}/>
+
             <LoadingScreen loading={this.state.loading} />
-        </div >       
+        </>       
         );
     }
 }

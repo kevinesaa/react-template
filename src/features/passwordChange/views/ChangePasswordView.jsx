@@ -51,7 +51,8 @@ export default class ChangePasswordView extends Component {
     }
 
     onError(error) {
-
+        console.log("ah que chimbo!");
+        console.error(error);
     }
 
     componentDidMount() {
