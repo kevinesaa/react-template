@@ -6,6 +6,7 @@ import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
 import PasswordInput from "../../../_commons/views/PasswordInput";
 import TitleSection from "../../../_commons/views/TitleSection";
 import ROUTES from "../../../_commons/Routes";
+import LoadingScreen from "../../../_commons/views/LoadingScreen";
 
 
 export default class RestorePasswordView extends Component {
@@ -85,8 +86,54 @@ export default class RestorePasswordView extends Component {
 
     render() {
 
-        return (<>
-            recuperar contraseña
-        </>);
+        return (
+            <>
+            <MaterialUI.Dialog
+                open={true}>
+                    
+                <MaterialUI.DialogTitle >
+                    {"Restaurar Contraseña"}
+                </MaterialUI.DialogTitle>
+                
+                <MaterialUI.DialogContent dividers={true} sx={{ width: 350 }}>
+                       
+                    <form onSubmit={this.handledChangePasswordClick}>
+
+                        <MaterialUI.Box sx={{ flexGrow: 1, m: 2 }}
+                            noValidate
+                            autoComplete="off"
+                        >
+                            <MaterialUI.Grid container
+                                spacing={{ xs: 1, md: 1 }}
+                            >
+                                
+                                
+                                <PasswordInput
+                                    onChangeText={this.handledNewPassChange}
+                                    textValue={this.state.newPass} 
+                                    label={Strings.change_pass_new_pass} 
+                                    tooltipHideText={Strings.text_hide}
+                                    tooltipShowText={Strings.text_show}/>
+                                
+                                <PasswordInput
+                                    onChangeText={this.handledConfirmPassChange}
+                                    textValue={this.state.confirmPass} 
+                                    label={Strings.change_pass_confirm_pass} 
+                                    tooltipHideText={Strings.text_hide}
+                                    tooltipShowText={Strings.text_show}/>
+
+                                <CustomButtonForm
+                                    text={Strings.text_send} />
+
+                            </MaterialUI.Grid>
+                        </MaterialUI.Box>
+                    </form>
+                
+                </MaterialUI.DialogContent>
+                <LoadingScreen loading={this.state.loading}/>
+
+            </MaterialUI.Dialog>
+            </>
+        );
     }
 }

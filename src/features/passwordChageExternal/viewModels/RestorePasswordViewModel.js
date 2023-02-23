@@ -48,7 +48,9 @@ export default class RestorePasswordViewModel {
     }
 
     changePassword(token,newPass,confirmPass) {
-
+        console.log("token" + token)
+        console.log("new pass" + newPass)
+        console.log("confirm pass" + confirmPass)
     }
 
     #onLoading(value) {
