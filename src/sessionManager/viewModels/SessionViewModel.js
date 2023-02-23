@@ -64,15 +64,15 @@ export default class SessionViewModel
     async requestPermissions(callback) {
         
         const hasSessionToken = SessionRepository.isHaveSessionToken();
-        if(!hasSessionToken) 
+        let permissions = [];
+        if(hasSessionToken) 
         {
-            this.#goToLogin();
-            return;
+            permissions = PermissionRepository.getPermissionList();
         }
         
         if(callback) {
             
-            callback(PermissionRepository.getPermissionList());
+            callback(permissions);
         }
     }
 

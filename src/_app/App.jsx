@@ -20,7 +20,8 @@ import ForgotPasswordViewModel from '../features/passwordForgot/viewModels/Forgo
 import HomeViewModel from '../features/home/viewModels/HomeViewModel';
 import ChangePasswordViewModel from '../features/passwordChange/viewModels/ChangePasswordViewModel';
 import RootPath from '../features/_rootPath/views/RootPath';
-
+import RestorePasswordViewModel from '../features/passwordChageExternal/viewModels/RestorePasswordViewModel';
+import RestorePasswordView from '../features/passwordChageExternal/views/RestorePasswordView';
 
 
 function AppRoutesWrapper(props) {
@@ -34,24 +35,27 @@ function AppRoutesWrapper(props) {
   
   const onPermissionsLoaded = (permissions) => {
     
-    if(permissions) {
-      
-        const permissionsIds = permissions.map(item => item.permission_id);
-          
-        const privateRoutes = MainMenu
-          .filter(item => !item.isNeedPermission || ( item.permissions && item.permissions.some(p => permissionsIds.includes(p)) ) );
-          
-        const sideBarOptions = privateRoutes.filter( item => item.isSideBarItem);  
-        
-        setPrivateRoutes(privateRoutes);
-        setSideBarOptions(sideBarOptions);
+    if(!permissions || permissions.length === 0)
+    {
+      setPrivateRoutes(initialRoutes);
+      setSideBarOptions(initialRoutes.filter(item => item.isSideBarItem));
+      return;
     }
+  
+    const permissionsIds = permissions.map(item => item.permission_id);
+      
+    const privateRoutes = MainMenu
+      .filter(item => !item.isNeedPermission || ( item.permissions && item.permissions.some(p => permissionsIds.includes(p)) ) );
+      
+    const sideBarOptions = privateRoutes.filter( item => item.isSideBarItem);  
+    
+    setPrivateRoutes(privateRoutes);
+    setSideBarOptions(sideBarOptions);
   }
 
   useEffect(() => {
     context.requestPermissions(onPermissionsLoaded);
   }, [isHaveSession]);
-  
   
   
   return (
@@ -61,6 +65,8 @@ function AppRoutesWrapper(props) {
       <Route path={ROUTES.ROOT} 
           element={<RootPath sessionChecker = {context.checkUserSession}/>}/>
       
+      <Route path={ROUTES.CHANGE_PASS_EXTERNAL} 
+          element={<RestorePasswordView viewModel={new RestorePasswordViewModel()}/>} /> 
       
       <Route path={ROUTES.LOGIN} 
           element={<Login 
