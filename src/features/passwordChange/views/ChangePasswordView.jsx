@@ -20,7 +20,7 @@ export default class ChangePasswordView extends Component {
         this.handledCurrentPassChange = this.handledCurrentPassChange.bind(this);
         this.handledNewPassChange = this.handledNewPassChange.bind(this);
         this.handledConfirmPassChange = this.handledConfirmPassChange.bind(this);
-        this.handledChangePassWordClick = this.handledChangePassWordClick.bind(this);
+        this.handledChangePasswordClick = this.handledChangePasswordClick.bind(this);
     }
 
 
@@ -36,7 +36,7 @@ export default class ChangePasswordView extends Component {
         this.setState({confirmPass:value});
     }
     
-    handledChangePassWordClick(event) {
+    handledChangePasswordClick(event) {
         event.preventDefault();
         this.viewModel.changePassword(this.state.currentPass, this.state.newPass, this.state.confirmPass);
     }
@@ -77,7 +77,7 @@ export default class ChangePasswordView extends Component {
             <>
                 <TitleSection text={Strings.change_pass_title} />
                 <MaterialUI.Divider />
-                <form onSubmit={this.handledChangePassWordClick}>
+                <form onSubmit={this.handledChangePasswordClick}>
                     <MaterialUI.Box sx={{ flexGrow: 1, m: 2 }}
                         noValidate
                         autoComplete="off"
