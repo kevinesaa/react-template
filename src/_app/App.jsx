@@ -62,11 +62,6 @@ function AppRoutesWrapper(props) {
     <Routes>
       
 
-      <Route path={ROUTES.ROOT} 
-          element={<RootPath sessionChecker = {context.checkUserSession}/>}/>
-      
-      <Route path={ROUTES.CHANGE_PASS_EXTERNAL} 
-          element={<RestorePasswordView viewModel={new RestorePasswordViewModel()}/>} /> 
       
       <Route path={ROUTES.LOGIN} 
           element={<Login 
@@ -93,7 +88,14 @@ function AppRoutesWrapper(props) {
             }
             
       </Route>
-
+      
+      <Route path={ROUTES.ROOT} 
+          element={<RootPath sessionChecker = {context.checkUserSession}/>}/>
+      
+      <Route path={ROUTES.CHANGE_PASS_EXTERNAL} 
+          element={<RestorePasswordView
+                      viewModel={new RestorePasswordViewModel()}/>} /> 
+      
     </Routes>
   );
 }

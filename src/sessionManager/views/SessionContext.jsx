@@ -47,7 +47,6 @@ class SessionProvider extends React.Component {
     }
     
     checkUserSession() {
-
         this.viewModel.checkUserSession();
     }
 
