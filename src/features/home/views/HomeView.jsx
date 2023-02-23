@@ -12,14 +12,12 @@ import LoadingScreen from '../../../_commons/views/LoadingScreen';
 
 export default function Home(props)
 {
-    const viewModel = props.viewModel;
-    const changePassViewModel = props.changePassViewModel;
     const [firstPasswordLoading,setFirstPasswordLoading] = useState(false);
     const [showFirstPass,setShowFirstPass] = useState(false);
     const [drawerWidth,setDrawerWidth ] = useState(240); 
     const [openLogout,setOpenLogout] = React.useState(false);
     const [openMenu,setOpenMenu] = React.useState(true);
-    const LogoutElement = props.logoutElement?.component;
+    
 
     const handlendShowLogout = (item) => {
         setOpenLogout(!openLogout);
@@ -44,6 +42,11 @@ export default function Home(props)
     }
 
     useEffect(() => {
+        
+        if(props.sessionChecker) {
+            props.sessionChecker();
+        }
+        
         viewModel.subscribeOnShowFirstTimePass(showFirstTimeChangePassword);
         viewModel.checkFirstPasswordState();
         return () => {
@@ -51,10 +54,15 @@ export default function Home(props)
         }
     },[]);
 
-  
+    const viewModel = props.viewModel;
+    const changePassViewModel = props.changePassViewModel;
+    const LogoutElement = props.logoutElement?.component;
+
     props.logoutWebButton.props.onItemClick = handlendShowLogout;
     props.logoutMobileButton.props.onItemClick = handlendShowLogout;
 
+
+    
     return (
         <>
         <MaterialUI.Box sx={{ display: "flex" }}>

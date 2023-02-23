@@ -60,9 +60,14 @@ export default class UserList extends Component
     }
 
     render(){
+
+        if(this.state.goToCreateNew) {
+            
+            return (<Navigate to={ROUTES.USER_NEW}/>);
+        }
+
         return (
             <>
-                {this.state.goToCreateNew && <Navigate to={ROUTES.USER_NEW}/>}
                 <FeatureContainer 
                     title_text={Strings.user_list_title}
                     loading={this.state.loading}>
@@ -77,7 +82,7 @@ export default class UserList extends Component
                                 direction="row"
                                 justifyContent="space-between"
                                 alignItems="center">
-
+                                
                                 <Dropdown 
                                     id="drop-company" 
                                     label={Strings.text_companies}

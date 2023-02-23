@@ -1,7 +1,7 @@
 import React from "react";
 import * as MaterialUI from "@mui/material";
 import { Component } from "react";
-import { Navigate } from "react-router-dom"
+
 import ROUTES from "../../../_commons/Routes";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
 import PasswordInput from "../../../_commons/views/PasswordInput";
@@ -15,7 +15,7 @@ export default class Login extends Component {
     constructor(props) {
         super(props);
         this.viewModel = props.viewModel
-        this.state = { email: "", pass: "", loading: false, toHome: false,show_forgot_pass:false };
+        this.state = { email: "", pass: "", loading: false,show_forgot_pass:false };
 
         this.handledSubmit = this.handledSubmit.bind(this);
         this.handledEmailInput = this.handledEmailInput.bind(this);
@@ -30,6 +30,10 @@ export default class Login extends Component {
         this.viewModel.subscribeOnLoginSuccessful(this.onLoginSuccessful);
         this.viewModel.subscribeOnLoading(this.showLoading);
         this.viewModel.subscribeOnShowError(this.onError);
+
+        if(this.props.sessionChecker) {
+            this.props.sessionChecker();
+        }
     }
 
     componentWillUnmount() {
@@ -43,13 +47,11 @@ export default class Login extends Component {
     }
 
     onLoginSuccessful() {
-        //redirect
         
-        this.setState({ toHome: true })
         if(this.props.onSessionInit) {
             this.props.onSessionInit(true);
+            window.location.replace(ROUTES.FIRST_PAGE_APP);
         }
-        
     }
 
     onError(error) {
@@ -80,8 +82,7 @@ export default class Login extends Component {
     render() {
         return (<>
 
-            {this.state.toHome && <Navigate to={ROUTES.FIRST_PAGE_APP} />}
-
+          
             <MaterialUI.Container component="main" maxWidth="md">
                 <MaterialUI.Typography
                     align="center"

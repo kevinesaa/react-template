@@ -2,14 +2,13 @@ import React from "react";
 import * as MaterialUI from "@mui/material";
 import Strings from "../../../_Resources/strings/strings";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
-import { Navigate } from "react-router-dom";
 import ROUTES from "../../../_commons/Routes";
 
 export default class LogoutView extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {loading:false,logout_completed:false};
+        this.state = {loading:false};
         this.viewModel = props.viewModel;
         this.handledOnPositiveOption = this.handledOnPositiveOption.bind(this);
         this.handledOnNegativeOption = this.handledOnNegativeOption.bind(this);
@@ -35,9 +34,10 @@ export default class LogoutView extends React.Component {
     }
 
     logoutCompleted() {
-        this.setState({ logout_completed: true });
+        
         if(this.props.onSessionClose) {
             this.props.onSessionClose(false);
+            window.location.replace(ROUTES.LOGIN);
         }
     }
 
@@ -59,7 +59,6 @@ export default class LogoutView extends React.Component {
     render() {
         return (<>
 
-            {this.state.logout_completed && <Navigate to={ROUTES.LOGIN} />}
             <MaterialUI.Dialog
                 open={this.props.open} >
                 

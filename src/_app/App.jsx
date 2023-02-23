@@ -19,6 +19,9 @@ import SessionRepository from '../sessionManager/repository/SessionRepository';
 import ForgotPasswordViewModel from '../features/passwordForgot/viewModels/ForgotPasswordViewModel';
 import HomeViewModel from '../features/home/viewModels/HomeViewModel';
 import ChangePasswordViewModel from '../features/passwordChange/viewModels/ChangePasswordViewModel';
+import RootPath from '../features/_rootPath/views/RootPath';
+
+
 
 function AppRoutesWrapper(props) {
   
@@ -46,17 +49,29 @@ function AppRoutesWrapper(props) {
   }
 
   useEffect(() => {
-    context.requestPermissions(onPermissionsLoaded)
+    context.requestPermissions(onPermissionsLoaded);
   }, [isHaveSession]);
   
   
   
   return (
     <Routes>
-      <Route path={ROUTES.LOGIN} element={<Login onSessionInit ={setIsHaveSession} viewModel={new LoginViewModel()} forgotPasswordViewModel = {new ForgotPasswordViewModel()}/>}/> 
+      
+
+      <Route path={ROUTES.ROOT} 
+          element={<RootPath sessionChecker = {context.checkUserSession}/>}/>
+      
+      
+      <Route path={ROUTES.LOGIN} 
+          element={<Login 
+                      onSessionInit ={setIsHaveSession} 
+                      sessionChecker = {context.checkUserSession}
+                      viewModel={new LoginViewModel()} 
+                      forgotPasswordViewModel = {new ForgotPasswordViewModel()}/>}/> 
 
       <Route path={ROUTES.BASE_APP_ROUTE} 
           element={<Home 
+                      sessionChecker = {context.checkUserSession}
                       viewModel = {new HomeViewModel()}
                       changePassViewModel = {new ChangePasswordViewModel()}
                       logoutWebButton = {{component:ButtonWebLogoutSideBar, props:{ title:Strings.side_bar_logout}}}
@@ -64,9 +79,15 @@ function AppRoutesWrapper(props) {
                       logoutElement = {{component:LogoutView, props:{ onSessionClose:setIsHaveSession, viewModel:new LogoutViewModel()}}} 
                       menuItems = {sideBarOptions}/>} >
             
-            {privateRoutes.map( (item,index) => { return (<Route key={index} path={item.path} element={item.page} />) }) }
+            {
+              privateRoutes.map( (item,index) => { 
+                  const r = <Route key={index} path={item.path} element={item.page} />;
+                  return (r); 
+              })
+            }
             
       </Route>
+
     </Routes>
   );
 }
