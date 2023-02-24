@@ -80,7 +80,7 @@ const Strings = Object.freeze({
     change_pass_new_pass:"Nueva Contraseña",
     change_pass_confirm_pass:"Confirmar Contraseña",
     change_pass_external_title:"Restaurar Contraseña",
-    change_pass_external_successful:"Contraseña restablecida exitosamente",
+    change_pass_external_successful:"Contraseña establecida exitosamente",
     user_list_title:users,
     user_list_button_new:"Nuevo Usuario",
     logout_view_title:"Cerrar Sesión",

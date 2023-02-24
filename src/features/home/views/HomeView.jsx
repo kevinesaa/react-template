@@ -9,11 +9,13 @@ import logo from "../../../_Resources/images/logo.png"
 
 import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
 import LoadingScreen from '../../../_commons/views/LoadingScreen';
+import Strings from '../../../_Resources/strings/strings';
 
 export default function Home(props)
 {
     const [firstPasswordLoading,setFirstPasswordLoading] = useState(false);
     const [showFirstPass,setShowFirstPass] = useState(false);
+    const [changeFirstPassSuccessful,setChangeFirstPassSuccessful] = useState(false);
     const [drawerWidth,setDrawerWidth ] = useState(240); 
     const [openLogout,setOpenLogout] = React.useState(false);
     const [openMenu,setOpenMenu] = React.useState(true);
@@ -38,7 +40,11 @@ export default function Home(props)
     }
 
     const onChangePassSuccesful = () => {
-        setShowFirstPass(false);
+        setChangeFirstPassSuccessful(true);
+        setTimeout(() =>{
+            setShowFirstPass(false);
+            setChangeFirstPassSuccessful(false);
+        }, 2000);
     }
 
     useEffect(() => {
@@ -117,10 +123,20 @@ export default function Home(props)
                     open={showFirstPass}>
                     
                     <MaterialUI.DialogContent dividers={true} sx={{ width: 350 }}>
-                        <ChangePasswordView 
-                            viewModel={changePassViewModel}
-                            onLoadingChangeListener ={setFirstPasswordLoading}
-                            onChangePassSuccessful = {onChangePassSuccesful}/>
+
+                        {
+                            changeFirstPassSuccessful? 
+
+                                <MaterialUI.Typography variant="body1">
+                                    {Strings.change_pass_external_successful}
+                                </MaterialUI.Typography>
+                                :
+                                <ChangePasswordView 
+                                    viewModel={changePassViewModel}
+                                    onLoadingChangeListener ={setFirstPasswordLoading}
+                                    onChangePassSuccessful = {onChangePassSuccesful}/>
+                        }
+                        
                             
                     </MaterialUI.DialogContent>
                     <LoadingScreen loading={firstPasswordLoading}/>
