@@ -13,6 +13,7 @@ const Strings = Object.freeze({
     text_last_name:"Apellido",
     text_save:"Guardar",
     text_send:"Enviar",
+    text_operation_successful:"Operación completada exitosamente",
     text_date_title:"Fecha:",
     text_companies:"Compañias",
     text_electronic_document:"Recibo", 

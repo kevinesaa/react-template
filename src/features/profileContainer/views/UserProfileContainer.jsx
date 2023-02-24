@@ -5,17 +5,28 @@ import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
 import UserProfile from "../../profile/views/UserProfile";
 import FeatureContainer from "../../../_commons/views/FeatureContainer";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
+import OperationCompletedDialog from "../../../_commons/views/OperationCompletedDialog";
 
 export default class UserProfileContainer extends Component 
 {
     constructor(props) {
         super(props);
-        this.state = {loading:false};
+        this.state = {loading:false,showOperationSuccessful:false};
         this.userViewModel = props.userViewModel;
         this.changePassViewModel = props.changePassViewModel;
         this.onLoadingChangeHandled = this.onLoadingChangeHandled.bind(this);
+        this.onRequestCompletedSuccessful = this.onRequestCompletedSuccessful.bind(this);
+        this.closeOperationSuccessfulDialog = this.closeOperationSuccessfulDialog.bind(this);
     }
     
+    onRequestCompletedSuccessful() {
+        this.setState({showOperationSuccessful:true});
+    }
+
+    closeOperationSuccessfulDialog() {
+        this.setState({showOperationSuccessful:false});
+    }
+
     onLoadingChangeHandled(value) {
         this.setState( {loading:value})
     }
@@ -32,12 +43,18 @@ export default class UserProfileContainer extends Component
 
                             <UserProfile
                                 onLoadingChangeListener={this.onLoadingChangeHandled}
+                                onUpdateProfileSuccessful={this.onRequestCompletedSuccessful}
                                 viewModel={this.userViewModel}/>
                             
                             <ChangePasswordView  
                                 onLoadingChangeListener={this.onLoadingChangeHandled}
+                                onChangePassSuccessful={this.onRequestCompletedSuccessful}
                                 viewModel={this.changePassViewModel}/>
                         
+                            <OperationCompletedDialog 
+                                open={this.state.showOperationSuccessful}
+                                onClose={this.closeOperationSuccessfulDialog}/>
+                            
                         </MaterialUI.Stack>
                     </MaterialUI.Grid>
             </FeatureContainer>
