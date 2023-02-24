@@ -4,7 +4,6 @@ import * as MaterialUI from "@mui/material";
 import Strings from "../../../_Resources/strings/strings";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
 import PasswordInput from "../../../_commons/views/PasswordInput";
-import TitleSection from "../../../_commons/views/TitleSection";
 import ROUTES from "../../../_commons/Routes";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 
@@ -13,7 +12,7 @@ export default class RestorePasswordView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {loading:false, token:"", newPass:"",confirmPass:""};
+        this.state = {loading:false,changeSuccessful:false, token:"", newPass:"",confirmPass:""};
         this.viewModel = props.viewModel;
         this.onSessionStatus = this.onSessionStatus.bind(this);
         this.handledNewPassChange = this.handledNewPassChange.bind(this);
@@ -22,6 +21,8 @@ export default class RestorePasswordView extends Component {
         this.showLoading = this.showLoading.bind(this);
         this.changePassSuccessful = this.changePassSuccessful.bind(this);
         this.onError = this.onError.bind(this);
+        this.renderForm = this.renderForm.bind(this);
+        this.renderChangePassSuccessful = this.renderChangePassSuccessful.bind(this);
     }
     
     onSessionStatus(hasSession) {
@@ -32,6 +33,7 @@ export default class RestorePasswordView extends Component {
         else {
             window.location.replace(ROUTES.LOGIN);
         }
+        
     }
 
     handledNewPassChange(value) {
@@ -52,8 +54,11 @@ export default class RestorePasswordView extends Component {
     }
 
     changePassSuccessful() {
-        this.setState({loading:false, token:"", newPass:"",confirmPass:""});
-        window.location.replace(ROUTES.LOGIN);
+        this.setState({changeSuccessful:true,loading:false, token:"", newPass:"",confirmPass:""});
+        setTimeout(() =>{
+            this.setState({changeSuccessful:false});
+            window.location.replace(ROUTES.LOGIN);
+        }, 2000);
     }
 
     onError(error) {
@@ -66,12 +71,12 @@ export default class RestorePasswordView extends Component {
         const urlParams = new URLSearchParams(window.location.search);
         const myTokenParam = urlParams.get('token');
         
-        if(myTokenParam == null) {
+        if(myTokenParam == null || myTokenParam.trim().length === 0 ) {
             this.viewModel.checkSession();
             return;
         }
 
-        this.setState({token: myTokenParam});
+        this.setState({token: myTokenParam.trim()});
         this.viewModel.subscribeOnLoading(this.showLoading);
         this.viewModel.subscribeOnShowError(this.onError);
         this.viewModel.subscribeOnChangePassSuccessful(this.changePassSuccessful);
@@ -84,6 +89,51 @@ export default class RestorePasswordView extends Component {
         this.viewModel.unsubscribeOnChangePassSuccessful(this.changePassSuccessful);
     }
 
+    renderForm() {
+        return( <>
+            <form onSubmit={this.handledChangePasswordClick}>
+
+                <MaterialUI.Box sx={{ flexGrow: 1, m: 2 }}
+                    noValidate
+                    autoComplete="off">
+
+                    <MaterialUI.Grid container
+                        spacing={{ xs: 1, md: 1 }}>
+                        
+                        
+                        <PasswordInput
+                            onChangeText={this.handledNewPassChange}
+                            textValue={this.state.newPass} 
+                            label={Strings.change_pass_new_pass} 
+                            tooltipHideText={Strings.text_hide}
+                            tooltipShowText={Strings.text_show}/>
+                        
+                        <PasswordInput
+                            onChangeText={this.handledConfirmPassChange}
+                            textValue={this.state.confirmPass} 
+                            label={Strings.change_pass_confirm_pass} 
+                            tooltipHideText={Strings.text_hide}
+                            tooltipShowText={Strings.text_show}/>
+
+                        <CustomButtonForm
+                            text={Strings.text_send} />
+
+                    </MaterialUI.Grid>
+                </MaterialUI.Box>
+            </form>
+        </>);
+    }
+
+    renderChangePassSuccessful() {
+        
+        return(
+        <>
+            <MaterialUI.Typography variant="body1">
+                {Strings.change_pass_external_successful}
+            </MaterialUI.Typography>
+        </>);
+    }
+
     render() {
 
         return (
@@ -92,42 +142,12 @@ export default class RestorePasswordView extends Component {
                 open={true}>
                     
                 <MaterialUI.DialogTitle >
-                    {"Restaurar Contraseña"}
+                    {Strings.change_pass_external_title}
                 </MaterialUI.DialogTitle>
                 
                 <MaterialUI.DialogContent dividers={true} sx={{ width: 350 }}>
                        
-                    <form onSubmit={this.handledChangePasswordClick}>
-
-                        <MaterialUI.Box sx={{ flexGrow: 1, m: 2 }}
-                            noValidate
-                            autoComplete="off"
-                        >
-                            <MaterialUI.Grid container
-                                spacing={{ xs: 1, md: 1 }}
-                            >
-                                
-                                
-                                <PasswordInput
-                                    onChangeText={this.handledNewPassChange}
-                                    textValue={this.state.newPass} 
-                                    label={Strings.change_pass_new_pass} 
-                                    tooltipHideText={Strings.text_hide}
-                                    tooltipShowText={Strings.text_show}/>
-                                
-                                <PasswordInput
-                                    onChangeText={this.handledConfirmPassChange}
-                                    textValue={this.state.confirmPass} 
-                                    label={Strings.change_pass_confirm_pass} 
-                                    tooltipHideText={Strings.text_hide}
-                                    tooltipShowText={Strings.text_show}/>
-
-                                <CustomButtonForm
-                                    text={Strings.text_send} />
-
-                            </MaterialUI.Grid>
-                        </MaterialUI.Box>
-                    </form>
+                    {this.state.changeSuccessful? this.renderChangePassSuccessful(): this.renderForm()}
                 
                 </MaterialUI.DialogContent>
                 <LoadingScreen loading={this.state.loading}/>

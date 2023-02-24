@@ -1,5 +1,8 @@
+import MainSessionRepository from "../../../sessionManager/repository/MainSessionRepository";
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import ListListener from "../../../_commons/util/ListListenerContainer";
+
+import delay from "../../../_commons/util/Delay";
 
 export default class RestorePasswordViewModel {
 
@@ -47,10 +50,13 @@ export default class RestorePasswordViewModel {
         this.listenerOnSessionStatus.execute(hasSession);
     }
 
-    changePassword(token,newPass,confirmPass) {
-        console.log("token" + token)
-        console.log("new pass" + newPass)
-        console.log("confirm pass" + confirmPass)
+    async changePassword(token,newPass,confirmPass) {
+        
+        this.#onLoading(true);
+        await delay(1000);
+        MainSessionRepository.closeLocalSession();
+        this.#onLoading(false);
+        this.#onChangePassSuccessful();
     }
 
     #onLoading(value) {

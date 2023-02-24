@@ -20,8 +20,8 @@ import ForgotPasswordViewModel from '../features/passwordForgot/viewModels/Forgo
 import HomeViewModel from '../features/home/viewModels/HomeViewModel';
 import ChangePasswordViewModel from '../features/passwordChange/viewModels/ChangePasswordViewModel';
 import RootPath from '../features/_rootPath/views/RootPath';
-import RestorePasswordViewModel from '../features/passwordChageExternal/viewModels/RestorePasswordViewModel';
-import RestorePasswordView from '../features/passwordChageExternal/views/RestorePasswordView';
+import RestorePasswordViewModel from '../features/passwordChangeExternal/viewModels/RestorePasswordViewModel';
+import RestorePasswordView from '../features/passwordChangeExternal/views/RestorePasswordView';
 
 
 function AppRoutesWrapper(props) {
