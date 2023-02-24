@@ -39,7 +39,7 @@ export default class ChangePasswordViewModel {
         await delay(1000);
         
         const user = UserRepository.getCurrentUser();
-        user.completed_first_password = true;
+        user.new_user = false;
         UserRepository.saveCurrentUser(user);
         this.#onLoading(false);
         this.#onChangePassSuccessful();
