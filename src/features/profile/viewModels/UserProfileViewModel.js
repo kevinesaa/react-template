@@ -1,6 +1,9 @@
 
 import UserRepository from "../../../sessionManager/repository/UserRepository";
+import delay from "../../../_commons/util/Delay";
 import ListListener from "../../../_commons/util/ListListenerContainer";
+
+
 
 export default class UserProfileViewModel {
 
@@ -8,6 +11,15 @@ export default class UserProfileViewModel {
         this.listenerOnLoading = new ListListener();
         this.listenerShowError = new ListListener();
         this.listenerOnUserInfo = new ListListener();
+        this.listenerOnUpdateUserSuccessful = new ListListener();
+    }
+
+    unsubscribeOnUpdateUserProfileCompleted(func) {
+        this.listenerOnUpdateUserSuccessful.unsubscribe(func);
+    }
+
+    subscribeOnUpdateUserProfileCompleted(func) {
+        this.listenerOnUpdateUserSuccessful.subscribe(func);
     }
 
     unsubscribeOnUserInfoCompleted(func) {
@@ -38,6 +50,18 @@ export default class UserProfileViewModel {
     async requestUserInfo() {
         const userData = UserRepository.getCurrentUser();
         this.#onUserData(userData);
+    }
+
+    async updateProfile(user) {
+        this.#onLoading(true);
+        await delay(1000);
+        await this.requestUserInfo();
+        this.#onLoading(false);
+        this.#onUpdateProfileCompleted();
+    }
+
+    #onUpdateProfileCompleted() {
+        this.listenerOnUpdateUserSuccessful.execute();
     }
 
     #onUserData(userData) {

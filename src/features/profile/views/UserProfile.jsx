@@ -19,11 +19,16 @@ export default class UserProfile extends Component
         this.handledEmailChangeText = this.handledEmailChangeText.bind(this);
         this.handledUserNameChangeText = this.handledUserNameChangeText.bind(this);
         this.handledUserLastNameChangeText = this.handledUserLastNameChangeText.bind(this);
+        this.onUpdatePassSuccessful = this.onUpdatePassSuccessful.bind(this);
     }
 
     handledChangeUserProfileClick(event) {
         event.preventDefault();
-        
+        this.viewModel.updateProfile({
+            email:this.state.email,
+            name:this.state.user_name,
+            lastName:this.state.user_last_name
+        });
     }
 
     handledEmailChangeText(value) {
@@ -60,9 +65,17 @@ export default class UserProfile extends Component
         console.error(error);
     }
 
+    onUpdatePassSuccessful() {
+        
+        if(this.props.onUpdateProfileSuccessful) {
+            this.props.onUpdateProfileSuccessful();
+        }
+    }
+
     componentDidMount() {
         
         this.viewModel.subscribeOnUserInfoCompleted(this.showUserData);
+        this.viewModel.subscribeOnUpdateUserProfileCompleted(this.onUpdatePassSuccessful);
         this.viewModel.subscribeOnLoading(this.showLoading);
         this.viewModel.subscribeOnShowError(this.onError);
 
@@ -70,7 +83,7 @@ export default class UserProfile extends Component
     }
 
     componentWillUnmount() {
-
+        this.viewModel.unsubscribeOnUpdateUserProfileCompleted(this.onUpdatePassSuccessful);
         this.viewModel.unsubscribeOnUserInfoCompleted(this.showUserData);
         this.viewModel.unsubscribeOnLoading(this.showLoading);
         this.viewModel.unsubscribeOnShowError(this.onError);
