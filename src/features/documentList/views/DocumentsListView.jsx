@@ -15,7 +15,7 @@ export default class DocumentsListView extends Component
 {
     constructor(props) {
         super(props);
-        this.state = {currentDocument:{},seeDetail:false, loading:false, companies:[], currentCompany: {},currentPage:0, totalItems:0,documents:[]};
+        this.state = {currentDocument:{},seeDetail:false, loading:false, companies:[], currentCompany: '',currentPage:0, totalItems:0,documents:[]};
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.handleOnDocumentClickListener = this.handleOnDocumentClickListener.bind(this);

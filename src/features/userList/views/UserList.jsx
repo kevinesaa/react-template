@@ -19,7 +19,7 @@ export default class UserList extends Component
         this.state = {
                 loading:false, 
                 companies:[], 
-                currentCompany: {},
+                currentCompany:'',
                 currentPage:0, 
                 totalItems:0,
                 users:[],
