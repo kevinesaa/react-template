@@ -11,6 +11,7 @@ import UserProfileContainer from "../../features/profileContainer/views/UserProf
 import UserProfileViewModel from "../../features/profile/viewModels/UserProfileViewModel";
 import ChangePasswordViewModel from "../../features/passwordChange/viewModels/ChangePasswordViewModel";
 import Permissions from "../../_commons/Permissions";
+import AddNewUserViewModel from "../../features/userAddNew/viewModels/AddNewUserViewModel";
 
 
 
@@ -38,7 +39,7 @@ export default Object.freeze([
         isSideBarItem:false,
         isNeedPermission:true,
         permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_CREATE_USERS], 
-        page: <AddNewUserView />, 
+        page: <AddNewUserView viewModel={new AddNewUserViewModel()}/>, 
         title:"Agregar usuario", 
         icon:""
     },

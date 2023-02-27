@@ -5,7 +5,8 @@ const ENDPOINT_LIST = {
     LOGIN:"/login/",
     VERIFY_TOKEN_SESSION:"/login/session-token/",
     GET_DOCUMENT_LIST:"/documentos/",
-    GET_DOCUMENT_DETAIL:"/documentos/detalles/"
+    GET_DOCUMENT_DETAIL:"/documentos/detalles/",
+    GET_PERMISSIONS_LIST:"/usuario/get-all-permissions/",
 };
 
 const API_END_POINTS = Object.freeze(

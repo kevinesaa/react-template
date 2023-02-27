@@ -1,7 +1,18 @@
+import Permissions from "../../_commons/Permissions";
+
 const documents = "Documentos";
 const users = "Usuarios";
 const user_profile = "Mi perfil";
 const emailText="Correo electrónico";
+
+const permissionsStrings = {};
+permissionsStrings[Permissions.ID_ALL_PERMISSIONS] = "Todos los permisos";
+permissionsStrings[Permissions.ID_SEE_USERS] = "Ver usuarios";
+permissionsStrings[Permissions.ID_CREATE_USERS] = "Crear usuarios";
+permissionsStrings[Permissions.ID_UPDATE_USERS] = "Editar usuarios";
+permissionsStrings[Permissions.ID_DISABLE_USERS] = "Desactivar usuarios";
+permissionsStrings[Permissions.ID_SEE_DOCUMENTS_PERMISSION] = "Ver documentos";
+
 
 const Strings = Object.freeze({
     text_yes:"Sí",
@@ -85,7 +96,8 @@ const Strings = Object.freeze({
     user_list_title:users,
     user_list_button_new:"Nuevo Usuario",
     logout_view_title:"Cerrar Sesión",
-    logout_view_message:"¿Estás seguro que quieres cerrar la sesión?"
+    logout_view_message:"¿Estás seguro que quieres cerrar la sesión?",
+    permissions_names_by_id:permissionsStrings,
 });
 
 
