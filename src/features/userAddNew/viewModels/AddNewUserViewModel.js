@@ -4,6 +4,7 @@ import SessionRepository from "../../../sessionManager/repository/SessionReposit
 import API_END_POINTS from '../../../_commons/Api';
 import Permissions from '../../../_commons/Permissions';
 import ListListener from "../../../_commons/util/ListListenerContainer";
+import AllUserPermissionsRepository from '../../userPermissions/repositories/AllUsersPermissionsRepository';
 
 
 
@@ -80,24 +81,8 @@ export default class AddNewUserViewModel {
     }
 
     async #makeRequestPermissionsList(requestModel) {
-
-        const url = API_END_POINTS.GET_PERMISSIONS_LIST;
         
-        try{
-            
-            const response = await axios.get(url, { 
-                headers:{
-                    "Authorization": `Bearer ${requestModel.token}`,
-                    "Content-Type": "application/json"
-                }
-            });
-            
-            return response;
-        }
-        catch(error) {
-            console.error(error);
-            return error.response;
-        }
+        return await AllUserPermissionsRepository.getPermissionsList(requestModel);
     }
 
 }
