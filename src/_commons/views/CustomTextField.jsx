@@ -11,9 +11,10 @@ export default function CustomTextField(props) {
     }
 
     const disabled = props.disabled == null ? false : props.disabled;
+    const columnsInGrid = props.columnsInGrid == null?12:props.columnsInGrid;
 
     return (<>
-        <MaterialUI.Grid item>
+        <MaterialUI.Grid item xs={columnsInGrid}>
             <MaterialUI.Paper elevation={0}>
                 <MaterialUI.TextField
                     disabled ={disabled}

@@ -12,6 +12,7 @@ import UserProfileViewModel from "../../features/profile/viewModels/UserProfileV
 import ChangePasswordViewModel from "../../features/passwordChange/viewModels/ChangePasswordViewModel";
 import Permissions from "../../_commons/Permissions";
 import AddNewUserViewModel from "../../features/userAddNew/viewModels/AddNewUserViewModel";
+import UserDetailsViewModel from "../../features/userDetails/viewModels/UserDetailsViewModel";
 
 
 
@@ -48,7 +49,7 @@ export default Object.freeze([
         isSideBarItem:false,
         isNeedPermission:true,
         permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_SEE_USERS], 
-        page: <UserDetailsView />, 
+        page: <UserDetailsView viewModel={new UserDetailsViewModel()}/>, 
         title:"Detalles del usuario", 
         icon:""
     },
