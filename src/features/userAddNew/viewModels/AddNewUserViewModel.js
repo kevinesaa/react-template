@@ -3,6 +3,7 @@ import PermissionRepository from '../../../sessionManager/repository/Permissions
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import API_END_POINTS from '../../../_commons/Api';
 import Permissions from '../../../_commons/Permissions';
+import delay from '../../../_commons/util/Delay';
 import ListListener from "../../../_commons/util/ListListenerContainer";
 import AllUserPermissionsRepository from '../../userPermissions/repositories/AllUsersPermissionsRepository';
 
@@ -10,34 +11,48 @@ import AllUserPermissionsRepository from '../../userPermissions/repositories/All
 
 export default class AddNewUserViewModel {
 
+    #listenerOnLoading;
+    #listenerOnPermissionsList;
+    #listenerShowError;
+    #listenerOnCreateUserSuccessful;
+
     constructor() {
-        this.listenerOnLoading = new ListListener();
-        this.listenerShowError = new ListListener();
-        this.listenerOnPermissionsList = new ListListener();
+        this.#listenerOnLoading = new ListListener();
+        this.#listenerShowError = new ListListener();
+        this.#listenerOnPermissionsList = new ListListener();
+        this.#listenerOnCreateUserSuccessful = new ListListener();
     }
 
     unsubscribeOnLoading(func) {
-        this.listenerOnLoading.unsubscribe(func);
+        this.#listenerOnLoading.unsubscribe(func);
     }
 
     subscribeOnLoading(func) {
-        this.listenerOnLoading.subscribe(func);
+        this.#listenerOnLoading.subscribe(func);
     }
 
     unsubscribeOnShowError(func) {
-        this.listenerShowError.unsubscribe(func);
+        this.#listenerShowError.unsubscribe(func);
     }
 
     subscribeOnShowError(func) {
-        this.listenerShowError.subscribe(func);
+        this.#listenerShowError.subscribe(func);
     }
     
     unsubscribeOnRequestPermissionsList(func) {
-        this.listenerOnPermissionsList.unsubscribe(func);
+        this.#listenerOnPermissionsList.unsubscribe(func);
     }
 
     subscribeOnRequestPermissionsList(func) {
-        this.listenerOnPermissionsList.subscribe(func);
+        this.#listenerOnPermissionsList.subscribe(func);
+    }
+
+    unsubscribeOnCreateUserSuccessful(func) {
+        this.#listenerOnCreateUserSuccessful.unsubscribe(func);
+    }
+
+    subscribeOnCreateUserSuccessful(func) {
+        this.#listenerOnCreateUserSuccessful.subscribe(func);
     }
     
     async requestPermissionsList() {
@@ -64,20 +79,27 @@ export default class AddNewUserViewModel {
                     .sort((a,b) => a.IDCASA - b.IDCASA);
             //
             this.#onLoading(false);
-            this.listenerOnPermissionsList.execute(permissionsList);
+            this.#listenerOnPermissionsList.execute(permissionsList);
         }
     }
 
     async createNewUser(newUser) {
-
+        this.#onLoading(true);
+        await delay(1000);
+        this.#onLoading(false);
+        this.#notifyCreateUserSuccessful();
     }
 
     #onLoading(value) {
-        this.listenerOnLoading.execute(value);
+        this.#listenerOnLoading.execute(value);
     }
     
     #onError(error) {
-        this.listenerShowError.execute(error);
+        this.#listenerShowError.execute(error);
+    }
+
+    #notifyCreateUserSuccessful() {
+        this.#listenerOnCreateUserSuccessful.execute();
     }
 
     async #makeRequestPermissionsList(requestModel) {

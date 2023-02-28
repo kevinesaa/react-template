@@ -4,26 +4,54 @@ import FeatureContainer from "../../../_commons/views/FeatureContainer";
 import Strings from "../../../_Resources/strings/strings";
 import CustomTextField from "../../../_commons/views/CustomTextField";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
+import { Navigate } from "react-router-dom";
+import ROUTES from "../../../_commons/Routes";
+import OperationCompletedDialog from "../../../_commons/views/OperationCompletedDialog";
 
 
 export default class AddNewUserView extends Component 
 {
     constructor(props) {
         super(props);
-        this.state = {loading:false,permission_list:[],selected_permissions:[], email:'', name:'', lastName:''};
+        this.state = { 
+            userCreated:false,
+            navigateToUsers:false,
+            loading:false,
+            permission_list:[],
+            selected_permissions:[], 
+            email:'', 
+            name:'', 
+            lastName:''
+        };
         this.viewModel = props.viewModel;
         this.showLoading = this.showLoading.bind(this);
         this.onError = this.onError.bind(this);
+        this.handledOnSummit = this.handledOnSummit.bind(this);
         this.showPermissionsList = this.showPermissionsList.bind(this);
         this.onHandleSelectPermission = this.onHandleSelectPermission.bind(this);
         this.renderSelectedPermissions = this.renderSelectedPermissions.bind(this);
         this.handledEmailInput = this.handledEmailInput.bind(this);
         this.handledNameInput = this.handledNameInput.bind(this);
         this.handledLastNameInput= this.handledLastNameInput.bind(this);
+        this.navigateToUsers = this.navigateToUsers.bind(this);
+        this.onUserCreateSuccessful = this.onUserCreateSuccessful.bind(this);
+        this.closeOperationSuccessfulDialog = this.closeOperationSuccessfulDialog.bind(this);
+    }
+
+    navigateToUsers() {
+        this.setState({navigateToUsers:true});
     }
 
     handledOnSummit(event) {
+        
         event.preventDefault();
+        
+        const email = this.state.email;
+        const name = this.state.name;
+        const lastName = this.state.lastName;
+        const pemissions = this.state.selected_permissions;
+        
+        this.viewModel.createNewUser({email,name,lastName,pemissions});
     }
 
     handledEmailInput(email) {
@@ -56,11 +84,19 @@ export default class AddNewUserView extends Component
         this.setState({permission_list:permissions});
     }
 
+    onUserCreateSuccessful() {
+        this.setState({userCreated:true});
+    }
+
+    closeOperationSuccessfulDialog() {
+        this.setState({userCreated:false,navigateToUsers:true});
+    }
+
     componentDidMount() {
         this.viewModel.subscribeOnLoading(this.showLoading);
         this.viewModel.subscribeOnShowError(this.onError);
         this.viewModel.subscribeOnRequestPermissionsList(this.showPermissionsList);
-        
+        this.viewModel.subscribeOnCreateUserSuccessful(this.onUserCreateSuccessful);
         this.viewModel.requestPermissionsList();
     }
 
@@ -68,6 +104,7 @@ export default class AddNewUserView extends Component
         this.viewModel.unsubscribeOnLoading(this.showLoading);
         this.viewModel.unsubscribeOnShowError(this.onError);
         this.viewModel.unsubscribeOnRequestPermissionsList(this.showPermissionsList);
+        this.viewModel.unsubscribeOnCreateUserSuccessful(this.onUserCreateSuccessful);
     }
 
     renderSelectedPermissions(selectedValues) {
@@ -86,6 +123,11 @@ export default class AddNewUserView extends Component
     }
 
     render() {
+
+        if(this.state.navigateToUsers) {
+            return (<Navigate to={ROUTES.USERS}/>);
+        }
+
         return (<> 
             <FeatureContainer 
                 title_text={"Nuevo Usuario"}
@@ -167,6 +209,7 @@ export default class AddNewUserView extends Component
 
                             <MaterialUI.Box sx={{ p: 1 }}>
                                 <MaterialUI.Stack direction={{ xs: "column", sm: "row" }}>
+                                    
                                     <MaterialUI.Grid
                                             container
                                             direction="row"
@@ -179,7 +222,8 @@ export default class AddNewUserView extends Component
                                         {/*Button cancel*/}
                                         <MaterialUI.Grid item>
                                             <MaterialUI.Paper elevation={0} align="center">
-                                                <MaterialUI.Button 
+                                                <MaterialUI.Button
+                                                    onClick={this.navigateToUsers} 
                                                     align="center"
                                                     variant="contained"
                                                     sx={{
@@ -204,6 +248,11 @@ export default class AddNewUserView extends Component
                     </MaterialUI.Grid>
                     
                 </form>
+                
+                <OperationCompletedDialog 
+                    open={this.state.userCreated}
+                    onClose={this.closeOperationSuccessfulDialog}/>
+
             </FeatureContainer>
         </>);
     }
