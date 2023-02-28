@@ -7,6 +7,7 @@ import CompanyRepository from '../../../sessionManager/repository/CompanyReposit
 import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
 import Constants from '../../../_commons/Constants';
 import Permissions from '../../../_commons/Permissions';
+import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
 
 
 export default class DocumentsViewModel
@@ -70,33 +71,8 @@ export default class DocumentsViewModel
     }
 
     async requestCompanies() {
-        const companiesDictionary = new Map();
-        const companies = [];
-        const permissions = PermissionRepository.getPermissionList();
-        permissions.forEach(element => {
-            if(Permissions.ID_ALL_PERMISSIONS == element.permission_id 
-                || Permissions.ID_SEE_DOCUMENTS_PERMISSION == element.permission_id) 
-            {
-                const company = {
-                    id:element.company_id,
-                    text:element.company_name
-                }
-                companiesDictionary.set(company.id,company);
-            }
-        });
-        if(companiesDictionary.size > 0) {
-            const validCompanies = companiesDictionary.values();
-            
-            let c;
-            do{
-                c = validCompanies.next()
-                if(c.value) 
-                {
-                    companies.push(c.value);
-                }
-            }
-            while(!c.done);
-        }
+        
+        const companies = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_DOCUMENTS_PERMISSION]);
         
         this.listenerOnCompanyData.execute(companies.sort((a,b) => a.id - b.id));
     }

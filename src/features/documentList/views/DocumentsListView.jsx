@@ -53,7 +53,7 @@ export default class DocumentsListView extends Component
 
     setCompanies(companies) {
         
-        this.setState({companies});
+        this.setState({companies:companies.map(it => {return {id:it.id,text:it.name}})});
     }
 
     showDocumentsList(documents) {
