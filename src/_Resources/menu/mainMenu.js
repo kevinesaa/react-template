@@ -1,6 +1,6 @@
 
 import DocumentsListView from "../../features/documentList/views/DocumentsListView";
-import UserList from "../../features/userList/views/UserList";
+import UserListView from "../../features/userList/views/UserListView";
 import DocumentsViewModel from "../../features/documentList/viewModels/DocumentsViewModel";
 import DocumentDetailViewModel from "../../features/documentDetails/viewModels/DocumentDetailViewModel";
 import AddNewUserView from "../../features/userAddNew/views/AddNewUserView";
@@ -13,6 +13,7 @@ import ChangePasswordViewModel from "../../features/passwordChange/viewModels/Ch
 import Permissions from "../../_commons/Permissions";
 import AddNewUserViewModel from "../../features/userAddNew/viewModels/AddNewUserViewModel";
 import UserDetailsViewModel from "../../features/userDetails/viewModels/UserDetailsViewModel";
+import UserListViewModel from "../../features/userList/viewModels/UserListViewModel";
 
 
 
@@ -31,7 +32,7 @@ export default Object.freeze([
         isSideBarItem:true,
         isNeedPermission:true,
         permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_SEE_USERS ], 
-        page: <UserList/>, 
+        page: <UserListView viewModel={new UserListViewModel()}/>, 
         title:Strings.side_bar_users, 
         icon:""
     },

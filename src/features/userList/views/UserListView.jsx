@@ -12,7 +12,7 @@ import ROUTES from "../../../_commons/Routes";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 
-export default class UserList extends Component 
+export default class UserListView extends Component 
 {
     constructor(props) {
         super(props);
@@ -26,9 +26,11 @@ export default class UserList extends Component
                 showCreateNewButton:false,
                 goToCreateNew:false,
             };
+        this.viewModel = props.viewModel;
         this.onError = this.onError.bind(this);
         this.onLoadingChangeHandled = this.onLoadingChangeHandled.bind(this);
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
+        this.onPermissonsListener = this.onPermissonsListener.bind(this);
         this.createNewUser = this.createNewUser.bind(this);
         this.seeUserDetails = this.seeUserDetails.bind(this);
         this.columns = [
@@ -46,17 +48,38 @@ export default class UserList extends Component
 
     }
 
+    onPermissonsListener(permissions) {
+        this.setState({
+            showCreateNewButton:permissions.creteUsers.length > 0
+        });
+    }
+
     handledOnSelectCompany(currentCompany) {
         this.setState({currentCompany})
     }
 
     onLoadingChangeHandled(value) {
+        
         this.setState({loading:value});
     }
 
     onError(error) {
         console.error("ah que chimbo!");
         console.error(error);
+    }
+
+    componentDidMount() {
+        this.viewModel.subscribeOnLoading(this.onLoadingChangeHandled);
+        this.viewModel.subscribeOnShowError(this.onError);
+        this.viewModel.subscribeOnRequestPermissionsList(this.onPermissonsListener);
+
+        this.viewModel.requestPermissionsList();
+    }
+
+    componentWillUnmount() {
+        this.viewModel.unsubscribeOnLoading(this.onLoadingChangeHandled);
+        this.viewModel.unsubscribeOnShowError(this.onError);
+        this.viewModel.unsubscribeOnRequestPermissionsList(this.onPermissonsListener);
     }
 
     render(){
@@ -98,17 +121,19 @@ export default class UserList extends Component
                                         alignItems="flex-start"
                                         direction={{ xs: "column", sm: "row" }}>
 
-                                        <MaterialUI.Button
-                                            sx={{
-                                                px: 5,
-                                                borderRadius: "1rem",
-                                                color: "white.main",
-                                                textTransform: "none",
-                                            }}
-                                            onClick={this.createNewUser}
-                                            variant="contained">
-                                                {Strings.user_list_button_new}
-                                        </MaterialUI.Button>
+                                        {this.state.showCreateNewButton &&
+                                            <MaterialUI.Button
+                                                sx={{
+                                                    px: 5,
+                                                    borderRadius: "1rem",
+                                                    color: "white.main",
+                                                    textTransform: "none",
+                                                }}
+                                                onClick={this.createNewUser}
+                                                variant="contained">
+                                                    {Strings.user_list_button_new}
+                                            </MaterialUI.Button>
+                                        }
                                     </MaterialUI.Stack>
                                 </MaterialUI.Grid>
                             </MaterialUI.Grid>
