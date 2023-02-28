@@ -33,11 +33,23 @@ export default class UserListView extends Component
         this.onPermissonsListener = this.onPermissonsListener.bind(this);
         this.createNewUser = this.createNewUser.bind(this);
         this.seeUserDetails = this.seeUserDetails.bind(this);
+        this.showSelectCompany = this.showSelectCompany.bind(this);
+        this.setCompanies = this.setCompanies.bind(this);
         this.columns = [
             {title:Strings.text_name},
             {title:Strings.text_last_name},    
             {title:Strings.text_email},
         ];
+    }
+
+    showSelectCompany(company){
+        
+        this.setState ({currentCompany : company});
+    }
+
+    setCompanies(companies) {
+        
+        this.setState({companies:companies.map(it => {return {id:it.id,text:it.name}})});
     }
 
     createNewUser() {
@@ -49,9 +61,11 @@ export default class UserListView extends Component
     }
 
     onPermissonsListener(permissions) {
+        
         this.setState({
-            showCreateNewButton:permissions.creteUsers.length > 0
+            showCreateNewButton:permissions.creteUsers.length
         });
+        this.setCompanies(permissions.seeUsers);
     }
 
     handledOnSelectCompany(currentCompany) {

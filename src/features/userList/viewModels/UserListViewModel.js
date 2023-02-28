@@ -1,9 +1,11 @@
 import axios from 'axios';
+import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
+import CompanyRepository from '../../../sessionManager/repository/CompanyRepository';
 import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import API_END_POINTS from '../../../_commons/Api';
 import Permissions from '../../../_commons/Permissions';
-import delay from '../../../_commons/util/Delay';
+
 import ListListener from "../../../_commons/util/ListListenerContainer";
 
 
@@ -44,16 +46,12 @@ export default class UserListViewModel {
     async requestPermissionsList() {
         
         this.#onLoading(true);
-        const creteUsers = 
-            PermissionRepository
-                .getPermissionList()
-                .filter(item => item.permission_id == Permissions.ID_ALL_PERMISSIONS || item.permission_id == Permissions.ID_CREATE_USERS)
-                .map(item => { return {company_id:item.company_id,company_name:item.company_name} });
-
         
-        await delay(2000);
+        const creteUsers = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_CREATE_USERS]);
+        const seeUsers = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_USERS]);
+        
         this.#onLoading(false);
-        this.#notifyPermissionsList({creteUsers:creteUsers});
+        this.#notifyPermissionsList({creteUsers:creteUsers, seeUsers});
     }
 
     async requestUserList(filters) {
