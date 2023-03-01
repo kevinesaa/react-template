@@ -3,6 +3,7 @@ import UserHolder from "./UserHolder";
 
 export default function UsersAdapter(props) 
 {
+    
     return (<>
         {props.items == null || props.items.length == 0 ? <></> : 
             props.items
@@ -10,8 +11,12 @@ export default function UsersAdapter(props)
                     return (
                             <UserHolder 
                                 key={`user-${index}`} 
-                                item={item}
-                                onItemClick={props.onItemClickListener} />
+                                onItemClick={props.onItemClickListener} 
+                                item={{
+                                    userName:item.NOMBRE,
+                                    userLastName:item.APELLIDO,
+                                    email:item.CORREO,
+                                }}/>
                             ) 
                 })
         }

@@ -36,6 +36,7 @@ export default class UserListView extends Component
         this.setCompanies = this.setCompanies.bind(this);
         this.showUserList = this.showUserList.bind(this);
         this.showPageInfo = this.showPageInfo.bind(this);
+        this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.columns = [
             {title:Strings.text_name},
             {title:Strings.text_last_name},    
@@ -53,17 +54,21 @@ export default class UserListView extends Component
     }
 
     seeUserDetails(user) {
-
+        console.log("on click");
+        console.log(user);
     }
 
     showPageInfo(pageInfo) {
-        console.log("pagination");
-        console.log(pageInfo);
+        
+        this.setState({
+            totalItems:pageInfo.totalItems,
+            currentPage:pageInfo.currentPage-1
+        });
     }
 
     showUserList(users) {
-        console.log("users");
-        console.log(users);
+        
+        this.setState({users});
     }
 
     onPermissonsListener(permissions) {
@@ -79,6 +84,12 @@ export default class UserListView extends Component
         this.setState ({currentCompany : company, currentPage:0});
         
         this.viewModel.requestUserList(company,{page:1});
+    }
+
+    handleOnChangePage( _ , newPage) {
+        
+        this.setState ({currentPage:newPage});
+        this.viewModel.requestUserList(this.state.currentCompany,{page:newPage + 1});
     }
 
     onLoadingChangeHandled(value) {

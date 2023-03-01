@@ -8,17 +8,18 @@ export default function UserHolder(props)
             props.onItemClick(item)
         }
     }
-
+    const item = props.item;
+    
     return (
-        <MaterialUI.TableRow hover onClick={event => handleClick(props.item)}>
+        <MaterialUI.TableRow hover onClick={event => handleClick(item)}>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.userName}
+                {item.userName}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.userLastName}
+                {item.userLastName}
             </MaterialUI.TableCell>
             <MaterialUI.TableCell component="th" scope="row" align="center">
-                {props.email}
+                {item.email}
             </MaterialUI.TableCell>
         </MaterialUI.TableRow>
     );
