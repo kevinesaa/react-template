@@ -1,57 +1,55 @@
 import axios from 'axios';
 import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
-import CompanyRepository from '../../../sessionManager/repository/CompanyRepository';
-import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
-import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import API_END_POINTS from '../../../_commons/Api';
 import Permissions from '../../../_commons/Permissions';
-
 import ListListener from "../../../_commons/util/ListListenerContainer";
-
-
 
 
 export default class UserListViewModel {
 
+    #listenerOnLoading;
+    #listenerShowError;
+    #listenerOnPermissionsList;
+
     constructor() {
-        this.listenerOnLoading = new ListListener();
-        this.listenerShowError = new ListListener();
-        this.listenerOnPermissionsList = new ListListener();
+        this.#listenerOnLoading = new ListListener();
+        this.#listenerShowError = new ListListener();
+        this.#listenerOnPermissionsList = new ListListener();
     }
 
     unsubscribeOnLoading(func) {
-        this.listenerOnLoading.unsubscribe(func);
+        this.#listenerOnLoading.unsubscribe(func);
     }
 
     subscribeOnLoading(func) {
-        this.listenerOnLoading.subscribe(func);
+        this.#listenerOnLoading.subscribe(func);
     }
 
     unsubscribeOnShowError(func) {
-        this.listenerShowError.unsubscribe(func);
+        this.#listenerShowError.unsubscribe(func);
     }
 
     subscribeOnShowError(func) {
-        this.listenerShowError.subscribe(func);
+        this.#listenerShowError.subscribe(func);
     }
     
     unsubscribeOnRequestPermissionsList(func) {
-        this.listenerOnPermissionsList.unsubscribe(func);
+        this.#listenerOnPermissionsList.unsubscribe(func);
     }
 
     subscribeOnRequestPermissionsList(func) {
-        this.listenerOnPermissionsList.subscribe(func);
+        this.#listenerOnPermissionsList.subscribe(func);
     }
     
     async requestPermissionsList() {
         
         this.#onLoading(true);
-        
         const creteUsers = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_CREATE_USERS]);
         const seeUsers = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_USERS]);
-        
+        const editUsers = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_UPDATE_USERS]);
+        const deleteUsers = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_DISABLE_USERS]);
         this.#onLoading(false);
-        this.#notifyPermissionsList({creteUsers:creteUsers, seeUsers});
+        this.#notifyPermissionsList({creteUsers, seeUsers,editUsers,deleteUsers });
     }
 
     async requestUserList(filters) {
@@ -59,15 +57,15 @@ export default class UserListViewModel {
     }
 
     #onLoading(value) {
-        this.listenerOnLoading.execute(value);
+        this.#listenerOnLoading.execute(value);
     }
     
     #onError(error) {
-        this.listenerShowError.execute(error);
+        this.#listenerShowError.execute(error);
     }
 
     #notifyPermissionsList(permissions) {
-        this.listenerOnPermissionsList.execute(permissions);
+        this.#listenerOnPermissionsList.execute(permissions);
     }
 
 }
