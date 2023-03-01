@@ -33,20 +33,16 @@ export default class UserListView extends Component
         this.onPermissonsListener = this.onPermissonsListener.bind(this);
         this.createNewUser = this.createNewUser.bind(this);
         this.seeUserDetails = this.seeUserDetails.bind(this);
-        this.showSelectCompany = this.showSelectCompany.bind(this);
         this.setCompanies = this.setCompanies.bind(this);
+        this.showUserList = this.showUserList.bind(this);
+        this.showPageInfo = this.showPageInfo.bind(this);
         this.columns = [
             {title:Strings.text_name},
             {title:Strings.text_last_name},    
             {title:Strings.text_email},
         ];
     }
-
-    showSelectCompany(company){
-        
-        this.setState ({currentCompany : company});
-    }
-
+    
     setCompanies(companies) {
         
         this.setState({companies:companies.map(it => {return {id:it.id,text:it.name}})});
@@ -60,6 +56,16 @@ export default class UserListView extends Component
 
     }
 
+    showPageInfo(pageInfo) {
+        console.log("pagination");
+        console.log(pageInfo);
+    }
+
+    showUserList(users) {
+        console.log("users");
+        console.log(users);
+    }
+
     onPermissonsListener(permissions) {
         
         this.setState({
@@ -68,8 +74,11 @@ export default class UserListView extends Component
         this.setCompanies(permissions.seeUsers);
     }
 
-    handledOnSelectCompany(currentCompany) {
-        this.setState({currentCompany})
+    handledOnSelectCompany(company) {
+        
+        this.setState ({currentCompany : company, currentPage:0});
+        
+        this.viewModel.requestUserList(company,{page:1});
     }
 
     onLoadingChangeHandled(value) {
@@ -86,7 +95,9 @@ export default class UserListView extends Component
         this.viewModel.subscribeOnLoading(this.onLoadingChangeHandled);
         this.viewModel.subscribeOnShowError(this.onError);
         this.viewModel.subscribeOnRequestPermissionsList(this.onPermissonsListener);
-
+        this.viewModel.subscribeOnLoadUsersList(this.showUserList);
+        this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
+        
         this.viewModel.requestPermissionsList();
     }
 
@@ -94,6 +105,8 @@ export default class UserListView extends Component
         this.viewModel.unsubscribeOnLoading(this.onLoadingChangeHandled);
         this.viewModel.unsubscribeOnShowError(this.onError);
         this.viewModel.unsubscribeOnRequestPermissionsList(this.onPermissonsListener);
+        this.viewModel.unsubscribeOnLoadUsersList(this.showUserList);
+        this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
     }
 
     render(){

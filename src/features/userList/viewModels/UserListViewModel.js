@@ -1,6 +1,8 @@
 import axios from 'axios';
 import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
+import SessionRepository from '../../../sessionManager/repository/SessionRepository';
 import API_END_POINTS from '../../../_commons/Api';
+import ErrorCodes from '../../../_commons/InternalErrorCodes';
 import Permissions from '../../../_commons/Permissions';
 import ListListener from "../../../_commons/util/ListListenerContainer";
 
@@ -10,11 +12,15 @@ export default class UserListViewModel {
     #listenerOnLoading;
     #listenerShowError;
     #listenerOnPermissionsList;
+    #listenerOnPageInfoData;
+    #listenerOnLoadUsersList;
 
     constructor() {
         this.#listenerOnLoading = new ListListener();
         this.#listenerShowError = new ListListener();
         this.#listenerOnPermissionsList = new ListListener();
+        this.#listenerOnPageInfoData = new ListListener();
+        this.#listenerOnLoadUsersList = new ListListener();
     }
 
     unsubscribeOnLoading(func) {
@@ -40,6 +46,22 @@ export default class UserListViewModel {
     subscribeOnRequestPermissionsList(func) {
         this.#listenerOnPermissionsList.subscribe(func);
     }
+
+    unsubscribeOnPageInfoData(func) {
+        this.#listenerOnPageInfoData.unsubscribe(func);
+    }
+
+    subscribeOnPageInfoData(func) {
+        this.#listenerOnPageInfoData.subscribe(func);
+    }
+
+    unsubscribeOnLoadUsersList(func) {
+        this.#listenerOnLoadUsersList.unsubscribe(func);
+    }
+
+    subscribeOnLoadUsersList(func) {
+        this.#listenerOnLoadUsersList.subscribe(func);
+    }
     
     async requestPermissionsList() {
         
@@ -52,8 +74,37 @@ export default class UserListViewModel {
         this.#notifyPermissionsList({creteUsers, seeUsers,editUsers,deleteUsers });
     }
 
-    async requestUserList(filters) {
+    async requestUserList(company, filters) {
         
+        if(company != null && company.id != null) {
+                
+            const token = SessionRepository.getSessionToken();
+            this.#onLoading(true);
+            
+            const response =  await this.#makeRequestUsers({
+                token,
+                companyId:company.id, 
+                page:filters.page
+            });
+            
+            this.#onLoading(false);
+            
+            if (response.status != 200) {
+
+                this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
+                    sourceErrorCode:response?.data?.app_status,
+                    sourceErrorMessage:response?.data?.message
+                });
+            }
+            else {
+                
+                const responseData = response?.data?.data ? response?.data?.data : {};
+                const users =  responseData.user ? responseData.user:[];
+                const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: users.length}
+                this.#onPageInfoData(pagination);
+                this.#onUserListLoad(users);
+            }
+        }
     }
 
     #onLoading(value) {
@@ -68,4 +119,36 @@ export default class UserListViewModel {
         this.#listenerOnPermissionsList.execute(permissions);
     }
 
+    #onPageInfoData(pagination) {
+        this.#listenerOnPageInfoData.execute(pagination);
+    }
+
+    #onUserListLoad(users) {
+        this.#listenerOnLoadUsersList.execute(users);
+    }
+
+    async #makeRequestUsers(requestModel) {
+        
+        const company = `casa=${requestModel.companyId}`;
+        const page = `page=${requestModel.page}`;
+        let url = `${API_END_POINTS.GET_USERS_LIST}?${company}&${page}`;
+        
+        
+        try{
+
+            const response = await axios.get(url, { 
+                headers:{
+                    "Authorization": `Bearer ${requestModel.token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
+
+    }
 }

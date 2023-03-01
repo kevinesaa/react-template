@@ -7,6 +7,7 @@ const ENDPOINT_LIST = {
     GET_DOCUMENT_LIST:"/documentos/",
     GET_DOCUMENT_DETAIL:"/documentos/detalles/",
     GET_PERMISSIONS_LIST:"/usuario/get-all-permissions/",
+    GET_USERS_LIST:"/usuario/get-users/"
 };
 
 const API_END_POINTS = Object.freeze(
