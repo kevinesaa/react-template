@@ -79,39 +79,33 @@ export default class DocumentsViewModel
 
     async requestDocuments(company,filters) {
         
-        if(!SessionRepository.isHaveSessionToken()) {
-            this.#onError({errorCode:ErrorCodes.MISSING_TOKEN});
-        }
-        else {
-
-            if(company != null && company.id != null) {
+        if(company != null && company.id != null) {
                 
-                const token = SessionRepository.getSessionToken();
-                this.#onSelectCompany(company);
-                this.#onLoading(true);
-                const response =  await this.#makeRequest({
-                    token,
-                    companyId:company.id, 
-                    page:filters.page
+            const token = SessionRepository.getSessionToken();
+            this.#onSelectCompany(company);
+            this.#onLoading(true);
+            const response =  await this.#makeRequest({
+                token,
+                companyId:company.id, 
+                page:filters.page
+            });
+            
+            this.#onLoading(false);
+            if (response.status != 200)
+            {
+                
+                this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
+                    sourceErrorCode:response.data.app_status,
+                    sourceErrorMessage:response.data.message
                 });
-                
-                this.#onLoading(false);
-                if (response.status != 200)
-                {
-                    
-                    this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
-                        sourceErrorCode:response.data.app_status,
-                        sourceErrorMessage:response.data.message
-                    });
-                }
-                else 
-                {
-                    const responseData = response?.data?.data ? response?.data?.data : {};
-                    const documents =  responseData.documents ? responseData.documents:[];
-                    const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: documents.length}
-                    this.#onPageInfoData(pagination);
-                    this.#onLoadDocumentsData(documents);
-                }
+            }
+            else 
+            {
+                const responseData = response?.data?.data ? response?.data?.data : {};
+                const documents =  responseData.documents ? responseData.documents:[];
+                const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: documents.length}
+                this.#onPageInfoData(pagination);
+                this.#onLoadDocumentsData(documents);
             }
         }
     }

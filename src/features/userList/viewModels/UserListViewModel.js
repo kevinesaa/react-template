@@ -74,7 +74,7 @@ export default class UserListViewModel {
         this.#notifyPermissionsList({creteUsers, seeUsers,editUsers,deleteUsers });
     }
 
-    async requestUserList(company, filters) {
+    async requestUserList(company, params) {
         
         if(company != null && company.id != null) {
                 
@@ -84,7 +84,7 @@ export default class UserListViewModel {
             const response =  await this.#makeRequestUsers({
                 token,
                 companyId:company.id, 
-                page:filters.page
+                page:params.page
             });
             
             this.#onLoading(false);
@@ -97,7 +97,7 @@ export default class UserListViewModel {
                 });
             }
             else {
-                
+                console.log(response?.data?.data)
                 const responseData = response?.data?.data ? response?.data?.data : {};
                 const users =  responseData.user ? responseData.user:[];
                 const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: users.length}
@@ -129,7 +129,7 @@ export default class UserListViewModel {
 
     async #makeRequestUsers(requestModel) {
         
-        const company = `casa=${requestModel.companyId}`;
+        const company = `company=${requestModel.companyId}`;
         const page = `page=${requestModel.page}`;
         let url = `${API_END_POINTS.GET_USERS_LIST}?${company}&${page}`;
         

@@ -29,20 +29,48 @@ export default class DocumentsListView extends Component
         this.viewModel = props.viewModel;
        
         this.columns = [
-                {title:Strings.documents_list_column_id},
-                {title:Strings.documents_list_column_doc_type},    
-                {title:Strings.documents_list_column_doc_number},
-                {title:Strings.documents_list_column_date_conciliated},
-                {title:Strings.documents_list_column_status},
-                {title:Strings.documents_list_column_created_by},
-                {title:Strings.documents_list_column_zone},
-                {title:Strings.documents_list_column_document_date},
-                {title:Strings.documents_list_column_document_ref},
-                {title:Strings.documents_list_column_document_amount},
-                {title:Strings.documents_list_column_document_edit_amount},
-                {title:Strings.documents_list_column_document_bank_name}, 
-                {title:Strings.documents_list_column_document_bank_account_number},
-                {title:Strings.documents_list_column_document_client_code}
+                {
+                    id:'',
+                    name:Strings.documents_list_column_id},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_doc_type},    
+                {
+                    id:'',
+                    name:Strings.documents_list_column_doc_number},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_date_conciliated},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_status},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_created_by},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_zone},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_date},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_ref},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_amount},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_edit_amount},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_bank_name}, 
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_bank_account_number},
+                {
+                    id:'',
+                    name:Strings.documents_list_column_document_client_code}
             ];
     }
 

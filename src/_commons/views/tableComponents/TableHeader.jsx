@@ -10,7 +10,7 @@ export default function TableHeader(props) {
     return (
         <MaterialUI.TableHead>
             <MaterialUI.TableRow>
-                { columns.map((item,index ) => <TableHeaderCell key={index} title={item.title} />) }
+                { columns.map((item,index ) => <TableHeaderCell key={index} title={item.name} />) }
             </MaterialUI.TableRow>
         </MaterialUI.TableHead>
     );

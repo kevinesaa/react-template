@@ -1,6 +1,8 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
 import * as MaterialUI from "@mui/material";
+import DataTable from 'react-data-table-component';
+
 import Dropdown from "../../../_commons/views/Dropdown";
 import FeatureContainer from "../../../_commons/views/FeatureContainer";
 import Strings from "../../../_Resources/strings/strings";
@@ -12,16 +14,24 @@ import ROUTES from "../../../_commons/Routes";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 
+const COLUMNS_IDS = Object.freeze({
+    user_name:{table_id:'user_name',request_id:'nombre'},
+    user_last_name:{table_id:'user_last_name',request_id:'apellido'},
+    user_email:{table_id:'user_email',request_id:'correo'},
+});
+
 export default class UserListView extends Component 
 {
+    
     constructor(props) {
         super(props);
         this.state = {
                 loading:false, 
                 companies:[], 
                 currentCompany:'',
-                currentPage:0, 
+                currentPage:1, 
                 totalItems:0,
+                orderBy:{column:COLUMNS_IDS.user_name.request_id,order:'ASC'},
                 users:[],
                 showCreateNewButton:false,
                 goToCreateNew:false,
@@ -37,10 +47,28 @@ export default class UserListView extends Component
         this.showUserList = this.showUserList.bind(this);
         this.showPageInfo = this.showPageInfo.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
+        this.handleOnSortUsers = this.handleOnSortUsers.bind(this);
+        this.onItemClick = this.onItemClick.bind(this);
         this.columns = [
-            {title:Strings.text_name},
-            {title:Strings.text_last_name},    
-            {title:Strings.text_email},
+            { 
+                id:COLUMNS_IDS.user_name.table_id, 
+                name:Strings.text_name,
+                sortable: true,
+                selector:row=>row.NOMBRE,
+                
+            },
+            {
+                id:COLUMNS_IDS.user_last_name.table_id, 
+                name:Strings.text_last_name,
+                sortable: true,
+                selector:row=>row.APELLIDO,
+            },    
+            {
+                id:COLUMNS_IDS.user_email.table_id, 
+                name:Strings.text_email,
+                sortable: true,
+                selector:row=>row.CORREO,
+            },
         ];
     }
     
@@ -53,8 +81,13 @@ export default class UserListView extends Component
         this.setState({goToCreateNew:true})
     }
 
+
+    onItemClick(row, _) {
+        this.seeUserDetails(row);
+    }
+
     seeUserDetails(user) {
-        console.log("on click");
+        console.log("on user");
         console.log(user);
     }
 
@@ -62,7 +95,7 @@ export default class UserListView extends Component
         
         this.setState({
             totalItems:pageInfo.totalItems,
-            currentPage:pageInfo.currentPage-1
+            currentPage:pageInfo.currentPage
         });
     }
 
@@ -81,15 +114,26 @@ export default class UserListView extends Component
 
     handledOnSelectCompany(company) {
         
-        this.setState ({currentCompany : company, currentPage:0});
-        
-        this.viewModel.requestUserList(company,{page:1});
+        const page = 1;
+        const orderBy = this.state.orderBy;
+        this.setState ({currentCompany : company, currentPage:page});
+        this.viewModel.requestUserList(company,{page,orderBy});
     }
 
     handleOnChangePage( _ , newPage) {
         
         this.setState ({currentPage:newPage});
-        this.viewModel.requestUserList(this.state.currentCompany,{page:newPage + 1});
+        const orderBy = this.state.orderBy;
+        this.viewModel.requestUserList(this.state.currentCompany,{page:newPage,orderBy});
+    }
+
+    handleOnSortUsers(selectedColumn,order,_) {
+        
+        const page = 1;
+        const column = COLUMNS_IDS[selectedColumn.id].request_id;
+        const orderBy = {column,order};
+        this.setState ({orderBy,currentPage:page});
+        this.viewModel.requestUserList(this.state.currentCompany,{page,orderBy});
     }
 
     onLoadingChangeHandled(value) {
@@ -120,7 +164,7 @@ export default class UserListView extends Component
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
     }
 
-    render(){
+    render(){        
 
         if(this.state.goToCreateNew) {
             
@@ -181,40 +225,30 @@ export default class UserListView extends Component
                     {/** tabla */}
                     <MaterialUI.Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
                         <MaterialUI.Box gridColumn="span 12">
-                            <MaterialUI.TableContainer sx={{ maxHeight: 440 }}>
-                                <MaterialUI.Table
-                                    sx={{ minWidth: 700 }}
-                                    stickyHeader
-                                    aria-label="sticky table"
-                                    size="small">
-                                    
-                                    <TableHeader 
-                                        columns={this.columns} />
-                                    
-                                    {this.state.users.length === 0?<></>:
-                                        <MaterialUI.TableBody>
-                                            <UsersAdapter 
-                                                items={this.state.users}
-                                                onItemClickListener={this.seeUserDetails}/>
-                                        </MaterialUI.TableBody>
-                                    }
-                                </MaterialUI.Table>
-                                
-                            </MaterialUI.TableContainer>
+                           
+                            <DataTable 
+                                columns={this.columns}
+                                data={this.state.users}
+                                persistTableHead
+                                noDataComponent={""}
+                                striped
+                                highlightOnHover
+                                pointerOnHover
+                                pagination
+                                paginationPerPage={DOCUMENT_PER_PAGE}
+                                paginationServer 
+                                paginationTotalRows={this.state.totalItems}
+                                paginationComponentOptions={{
+                                    selectAllRowsItem:false,
+                                    noRowsPerPage:true
+                                }}
+                                sortServer
+                                defaultSortFieldId={COLUMNS_IDS.user_name.table_id}
+                                onSort={this.handleOnSortUsers}
+                                onChangePage={(page,totalRows) => this.handleOnChangePage(totalRows,page)}
+                                onRowClicked={this.onItemClick} />
+
                             
-                            {this.state.users.length === 0?<></>:
-                            <MaterialUI.TablePagination
-                                    rowsPerPageOptions={[
-                                        DOCUMENT_PER_PAGE,
-                                        //{ value: -1, label: "Todos" },
-                                    ]}
-                                    component="div" 
-                                    count={this.state.totalItems}
-                                    rowsPerPage={DOCUMENT_PER_PAGE}
-                                    page={this.state.currentPage}
-                                    onPageChange={this.handleOnChangePage}
-                                />
-                            }
                         </MaterialUI.Box>
                     </MaterialUI.Box>
 
