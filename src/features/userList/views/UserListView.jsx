@@ -6,9 +6,7 @@ import DataTable from 'react-data-table-component';
 import Dropdown from "../../../_commons/views/Dropdown";
 import FeatureContainer from "../../../_commons/views/FeatureContainer";
 import Strings from "../../../_Resources/strings/strings";
-import TableHeader from "../../../_commons/views/tableComponents/TableHeader";
 import Constants from "../../../_commons/Constants";
-import UsersAdapter from "./UsersAdapter";
 import ROUTES from "../../../_commons/Routes";
 
 
@@ -35,6 +33,8 @@ export default class UserListView extends Component
                 users:[],
                 showCreateNewButton:false,
                 goToCreateNew:false,
+                goToUserDetails:false,
+                userToSeeId:-1
             };
         this.viewModel = props.viewModel;
         this.onError = this.onError.bind(this);
@@ -81,14 +81,16 @@ export default class UserListView extends Component
         this.setState({goToCreateNew:true})
     }
 
-
     onItemClick(row, _) {
         this.seeUserDetails(row);
     }
 
     seeUserDetails(user) {
-        console.log("on user");
-        console.log(user);
+        
+        this.setState({
+            goToUserDetails:true,
+            userToSeeId:user.IDUSUARIO
+        });
     }
 
     showPageInfo(pageInfo) {
@@ -164,7 +166,15 @@ export default class UserListView extends Component
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
     }
 
-    render(){        
+    render() {        
+
+        if(this.state.goToUserDetails) {
+            const userId = this.state.userToSeeId;
+            if(userId > 0) 
+            {
+                return (<Navigate to={ROUTES.USER_DETAILS.replace(':id',userId)}/>);
+            }
+        }
 
         if(this.state.goToCreateNew) {
             
@@ -247,7 +257,6 @@ export default class UserListView extends Component
                                 onSort={this.handleOnSortUsers}
                                 onChangePage={(page,totalRows) => this.handleOnChangePage(totalRows,page)}
                                 onRowClicked={this.onItemClick} />
-
                             
                         </MaterialUI.Box>
                     </MaterialUI.Box>
