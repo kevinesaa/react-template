@@ -24,9 +24,11 @@ export default class UserListView extends Component
     constructor(props) {
         super(props);
         this.state = {
-                loading:false, 
+                loading:false,
+                firstRequest:false, 
                 companies:[], 
                 currentCompany:'',
+                itemsPerPage:DOCUMENT_PER_PAGE,
                 currentPage:1, 
                 totalItems:0,
                 orderBy:{column:COLUMNS_IDS.user_name.request_id,order:'ASC'},
@@ -96,6 +98,7 @@ export default class UserListView extends Component
     showPageInfo(pageInfo) {
         
         this.setState({
+            itemsPerPage:pageInfo.limit,
             totalItems:pageInfo.totalItems,
             currentPage:pageInfo.currentPage
         });
@@ -103,7 +106,7 @@ export default class UserListView extends Component
 
     showUserList(users) {
         
-        this.setState({users});
+        this.setState({firstRequest:true,users});
     }
 
     onPermissonsListener(permissions) {
@@ -240,12 +243,12 @@ export default class UserListView extends Component
                                 columns={this.columns}
                                 data={this.state.users}
                                 persistTableHead
-                                noDataComponent={""}
+                                noDataComponent={!this.state.firstRequest? "":(this.state.users.length > 0 ? this.state.users:Strings.text_not_data) }
                                 striped
                                 highlightOnHover
                                 pointerOnHover
                                 pagination
-                                paginationPerPage={DOCUMENT_PER_PAGE}
+                                paginationPerPage={this.state.itemsPerPage}
                                 paginationServer 
                                 paginationTotalRows={this.state.totalItems}
                                 paginationComponentOptions={{
