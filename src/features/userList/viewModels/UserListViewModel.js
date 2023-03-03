@@ -85,7 +85,11 @@ export default class UserListViewModel {
             const response =  await this.#makeRequestUsers({
                 token,
                 companyId:company.id, 
-                page:params.page
+                page:params.page,
+                orderByColumn:params.orderBy.column,
+                orderByType:params.orderBy.order,
+                search:params.search,
+                activeUsers:params.activateFilter
             });
             
             this.#onLoading(false);
@@ -133,8 +137,26 @@ export default class UserListViewModel {
         const company = `company=${requestModel.companyId}`;
         const page = `page=${requestModel.page}`;
         let url = `${API_END_POINTS.GET_USERS_LIST}?${company}&${page}`;
+        if(requestModel.orderByColumn) {
+            const orderBy =`orderBy=${requestModel.orderByColumn}`;
+            let orderType =`order=ASC`;
+            if(requestModel.orderByType) {
+                orderType =`order=${requestModel.orderByType}`;
+            }
+            url = `${url}&${orderBy}&${orderType}`;
+        }
         
+        if(requestModel.search) {
+            const filters = `filters=[nombre,apellido,correo]`;
+            const search = `search=${requestModel.search}`;
+            url = `${url}&${filters}&${search}`;
+        }
         
+        if(requestModel.activeUsers != null) {
+            const activateUsers = `active=${requestModel.activeUsers}`;
+            url = `${url}&${activateUsers}`;
+        }
+
         try{
 
             const response = await axios.get(url, { 
