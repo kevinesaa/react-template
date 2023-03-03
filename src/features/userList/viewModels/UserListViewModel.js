@@ -4,6 +4,7 @@ import SessionRepository from '../../../sessionManager/repository/SessionReposit
 import API_END_POINTS from '../../../_commons/Api';
 import ErrorCodes from '../../../_commons/InternalErrorCodes';
 import Permissions from '../../../_commons/Permissions';
+import delay from '../../../_commons/util/Delay';
 import ListListener from "../../../_commons/util/ListListenerContainer";
 
 
@@ -97,7 +98,7 @@ export default class UserListViewModel {
                 });
             }
             else {
-                console.log(response?.data?.data)
+                
                 const responseData = response?.data?.data ? response?.data?.data : {};
                 const users =  responseData.user ? responseData.user:[];
                 const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: users.length}

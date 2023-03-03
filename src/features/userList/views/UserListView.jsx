@@ -10,12 +10,20 @@ import Constants from "../../../_commons/Constants";
 import ROUTES from "../../../_commons/Routes";
 
 
+const FIRST_PAGE = 1;
+
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 
 const COLUMNS_IDS = Object.freeze({
     user_name:{table_id:'user_name',request_id:'nombre'},
     user_last_name:{table_id:'user_last_name',request_id:'apellido'},
     user_email:{table_id:'user_email',request_id:'correo'},
+});
+
+const SELECT_ACTIVES = Object.freeze({
+    all:{text:'Todos',value:null},
+    activates:{text:'Activos',value:true},
+    inactivate:{text:'Inactivos',value:false}
 });
 
 export default class UserListView extends Component 
@@ -32,6 +40,8 @@ export default class UserListView extends Component
                 currentPage:1, 
                 totalItems:0,
                 orderBy:{column:COLUMNS_IDS.user_name.request_id,order:'ASC'},
+                search:'',
+                searchActive:SELECT_ACTIVES.all,
                 users:[],
                 showCreateNewButton:false,
                 goToCreateNew:false,
@@ -49,7 +59,9 @@ export default class UserListView extends Component
         this.showUserList = this.showUserList.bind(this);
         this.showPageInfo = this.showPageInfo.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
-        this.handleOnSortUsers = this.handleOnSortUsers.bind(this);
+        this.handledOnSortUsers = this.handledOnSortUsers.bind(this);
+        this.handleOnSearch = this.handleOnSearch.bind(this);
+        this.handledOnSerchStatus = this.handledOnSerchStatus.bind(this);
         this.onItemClick = this.onItemClick.bind(this);
         this.columns = [
             { 
@@ -73,9 +85,17 @@ export default class UserListView extends Component
             },
         ];
     }
+
+    onPermissonsListener(permissions) {
+        
+        this.setState({
+            showCreateNewButton:permissions.creteUsers.length
+        });
+        this.setCompanies(permissions.seeUsers);
+    }
     
     setCompanies(companies) {
-        
+
         this.setState({companies:companies.map(it => {return {id:it.id,text:it.name}})});
     }
 
@@ -109,36 +129,45 @@ export default class UserListView extends Component
         this.setState({firstRequest:true,users});
     }
 
-    onPermissonsListener(permissions) {
+    handleOnChangePage( _ , page) {
         
-        this.setState({
-            showCreateNewButton:permissions.creteUsers.length
+        const orderBy = this.state.orderBy;
+        const search = this.state.search;
+        const company = this.state.currentCompany;
+        const activateFilter = this.state.searchActive.value;
+        this.setState ({currentPage:page});
+        this.viewModel.requestUserList(company,{page,search,activateFilter,orderBy});
+    }
+
+    handleOnSearch(event) {
+        const search = event.target.value;
+        this.setState ({search}, () => {
+            this.handleOnChangePage('',FIRST_PAGE); 
         });
-        this.setCompanies(permissions.seeUsers);
     }
 
     handledOnSelectCompany(company) {
         
-        const page = 1;
-        const orderBy = this.state.orderBy;
-        this.setState ({currentCompany : company, currentPage:page});
-        this.viewModel.requestUserList(company,{page,orderBy});
+        this.setState ({currentCompany : company}, () => {
+            this.handleOnChangePage('',FIRST_PAGE); 
+        });
     }
 
-    handleOnChangePage( _ , newPage) {
+    handledOnSortUsers(selectedColumn,order,_) {
         
-        this.setState ({currentPage:newPage});
-        const orderBy = this.state.orderBy;
-        this.viewModel.requestUserList(this.state.currentCompany,{page:newPage,orderBy});
-    }
-
-    handleOnSortUsers(selectedColumn,order,_) {
-        
-        const page = 1;
         const column = COLUMNS_IDS[selectedColumn.id].request_id;
         const orderBy = {column,order};
-        this.setState ({orderBy,currentPage:page});
-        this.viewModel.requestUserList(this.state.currentCompany,{page,orderBy});
+        this.setState ({orderBy}, () => {
+            this.handleOnChangePage('',FIRST_PAGE); 
+        });
+    }
+
+    handledOnSerchStatus(event) {
+        
+        const searchActive = event.target.value;
+        this.setState ({searchActive}, () => {
+            this.handleOnChangePage('',FIRST_PAGE); 
+        });
     }
 
     onLoadingChangeHandled(value) {
@@ -187,8 +216,7 @@ export default class UserListView extends Component
         return (
             <>
                 <FeatureContainer 
-                    title_text={Strings.user_list_title}
-                    loading={this.state.loading}>
+                    title_text={Strings.user_list_title}>
 
                     {/* filters */}
                     <MaterialUI.Box sx={{ p: 2 }}>
@@ -205,7 +233,6 @@ export default class UserListView extends Component
                                     id="drop-company" 
                                     label={Strings.text_companies}
                                     onSelectItem={this.handledOnSelectCompany}
-                                    defaultValue={this.state.currentCompany}
                                     value={this.state.currentCompany}
                                     items={this.state.companies} />
                                 
@@ -235,6 +262,50 @@ export default class UserListView extends Component
                         </MaterialUI.Stack>
                     </MaterialUI.Box>
                     
+                    {/**Search fields*/}
+                    <MaterialUI.Box sx={{ ml: 3 }}>
+                        
+                        <MaterialUI.Stack direction={{ xs: "column", sm: "row" }}>
+                            
+                            <MaterialUI.TextField
+                                sx={{marginRight:3}}
+                                label={Strings.text_search}
+                                value={this.state.search}
+                                onChange={this.handleOnSearch} 
+                                size="small"
+                                noValidate
+                                autoComplete="off"/>
+
+                            <MaterialUI.FormControl>
+                                <MaterialUI.InputLabel id={`label-drop-status`}>
+                                    {Strings.text_status}
+                                </MaterialUI.InputLabel>
+                                <MaterialUI.Select
+                                    id="drop-status"
+                                    labelId={`label-drop-status`}
+                                    sx={{minWidth: 100}}
+                                    size="small"
+                                    label={Strings.text_status}
+                                    onChange={this.handledOnSerchStatus}
+                                    defaultValue={SELECT_ACTIVES.all}
+                                    autoWidth={true}>
+                                { 
+                                    Object.values(SELECT_ACTIVES).map((item,index) => {
+                                        return (
+                                            <MaterialUI.MenuItem 
+                                                key={`select-status-${index}`} 
+                                                value={item}>
+                                                        {item.text}
+                                            </MaterialUI.MenuItem>)
+                                    })    
+                                }
+                                </MaterialUI.Select>
+                            </MaterialUI.FormControl>
+                            
+
+                        </MaterialUI.Stack>
+                    </MaterialUI.Box>
+
                     {/** tabla */}
                     <MaterialUI.Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
                         <MaterialUI.Box gridColumn="span 12">
@@ -242,6 +313,8 @@ export default class UserListView extends Component
                             <DataTable 
                                 columns={this.columns}
                                 data={this.state.users}
+                                progressPending={this.state.loading}
+                                progressComponent={<MaterialUI.CircularProgress/> }
                                 persistTableHead
                                 noDataComponent={!this.state.firstRequest? "":(this.state.users.length > 0 ? this.state.users:Strings.text_not_data) }
                                 striped
@@ -257,7 +330,7 @@ export default class UserListView extends Component
                                 }}
                                 sortServer
                                 defaultSortFieldId={COLUMNS_IDS.user_name.table_id}
-                                onSort={this.handleOnSortUsers}
+                                onSort={this.handledOnSortUsers}
                                 onChangePage={(page,totalRows) => this.handleOnChangePage(totalRows,page)}
                                 onRowClicked={this.onItemClick} />
                             
