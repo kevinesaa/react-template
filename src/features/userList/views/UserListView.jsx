@@ -1,4 +1,5 @@
-import { Component } from "react";
+import { Component, useState } from "react";
+
 import { Navigate } from "react-router-dom";
 import * as MaterialUI from "@mui/material";
 import DataTable from 'react-data-table-component';
@@ -18,13 +19,34 @@ const COLUMNS_IDS = Object.freeze({
     user_name:{table_id:'user_name',request_id:'nombre'},
     user_last_name:{table_id:'user_last_name',request_id:'apellido'},
     user_email:{table_id:'user_email',request_id:'correo'},
+    user_status:{table_id:'user_status',request_id:'activo'}
 });
 
 const SELECT_ACTIVES = Object.freeze({
-    all:{text:'Todos',value:null},
-    activates:{text:'Activos',value:true},
-    inactivate:{text:'Inactivos',value:false}
+    all:{text:Strings.text_all,value:null},
+    activates:{text:Strings.text_activates,value:true},
+    inactivate:{text:Strings.text_inactivates,value:false}
 });
+
+const StatusComponent = (props) => {
+                        
+    const [status, setStatus] = useState(props.status);
+
+    const onChangeStatusListner = ()=> {
+        
+        if(props.onChangeStatusListner) {
+            props.onChangeStatusListner(props.index,setStatus)
+        }
+    };
+
+    return (<>
+        <MaterialUI.Switch 
+            onChange={onChangeStatusListner}
+            disabled={!props.enable}
+            checked={status}
+            size="small"/>
+    </>);
+}
 
 export default class UserListView extends Component 
 {
@@ -46,9 +68,12 @@ export default class UserListView extends Component
                 showCreateNewButton:false,
                 goToCreateNew:false,
                 goToUserDetails:false,
-                userToSeeId:-1
+                userToSeeId:-1, 
+                companiesWhereCanDelete:[],
+                canDelete:false,
             };
         this.viewModel = props.viewModel;
+        this.desactivateUserViewModel = props.desactivateUserViewModel;
         this.onError = this.onError.bind(this);
         this.onLoadingChangeHandled = this.onLoadingChangeHandled.bind(this);
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
@@ -63,6 +88,7 @@ export default class UserListView extends Component
         this.handleOnSearch = this.handleOnSearch.bind(this);
         this.handledOnSerchStatus = this.handledOnSerchStatus.bind(this);
         this.onItemClick = this.onItemClick.bind(this);
+        this.handledOnDesactivateUser = this.handledOnDesactivateUser.bind(this);
         this.columns = [
             { 
                 id:COLUMNS_IDS.user_name.table_id, 
@@ -83,14 +109,33 @@ export default class UserListView extends Component
                 sortable: true,
                 selector:row=>row.CORREO,
             },
+            {
+                id:COLUMNS_IDS.user_status.table_id,
+                name:Strings.text_status,
+                sortable: false,
+                selector:row=>row.ACTIVO,
+                cell:(row,index) => {
+
+                    return <>
+                        <StatusComponent 
+                            index={index}
+                            onChangeStatusListner={this.handledOnDesactivateUser}
+                            status={row.ACTIVO !== 0}
+                            enable={this.state.canDelete}
+                        />
+                    </>
+                }
+            }
         ];
     }
 
     onPermissonsListener(permissions) {
         
         this.setState({
-            showCreateNewButton:permissions.creteUsers.length
+            showCreateNewButton:permissions.creteUsers.length > 0,
+            companiesWhereCanDelete:permissions.deleteUsers
         });
+        
         this.setCompanies(permissions.seeUsers);
     }
     
@@ -129,6 +174,36 @@ export default class UserListView extends Component
         this.setState({firstRequest:true,users});
     }
 
+    handledOnDesactivateUser(userIndex, toogleFunction) {
+        
+        if(!this.state.canDelete) {
+           //todo show message, not have permissions 
+        }
+        else {
+            
+            const users = [...this.state.users];
+            const user = {...users[userIndex]};
+            const currentStatus = user.ACTIVO !== 0;
+            user.ACTIVO = user.ACTIVO !== 0 ? 0 : 1;
+            users[userIndex] = user;
+            
+            const onFailRequest = () => {
+                user.ACTIVO = user.ACTIVO !== 0 ? 0 : 1;
+                users[userIndex] = user;
+                this.setState({users},() => {
+                    toogleFunction(currentStatus);
+                    this.desactivateUserViewModel.unsubscribeOnError(onFailRequest);
+                });
+            }
+            
+            this.setState({users}, () => {
+                toogleFunction(!currentStatus);
+                this.desactivateUserViewModel.subscribeOnError(onFailRequest);
+                this.desactivateUserViewModel.desactivateUser(user);
+            });
+        }
+    }
+
     handleOnChangePage( _ , page) {
         
         const orderBy = this.state.orderBy;
@@ -148,7 +223,8 @@ export default class UserListView extends Component
 
     handledOnSelectCompany(company) {
         
-        this.setState ({currentCompany : company}, () => {
+        const canDelete = this.state.companiesWhereCanDelete.length > 0 &&  this.state.companiesWhereCanDelete.map(it => it.id).includes(company.id);
+        this.setState ({currentCompany : company, canDelete }, () => {
             this.handleOnChangePage('',FIRST_PAGE); 
         });
     }
@@ -186,7 +262,7 @@ export default class UserListView extends Component
         this.viewModel.subscribeOnRequestPermissionsList(this.onPermissonsListener);
         this.viewModel.subscribeOnLoadUsersList(this.showUserList);
         this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
-        
+
         this.viewModel.requestPermissionsList();
     }
 
@@ -200,6 +276,7 @@ export default class UserListView extends Component
 
     render() {        
 
+        
         if(this.state.goToUserDetails) {
             const userId = this.state.userToSeeId;
             if(userId > 0) 

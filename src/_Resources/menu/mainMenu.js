@@ -14,6 +14,7 @@ import Permissions from "../../_commons/Permissions";
 import AddNewUserViewModel from "../../features/userAddNew/viewModels/AddNewUserViewModel";
 import UserDetailsViewModel from "../../features/userDetails/viewModels/UserDetailsViewModel";
 import UserListViewModel from "../../features/userList/viewModels/UserListViewModel";
+import DesactivateUserViewModel from "../../features/usersDesactivate/viewModels/DesactivateUserViewModel";
 
 
 
@@ -32,7 +33,7 @@ export default Object.freeze([
         isSideBarItem:true,
         isNeedPermission:true,
         permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_SEE_USERS ], 
-        page: <UserListView viewModel={new UserListViewModel()}/>, 
+        page: <UserListView viewModel={new UserListViewModel()} desactivateUserViewModel={new DesactivateUserViewModel()}/>, 
         title:Strings.side_bar_users, 
         icon:""
     },
