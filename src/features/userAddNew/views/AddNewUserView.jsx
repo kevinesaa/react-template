@@ -130,7 +130,7 @@ export default class AddNewUserView extends Component
 
         return (<> 
             <FeatureContainer 
-                title_text={"Nuevo Usuario"}
+                title_text={Strings.new_user_title}
                 loading={this.state.loading}>
                 
                 
@@ -177,14 +177,14 @@ export default class AddNewUserView extends Component
                             
                             <MaterialUI.Grid align="center" item sx={{ mt: 4 }}>
                                 <MaterialUI.Typography variant="subtitles">
-                                    <b>{"Permisos por compañia"}</b>
+                                    <b>{Strings.user_details_permissions_by_company_title}</b>
                                 </MaterialUI.Typography>
                             </MaterialUI.Grid>
                             <MaterialUI.Divider />
 
                             <MaterialUI.FormControl fullWidth>
                                 <MaterialUI.InputLabel id={`label-select-permissions`}>
-                                    {"Permisos"}
+                                    {Strings.text_permissions}
                                 </MaterialUI.InputLabel>
                                 <MaterialUI.Select 
                                     required={true}
@@ -235,7 +235,7 @@ export default class AddNewUserView extends Component
                                                         color: "white.main",
                                                         textTransform: "none"}}>
 
-                                                            {"Cancelar"}
+                                                            {Strings.text_cancel}
                                                 </MaterialUI.Button>
                                             </MaterialUI.Paper> 
                                         </MaterialUI.Grid>
