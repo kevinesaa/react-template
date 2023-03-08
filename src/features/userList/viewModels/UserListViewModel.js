@@ -146,9 +146,12 @@ export default class UserListViewModel {
         }
         
         if(requestModel.search) {
-            const filters = `filters=[nombre,apellido,correo]`;
-            const search = `search=${requestModel.search}`;
-            url = `${url}&${filters}&${search}`;
+            const searchText = requestModel.search.trim();
+            if(searchText) {
+                const filters = `filters=[nombre,apellido,correo]`;
+                const search = `search=${searchText}`;
+                url = `${url}&${filters}&${search}`;
+            }
         }
         
         if(requestModel.activeUsers != null) {

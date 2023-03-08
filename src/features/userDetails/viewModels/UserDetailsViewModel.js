@@ -49,7 +49,7 @@ export default class UserDetailsViewModel {
         const sessionCompaniesByPermissions = this.#getSessionCompaniesPermissions();
         const token = SessionRepository.getSessionToken();
         const permissionResponse = await this.#makeRequestPermissionsList({token});
-       
+        
         if (permissionResponse.status != 200) {
             this.#onLoading(false);
             this.#onError({errorCode:"fail_request"});
@@ -60,8 +60,11 @@ export default class UserDetailsViewModel {
             
             const permissionsList = 
                 permissionResponse.data.data
+                    .filter(item => sessionCompaniesByPermissions.editUsers.map(company => company.id).includes(item.IDCASA))    
                     .sort((a,b) => a.IDCASA - b.IDCASA);
-            this.#allPermissions = permissionsList;
+
+            this.#allPermissions = permissionResponse.data.data;
+            
             this.#onLoading(false);
             this.listenerOnPermissionsList.execute(permissionsList);
         }
@@ -98,6 +101,7 @@ export default class UserDetailsViewModel {
             NOMBRE:"nombre usuario",
             ACTIVO: 1,
             permissions:[],
+            companies:[],
         }}}
     }
 

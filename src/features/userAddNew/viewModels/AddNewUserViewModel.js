@@ -58,6 +58,7 @@ export default class AddNewUserViewModel {
     async requestPermissionsList() {
 
         this.#onLoading(true);
+        
         const token = SessionRepository.getSessionToken();
         const response = await this.#makeRequestPermissionsList({token});
        
