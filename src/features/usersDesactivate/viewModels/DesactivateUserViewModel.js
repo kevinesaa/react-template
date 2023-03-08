@@ -44,7 +44,7 @@ export default class DesactivateUserViewModel {
         this.#listenerOnOperationCompletedSuccessful.subscribe(func);
     }
 
-    async desactivateUser(user) {
+    async desactivateUser(userId) {
         this.#listenerOnLoading.execute(true);
         await delay(200);
         this.#listenerOnLoading.execute(false);

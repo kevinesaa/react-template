@@ -51,7 +51,7 @@ export default Object.freeze([
         isSideBarItem:false,
         isNeedPermission:true,
         permissions:[Permissions.ID_ALL_PERMISSIONS, Permissions.ID_SEE_USERS], 
-        page: <UserDetailsView viewModel={new UserDetailsViewModel()}/>, 
+        page: <UserDetailsView viewModel={new UserDetailsViewModel()} desactivateUserViewModel={new DesactivateUserViewModel()} />, 
         title:"Detalles del usuario", 
         icon:""
     },

@@ -55,15 +55,15 @@ export default class AddNewUserView extends Component
     }
 
     handledEmailInput(email) {
-        this.setState({email})
+        this.setState({email});
     }
 
     handledNameInput(name) {
-        this.setState({name})
+        this.setState({name});
     }
 
     handledLastNameInput(lastName) {
-        this.setState({lastName})
+        this.setState({lastName});
     }
 
     onHandleSelectPermission(event) {
@@ -189,6 +189,7 @@ export default class AddNewUserView extends Component
                                 <MaterialUI.Select 
                                     required={true}
                                     labelId={`label-select-permissions`}
+                                    label={Strings.text_permissions}
                                     multiple={true}
                                     onChange={this.onHandleSelectPermission}
                                     renderValue={this.renderSelectedPermissions}

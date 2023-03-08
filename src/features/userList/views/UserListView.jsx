@@ -24,8 +24,8 @@ const COLUMNS_IDS = Object.freeze({
 
 const SELECT_ACTIVES = Object.freeze({
     all:{text:Strings.text_all,value:null},
-    activates:{text:Strings.text_activates,value:true},
-    inactivate:{text:Strings.text_inactivates,value:false}
+    activates:{text:Strings.text_activate_plural,value:true},
+    inactivate:{text:Strings.text_inactivate_plural,value:false}
 });
 
 const StatusComponent = (props) => {
@@ -40,11 +40,15 @@ const StatusComponent = (props) => {
     };
 
     return (<>
-        <MaterialUI.Switch 
-            onChange={onChangeStatusListner}
-            disabled={!props.enable}
-            checked={status}
-            size="small"/>
+        <MaterialUI.Stack alignItems="center" direction={{ xs: "column", sm: "row" }}>
+            <MaterialUI.Typography variant="body2">{Strings.text_inactivate_singular}</MaterialUI.Typography>
+            <MaterialUI.Switch 
+                onChange={onChangeStatusListner}
+                disabled={!props.enable}
+                checked={status}
+                size="small"/>
+            <MaterialUI.Typography variant="body2">{Strings.text_activate_singular }</MaterialUI.Typography>
+        </MaterialUI.Stack>
     </>);
 }
 
@@ -184,11 +188,11 @@ export default class UserListView extends Component
             const users = [...this.state.users];
             const user = {...users[userIndex]};
             const currentStatus = user.ACTIVO !== 0;
-            user.ACTIVO = user.ACTIVO !== 0 ? 0 : 1;
+            user.ACTIVO = user.ACTIVO ^ 1;
             users[userIndex] = user;
             
             const onFailRequest = () => {
-                user.ACTIVO = user.ACTIVO !== 0 ? 0 : 1;
+                user.ACTIVO = user.ACTIVO ^ 1;
                 users[userIndex] = user;
                 this.setState({users},() => {
                     toogleFunction(currentStatus);
@@ -199,7 +203,7 @@ export default class UserListView extends Component
             this.setState({users}, () => {
                 toogleFunction(!currentStatus);
                 this.desactivateUserViewModel.subscribeOnError(onFailRequest);
-                this.desactivateUserViewModel.desactivateUser(user);
+                this.desactivateUserViewModel.desactivateUser(user.IDUSUARIO);
             });
         }
     }
