@@ -39,6 +39,7 @@ const Strings = Object.freeze({
     text_companies:"Compañias",
     text_electronic_document:"Recibo", 
     text_cash_document:"Anexo", 
+    text_created_date:"Fecha de creación",
     loading:"Cargando...",
     login_title:"Monitor de conciliaciones",
     login_subtitle:"Inicio de sesión",

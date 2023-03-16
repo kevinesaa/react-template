@@ -1,6 +1,7 @@
 import { Component } from "react";
 
 import * as MaterialUI from "@mui/material";
+import DataTable from 'react-data-table-component';
 import Dropdown from "../../../_commons/views/Dropdown";
 import TableHeader from "../../../_commons/views/tableComponents/TableHeader";
 import DocumentsTableAdapter from "./DocumentsTableAdapter";
@@ -11,11 +12,40 @@ import Constants from "../../../_commons/Constants";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 
+const COLUMNS_IDS = Object.freeze({
+    created_at:{table_id:'created_at',request_id:'create_date'},
+    document_id:{table_id:'document_id', request_id:'id'},
+    doc_type:{table_id:'doc_type',request_id:'doc_type'},
+    doc_number:{table_id:'doc_number',request_id:'document_number'},
+    conciliation_date:{table_id:'conciliation_date',request_id:'conciliation_at'},
+    status:{table_id:'status',request_id:'status'},
+    created_by:{table_id:'created_by',request_id:'user_creation'},
+    zone:{table_id:'zone',request_id:'zone_name'},
+    document_date:{table_id:'document_date',request_id:'doc_date'},
+    document_reference:{table_id:'document_reference',request_id:'doc_ref'},
+    document_amount:{table_id:'document_amount',request_id:'amount'},
+    document_edit_amount:{table_id:'document_edit_amount',request_id:'edit_amount'},
+    bank:{table_id:'bank',request_id:'bank_name'},
+    bank_acc_number:{table_id:'bank_acc_number',request_id:'bank_account'},
+    client_code:{table_id:'client_code',request_id:'client_code'},
+});
+
 export default class DocumentsListView extends Component 
 {
     constructor(props) {
         super(props);
-        this.state = {currentDocument:{},seeDetail:false, loading:false, companies:[], currentCompany: '',currentPage:0, totalItems:0,documents:[]};
+        this.state = {
+            currentDocument:{},
+            firstRequest:false,
+            seeDetail:false, 
+            loading:false, 
+            companies:[], 
+            documents:[],
+            currentCompany: '',
+            currentPage:1, 
+            totalItems:0,
+            itemsPerPage:DOCUMENT_PER_PAGE
+        };
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.handleOnDocumentClickListener = this.handleOnDocumentClickListener.bind(this);
@@ -30,51 +60,75 @@ export default class DocumentsListView extends Component
        
         this.columns = [
                 {
-                    id:'',
-                    name:Strings.documents_list_column_id},
+                    id:COLUMNS_IDS.created_at.table_id,
+                    name:Strings.text_created_date,
+                    sortable: true,
+                    selector:row=>row.create_at,
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_doc_type},    
+                    id:COLUMNS_IDS.document_id.table_id,
+                    name:Strings.documents_list_column_id,
+                    sortable: true,
+                    selector:row=>row.id_documento,
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_doc_number},
+                    id:COLUMNS_IDS.doc_type.table_id,
+                    name:Strings.documents_list_column_doc_type
+                },    
                 {
-                    id:'',
-                    name:Strings.documents_list_column_date_conciliated},
+                    id:COLUMNS_IDS.doc_number.table_id,
+                    name:Strings.documents_list_column_doc_number
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_status},
+                    id:COLUMNS_IDS.conciliation_date.table_id,
+                    name:Strings.documents_list_column_date_conciliated
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_created_by},
+                    
+                    id:COLUMNS_IDS.status.table_id,
+                    name:Strings.documents_list_column_status
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_zone},
+                    
+                    id:COLUMNS_IDS.created_by.table_id,
+                    name:Strings.documents_list_column_created_by
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_date},
+                    id:COLUMNS_IDS.zone.table_id,
+                    name:Strings.documents_list_column_zone
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_ref},
+                    id:COLUMNS_IDS.document_date.table_id,
+                    name:Strings.documents_list_column_document_date
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_amount},
+                    id:COLUMNS_IDS.document_reference.table_id,
+                    name:Strings.documents_list_column_document_ref
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_edit_amount},
+                    id:COLUMNS_IDS.document_amount.table_id,
+                    name:Strings.documents_list_column_document_amount
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_bank_name}, 
+                    id:COLUMNS_IDS.document_edit_amount.table_id,
+                    name:Strings.documents_list_column_document_edit_amount
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_bank_account_number},
+                    id:COLUMNS_IDS.bank.table_id,
+                    name:Strings.documents_list_column_document_bank_name
+                }, 
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_client_code}
+                    id:COLUMNS_IDS.bank_acc_number.table_id,
+                    name:Strings.documents_list_column_document_bank_account_number
+                },
+                {
+                    id:COLUMNS_IDS.client_code.table_id,
+                    name:Strings.documents_list_column_document_client_code
+                }
             ];
     }
 
-    showSelectCompany(company){
+    showSelectCompany(company) {
         
         this.setState ({currentCompany : company});
     }
@@ -192,40 +246,31 @@ export default class DocumentsListView extends Component
                 {/* Tabla */}
                 <MaterialUI.Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
                     <MaterialUI.Box gridColumn="span 12">
-                        <MaterialUI.TableContainer sx={{ maxHeight: 440 }}>
-                            <MaterialUI.Table
-                                sx={{ minWidth: 700 }}
-                                stickyHeader
-                                aria-label="sticky table"
-                                size="small">
-                                
-                                <TableHeader columns={this.columns}></TableHeader>
-                                
-                                {this.state.documents.length === 0?<></>:
-                                    <MaterialUI.TableBody>
-                                        <DocumentsTableAdapter
-                                            onItemClickListener={this.handleOnDocumentClickListener}
-                                            items={this.state.documents}
-                                        />
-                                    </MaterialUI.TableBody>
-                                }
-                            </MaterialUI.Table>
-                            
-                        </MaterialUI.TableContainer>
                         
-                        {this.state.documents.length === 0?<></>:
-                           <MaterialUI.TablePagination
-                                rowsPerPageOptions={[
-                                    DOCUMENT_PER_PAGE,
-                                    //{ value: -1, label: "Todas" },
-                                ]}
-                                component="div" 
-                                count={this.state.totalItems}
-                                rowsPerPage={DOCUMENT_PER_PAGE}
-                                page={this.state.currentPage}
-                                onPageChange={this.handleOnChangePage}
-                            />
-                        }
+                        <DataTable 
+                            columns={this.columns}
+                            data={this.state.documents}
+                            progressPending={this.state.loading}
+                            progressComponent={<MaterialUI.CircularProgress/> }
+                            persistTableHead
+                            noDataComponent={!this.state.firstRequest? "": (this.state.documents.length > 0 ? this.state.documents:Strings.text_not_data) }
+                            striped
+                            highlightOnHover
+                            pointerOnHover 
+                            pagination
+                            paginationPerPage={this.state.itemsPerPage}
+                            paginationTotalRows={this.state.totalItems}
+                            paginationServer 
+                            paginationComponentOptions={{
+                                selectAllRowsItem:false,
+                                noRowsPerPage:true
+                            }}
+                            sortServer
+                            defaultSortFieldId={COLUMNS_IDS.created_at.table_id}
+                            onSort={this.handledOnSortUsers}
+                            onChangePage={(page,totalRows) => this.handleOnChangePage(totalRows,page)}
+                            onRowClicked={this.handleOnDocumentClickListener} />
+                        
                     </MaterialUI.Box>
                 </MaterialUI.Box>
             </MaterialUI.Paper>
@@ -239,7 +284,7 @@ export default class DocumentsListView extends Component
                     company={this.state.currentCompany}
                 />
             }
-            <LoadingScreen loading={this.state.loading}/>
+            
         </>);
     }
 }
