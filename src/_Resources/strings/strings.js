@@ -1,6 +1,6 @@
 import Constants from "../../_commons/Constants";
 import Permissions from "../../_commons/Permissions";
-
+import DocumentStatusIds from "../../_commons/DocumentStatusIds";
 
 const documents = "Documentos";
 const users = "Usuarios";
@@ -19,7 +19,14 @@ const currencyStrings = {};
 currencyStrings[Constants.ID_BOLIVAR_CURRENCY] = "VEB";
 currencyStrings[Constants.ID_DOLLAR_CURRENCY] = "USD";
 
+const docStatusTexts = {};
+docStatusTexts[DocumentStatusIds.INCOMING] = "Por procesar";
+docStatusTexts[DocumentStatusIds.ON_IMPORT_PENDING] = "Por importar en XRT";
+docStatusTexts[DocumentStatusIds.ON_CONCILIATION_COMPLETE] = "Conciliado en XRT";
+docStatusTexts[DocumentStatusIds.ON_PUBLISH] = "Transmitido a SotfLand";
+
 const Strings = Object.freeze({
+    text_status_by_id:docStatusTexts,
     text_currencies_by_id:currencyStrings,
     text_yes:"Sí",
     text_no:"No",

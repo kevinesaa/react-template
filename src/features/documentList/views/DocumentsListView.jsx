@@ -98,7 +98,7 @@ export default class DocumentsListView extends Component
                     
                     id:COLUMNS_IDS.status.table_id,
                     name:Strings.documents_list_column_status,
-                    selector:row => row.estatus // todo
+                    selector:row => Strings.text_status_by_id[ row.estatus ]
                 },
                 {
                     id:COLUMNS_IDS.created_by_code.table_id,
@@ -108,7 +108,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.created_by_name.table_id,
                     name:Strings.documents_list_column_created_by_name,
-                    selector:row => row.detail?.USUARIO_CREACION
+                    selector:row => 
                 },*/
                 {
                     id:COLUMNS_IDS.zone.table_id,
