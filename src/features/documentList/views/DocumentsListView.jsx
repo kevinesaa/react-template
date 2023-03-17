@@ -9,6 +9,7 @@ import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../../_commons/Constants";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
+const FIRST_PAGE = 1;
 
 const COLUMNS_IDS = Object.freeze({
     created_at:{table_id:'created_at',request_id:'create_date'},
@@ -44,8 +45,17 @@ export default class DocumentsListView extends Component
             currentCompany: '',
             currentPage:1, 
             totalItems:0,
-            itemsPerPage:DOCUMENT_PER_PAGE
+            itemsPerPage:DOCUMENT_PER_PAGE,
+            filters_list:[{
+                id:"doc_id_filter",
+                name:Strings.documents_list_column_id,
+                component:<MaterialUI.TextField onChange={event =>  this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,event.target.value)}/>
+                
+            },{id:"status_filter",name:"Estatus",component:<></>},{id:"doc_type_filter",name:"Tipo",component:<></>}],
+            selected_filters:[],
+            orderBy:{column:COLUMNS_IDS.created_at.request_id,order:'DESC'},
         };
+
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.handleOnDocumentClickListener = this.handleOnDocumentClickListener.bind(this);
@@ -57,6 +67,10 @@ export default class DocumentsListView extends Component
         this.showLoadingDocuments = this.showLoadingDocuments.bind(this);
         this.showLoadingOptionsDocuments = this.showLoadingOptionsDocuments.bind(this);
         this.amountColumnSelector = this.amountColumnSelector.bind(this);
+        this.handledOnSortDocuments = this.handledOnSortDocuments.bind(this);
+        this.onHandleSelectFilters = this.onHandleSelectFilters.bind(this);
+        this.renderSelectedFilters = this.renderSelectedFilters.bind(this);
+        this.handledOnFilterChange = this.handledOnFilterChange.bind(this);
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
        
@@ -64,7 +78,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.created_at.table_id,
                     name:Strings.text_created_date,
-                    sortable: false,
+                    sortable: true,
                     selector:row=>row.create_at.substring(0,10),
                 },
                 {
@@ -194,12 +208,29 @@ export default class DocumentsListView extends Component
         
         this.setState({documents:documents});
     }
+    
+    handledOnFilterChange(column,filterValue) {
+        console.log(column)
+        console.log(filterValue)
+    }
+
+    onHandleSelectFilters(event) {
+        const prevState = this.state.selected_filters;
+        const value = event.target.value;
+        this.setState({selected_filters:value},() => {
+            const newState = this.state.selected_filters;
+            if(newState.length < prevState.length) {
+                this.handleOnChangePage('',FIRST_PAGE);
+            }
+        });
+    }
 
     showPageInfo(pageInfo) {
         
         this.setState({
+            itemsPerPage:pageInfo.limit,
             totalItems:pageInfo.totalItems,
-            currentPage:pageInfo.currentPage-1
+            currentPage:pageInfo.currentPage
         });
     }
     
@@ -217,14 +248,28 @@ export default class DocumentsListView extends Component
     }
     
     handledOnSelectCompany(company) {
-        this.setState ({currentCompany : company, currentPage:0});
-        this.viewModel.requestDocuments(company,{page:1});
+        
+        this.setState ({currentCompany : company }, () =>{
+            
+            this.handleOnChangePage ( 0,FIRST_PAGE);
+        });
+    }
+
+    handledOnSortDocuments(selectedColumn,order,_) {
+        
+        const column = COLUMNS_IDS[selectedColumn.id].request_id;
+        const orderBy = {column,order};
+        this.setState ({orderBy}, () => {
+            this.handleOnChangePage('',FIRST_PAGE); 
+        });
     }
 
     handleOnChangePage ( _,newPage) {
         
         this.setState ({currentPage:newPage});
-        this.viewModel.requestDocuments(this.state.currentCompany,{page:newPage + 1});
+        const orderBy = this.state.orderBy;
+        //{page,filters,orderBy}
+        this.viewModel.requestDocuments(this.state.currentCompany,{page:newPage,orderBy });
     }
 
     handleOnDocumentClickListener(document) {
@@ -254,6 +299,21 @@ export default class DocumentsListView extends Component
         this.viewModel.unsubscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.unsubscribeOnSelectCompany(this.showSelectCompany);
+    }
+
+    renderSelectedFilters(selectedValues) {
+        
+        return(<>
+            <MaterialUI.Box
+                sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                
+                {selectedValues.map((item) => (
+                    <MaterialUI.Chip
+                        key={item.id}
+                        label={item.name}/>
+                ))}
+            </MaterialUI.Box>
+        </>);
     }
 
     render(){
@@ -295,12 +355,53 @@ export default class DocumentsListView extends Component
                             
                             
                         </MaterialUI.Grid>
-
+                        
                     </MaterialUI.Stack>
                 </MaterialUI.Box>
-                
+                <MaterialUI.Box sx={{ ml: 3 }}>
+                        
+
+                        <MaterialUI.Stack direction={{ xs: "column"}}>
+                            {
+                                this.state.selected_filters.length > 0 &&
+                                this.state.selected_filters.map(item => {
+                                    return item.component
+                                })
+                            }
+
+                        </MaterialUI.Stack>                        
+
+                        <MaterialUI.FormControl sx={{ minWidth: 150 }}>
+                            <MaterialUI.InputLabel id={`label-select-general-documents-filters`}>
+                                {Strings.text_filters}
+                            </MaterialUI.InputLabel>
+                            <MaterialUI.Select 
+                                size="small"
+                                autoWidth
+                                labelId={`label-select-general-documents-filters`}
+                                label={Strings.text_filters}
+                                multiple={true}
+                                onChange={this.onHandleSelectFilters}
+                                renderValue={this.renderSelectedFilters}
+                                value={this.state.selected_filters}>
+
+                                {this.state.filters_list.length > 0 &&
+                                    this.state.filters_list.map(item => {
+                                            return(
+                                                <MaterialUI.MenuItem key={item.id} value={item}>
+                                                    {item.name}
+                                                </MaterialUI.MenuItem>
+                                            )}
+                                        )
+                                    
+                                }
+                            </MaterialUI.Select>
+                        </MaterialUI.FormControl>
+
+                </MaterialUI.Box>
                 {/* Tabla */}
                 <MaterialUI.Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
+                    
                     <MaterialUI.Box gridColumn="span 12">
                         
                         <DataTable 
@@ -322,8 +423,9 @@ export default class DocumentsListView extends Component
                                 noRowsPerPage:true
                             }}
                             sortServer
+                            defaultSortAsc={false}
                             defaultSortFieldId={COLUMNS_IDS.created_at.table_id}
-                            onSort={this.handledOnSortUsers}
+                            onSort={this.handledOnSortDocuments}
                             onChangePage={(page,totalRows) => this.handleOnChangePage(totalRows,page)}
                             onRowClicked={this.handleOnDocumentClickListener} />
                         

@@ -1,6 +1,6 @@
-import CashDocumentTableRow from "./tableRowHolder/CashDocumentTableRow";
-import ElectronicDocumentTableRow from "./tableRowHolder/ElectronicDocumentTableRow";
-import Constants from "../../../_commons/Constants";
+import CashDocumentTableRow from "../tableRowHolder/CashDocumentTableRow";
+import ElectronicDocumentTableRow from "../tableRowHolder/ElectronicDocumentTableRow";
+import Constants from "../../../../_commons/Constants";
 
 
 export default function DocumentsTableAdapter(props) 
