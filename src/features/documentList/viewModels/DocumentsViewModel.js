@@ -14,7 +14,7 @@ export default class DocumentsViewModel
 {
     constructor() {
         this.selectedCompany = undefined;
-        this.listenerOnLoading = new ListListener();
+        this.listenerOnLoadingDocuments = new ListListener();
         this.listenerShowError = new ListListener();
         this.listenerOnDocumentsData = new ListListener();
         this.listenerOnCompanyData = new ListListener();
@@ -22,12 +22,12 @@ export default class DocumentsViewModel
         this.listenerOnPageInfoData = new ListListener();
     }
 
-    unsubscribeOnLoading(func) {
-        this.listenerOnLoading.unsubscribe(func);
+    unsubscribeOnLoadingDocuments(func) {
+        this.listenerOnLoadingDocuments.unsubscribe(func);
     }
 
-    subscribeOnLoading(func) {
-        this.listenerOnLoading.subscribe(func);
+    subscribeOnLoadingDocuments(func) {
+        this.listenerOnLoadingDocuments.subscribe(func);
     }
 
     unsubscribeOnShowError(func) {
@@ -70,7 +70,7 @@ export default class DocumentsViewModel
         this.listenerOnPageInfoData.subscribe(func);
     }
 
-    async requestCompanies() {
+    async requestDocumentOptions() {
         
         const companies = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_DOCUMENTS_PERMISSION]);
         
@@ -83,14 +83,14 @@ export default class DocumentsViewModel
                 
             const token = SessionRepository.getSessionToken();
             this.#onSelectCompany(company);
-            this.#onLoading(true);
+            this.#onLoadingDocuments(true);
             const response =  await this.#makeRequest({
                 token,
                 companyId:company.id, 
                 page:filters.page
             });
             
-            this.#onLoading(false);
+            this.#onLoadingDocuments(false);
             if (response.status != 200)
             {
                 
@@ -110,8 +110,8 @@ export default class DocumentsViewModel
         }
     }
     
-    #onLoading(value) {
-        this.listenerOnLoading.execute(value);
+    #onLoadingDocuments(value) {
+        this.listenerOnLoadingDocuments.execute(value);
     }
     
     #onError(error) {

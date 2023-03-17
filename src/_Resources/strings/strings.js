@@ -1,4 +1,6 @@
+import Constants from "../../_commons/Constants";
 import Permissions from "../../_commons/Permissions";
+
 
 const documents = "Documentos";
 const users = "Usuarios";
@@ -13,8 +15,12 @@ permissionsStrings[Permissions.ID_UPDATE_USERS] = "Editar usuarios";
 permissionsStrings[Permissions.ID_DISABLE_USERS] = "Desactivar usuarios";
 permissionsStrings[Permissions.ID_SEE_DOCUMENTS_PERMISSION] = "Ver documentos";
 
+const currencyStrings = {};
+currencyStrings[Constants.ID_BOLIVAR_CURRENCY] = "VEB";
+currencyStrings[Constants.ID_DOLLAR_CURRENCY] = "USD";
 
 const Strings = Object.freeze({
+    text_currencies_by_id:currencyStrings,
     text_yes:"Sí",
     text_no:"No",
     text_hide:"Ocultar",
@@ -61,7 +67,8 @@ const Strings = Object.freeze({
     documents_list_column_date_conciliated:"Fecha Conciliación",
     documents_list_column_status:"Estatus",
     documents_list_column_zone:"Ruta",
-    documents_list_column_created_by:"Creado por",
+    documents_list_column_created_by_code:"Código de Vendedor",
+    documents_list_column_created_by_name:"Vendedor",
     documents_list_column_document_date:"Fecha Documento",
     documents_list_column_document_ref:"Referencia",
     documents_list_column_document_amount:"Monto",

@@ -3,8 +3,6 @@ import { Component } from "react";
 import * as MaterialUI from "@mui/material";
 import DataTable from 'react-data-table-component';
 import Dropdown from "../../../_commons/views/Dropdown";
-import TableHeader from "../../../_commons/views/tableComponents/TableHeader";
-import DocumentsTableAdapter from "./DocumentsTableAdapter";
 import DocumentDetailView from "../../documentDetails/views/DocumentDetailView";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import Strings from "../../../_Resources/strings/strings";
@@ -15,11 +13,12 @@ const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 const COLUMNS_IDS = Object.freeze({
     created_at:{table_id:'created_at',request_id:'create_date'},
     document_id:{table_id:'document_id', request_id:'id'},
-    doc_type:{table_id:'doc_type',request_id:'doc_type'},
+    doc_type:{table_id:'doc_type',request_id:'doc_type_id'},
     doc_number:{table_id:'doc_number',request_id:'document_number'},
     conciliation_date:{table_id:'conciliation_date',request_id:'conciliation_at'},
     status:{table_id:'status',request_id:'status'},
-    created_by:{table_id:'created_by',request_id:'user_creation'},
+    created_by_code:{table_id:'created_by_code',request_id:'user_creation'},
+    created_by_name:{table_id:'created_by_name',request_id:'seller_name'},
     zone:{table_id:'zone',request_id:'zone_name'},
     document_date:{table_id:'document_date',request_id:'doc_date'},
     document_reference:{table_id:'document_reference',request_id:'doc_ref'},
@@ -38,7 +37,8 @@ export default class DocumentsListView extends Component
             currentDocument:{},
             firstRequest:false,
             seeDetail:false, 
-            loading:false, 
+            loading_options:false,
+            loading_documents:false,
             companies:[], 
             documents:[],
             currentCompany: '',
@@ -54,7 +54,9 @@ export default class DocumentsListView extends Component
         this.showDocumentsList = this.showDocumentsList.bind(this);
         this.showSelectCompany = this.showSelectCompany.bind(this);
         this.showPageInfo = this.showPageInfo.bind(this);
-        this.showLoading = this.showLoading.bind(this);
+        this.showLoadingDocuments = this.showLoadingDocuments.bind(this);
+        this.showLoadingOptionsDocuments = this.showLoadingOptionsDocuments.bind(this);
+        this.amountColumnSelector = this.amountColumnSelector.bind(this);
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
        
@@ -62,70 +64,120 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.created_at.table_id,
                     name:Strings.text_created_date,
-                    sortable: true,
-                    selector:row=>row.create_at,
+                    sortable: false,
+                    selector:row=>row.create_at.substring(0,10),
                 },
                 {
                     id:COLUMNS_IDS.document_id.table_id,
                     name:Strings.documents_list_column_id,
-                    sortable: true,
+                    sortable: false,
                     selector:row=>row.id_documento,
                 },
                 {
                     id:COLUMNS_IDS.doc_type.table_id,
-                    name:Strings.documents_list_column_doc_type
+                    name:Strings.documents_list_column_doc_type,
+                    selector: (row) => { 
+                        return ( row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ?
+                                    Strings.text_electronic_document:
+                                    row.tipo_documento == Constants.DOC_TYPE_RECIBO_ID?
+                                    Strings.text_cash_document:""
+                            )
+                        }
                 },    
                 {
                     id:COLUMNS_IDS.doc_number.table_id,
-                    name:Strings.documents_list_column_doc_number
+                    name:Strings.documents_list_column_doc_number,
+                    selector:row => row.detail.id_documento_afv
                 },
                 {
                     id:COLUMNS_IDS.conciliation_date.table_id,
-                    name:Strings.documents_list_column_date_conciliated
+                    name:Strings.documents_list_column_date_conciliated,
+                    selector:row => row.estatus < 3?"-":row.fecha_conciliacion?`${row.fecha_conciliacion.substring(0,10)}`: `${row.update_at.substring(0,10)}`
                 },
                 {
                     
                     id:COLUMNS_IDS.status.table_id,
-                    name:Strings.documents_list_column_status
+                    name:Strings.documents_list_column_status,
+                    selector:row => row.estatus // todo
                 },
                 {
-                    
-                    id:COLUMNS_IDS.created_by.table_id,
-                    name:Strings.documents_list_column_created_by
-                },
+                    id:COLUMNS_IDS.created_by_code.table_id,
+                    name:Strings.documents_list_column_created_by_code,
+                    selector:row => row.usuario_creacion
+                },/*
+                {
+                    id:COLUMNS_IDS.created_by_name.table_id,
+                    name:Strings.documents_list_column_created_by_name,
+                    selector:row => row.detail?.USUARIO_CREACION
+                },*/
                 {
                     id:COLUMNS_IDS.zone.table_id,
-                    name:Strings.documents_list_column_zone
+                    name:Strings.documents_list_column_zone,
+                    selector:row => row.detail?.NOMBRE_ZONA
                 },
                 {
                     id:COLUMNS_IDS.document_date.table_id,
-                    name:Strings.documents_list_column_document_date
+                    name:Strings.documents_list_column_document_date,
+                    selector:row => row.detail?.FECHA_DOCUMENTO.substring(0,10)
                 },
                 {
                     id:COLUMNS_IDS.document_reference.table_id,
-                    name:Strings.documents_list_column_document_ref
+                    name:Strings.documents_list_column_document_ref,
+                    selector:row => row.referencia? row.referencia:row.detail?.REFERENCIA
                 },
                 {
                     id:COLUMNS_IDS.document_amount.table_id,
-                    name:Strings.documents_list_column_document_amount
+                    name:Strings.documents_list_column_document_amount,
+                    selector:row => this.amountColumnSelector(row)
                 },
                 {
                     id:COLUMNS_IDS.document_edit_amount.table_id,
-                    name:Strings.documents_list_column_document_edit_amount
+                    name:Strings.documents_list_column_document_edit_amount,
+                    selector:row => row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? "-" : row.detail.MONTO_EDITADO == null ? "-":row.detail.MONTO_EDITADO
                 },
                 {
                     id:COLUMNS_IDS.bank.table_id,
-                    name:Strings.documents_list_column_document_bank_name
+                    name:Strings.documents_list_column_document_bank_name,
+                    selector:row => row.detail.BANCO
                 }, 
                 {
                     id:COLUMNS_IDS.bank_acc_number.table_id,
-                    name:Strings.documents_list_column_document_bank_account_number
+                    name:Strings.documents_list_column_document_bank_account_number,
+                    selector:row => row.detail.NUMERO_CUENTA_BANCARIA
                 },
                 {
                     id:COLUMNS_IDS.client_code.table_id,
-                    name:Strings.documents_list_column_document_client_code
+                    name:Strings.documents_list_column_document_client_code,
+                    selector:row => row.detail.CLIENTES.map(c => c.CODIGO_DE_CLIENTE).join(" ; ")
                 }
             ];
+    }
+
+    amountColumnSelector(row) {
+        
+        let amount = row.monto != null? row.monto:null;
+        let currency = row.moneda_transaccion;
+
+        if(currency == null) {
+            currency = Strings.text_currencies_by_id[row.detail?.ID_MONEDA];
+        }
+        
+        if (amount == null) {
+            
+            if(row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID) {
+                amount = row.detail?.MONTO;
+            }
+
+            if(row.tipo_documento == Constants.DOC_TYPE_RECIBO_ID) {
+                amount = row.detail?.MONTO_DOLAR;
+                if( row.detail.ID_MONEDA != Constants.ID_DOLLAR_CURRENCY)
+                {
+                    amount = row.detail.MONTO_LOCAL;
+                }
+            }
+        }
+        
+        return `${Number(amount).toFixed(2)} ${currency}`;
     }
 
     showSelectCompany(company) {
@@ -151,8 +203,12 @@ export default class DocumentsListView extends Component
         });
     }
     
-    showLoading(value) {
-        this.setState ({loading : value});
+    showLoadingOptionsDocuments(value) {
+        this.setState ({loading_options : value});
+    }
+
+    showLoadingDocuments(value) {
+        this.setState ({loading_documents : value});
     }
 
     onError(error) {
@@ -182,18 +238,18 @@ export default class DocumentsListView extends Component
 
     componentDidMount() {
         this.viewModel.subscribeOnCompanyData(this.setCompanies);
-        this.viewModel.subscribeOnLoading(this.showLoading);
+        this.viewModel.subscribeOnLoadingDocuments(this.showLoadingDocuments);
         this.viewModel.subscribeOnShowError(this.onError);
         this.viewModel.subscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.subscribeOnSelectCompany(this.showSelectCompany);
         
-        this.viewModel.requestCompanies();
+        this.viewModel.requestDocumentOptions();
     }
 
     componentWillUnmount() {
         this.viewModel.unsubscribeOnCompanyData(this.setCompanies);
-        this.viewModel.unsubscribeOnLoading(this.showLoading);
+        this.viewModel.unsubscribeOnLoadingDocuments(this.showLoadingDocuments);
         this.viewModel.unsubscribeOnShowError(this.onError);
         this.viewModel.unsubscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
@@ -250,7 +306,7 @@ export default class DocumentsListView extends Component
                         <DataTable 
                             columns={this.columns}
                             data={this.state.documents}
-                            progressPending={this.state.loading}
+                            progressPending={this.state.loading_documents}
                             progressComponent={<MaterialUI.CircularProgress/> }
                             persistTableHead
                             noDataComponent={!this.state.firstRequest? "": (this.state.documents.length > 0 ? this.state.documents:Strings.text_not_data) }
@@ -275,7 +331,7 @@ export default class DocumentsListView extends Component
                 </MaterialUI.Box>
             </MaterialUI.Paper>
             {
-                !this.state.seeDetail?<></>:
+                this.state.seeDetail &&
                 <DocumentDetailView
                     viewModel={this.props.detailViewModel}
                     handleClose={this.handleOnCloseDetails}
@@ -285,6 +341,8 @@ export default class DocumentsListView extends Component
                 />
             }
             
+            <LoadingScreen loading={this.state.loading_options}/>
+
         </>);
     }
 }
