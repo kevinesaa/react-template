@@ -22,8 +22,11 @@ currencyStrings[Constants.ID_DOLLAR_CURRENCY] = "USD";
 const docStatusTexts = {};
 docStatusTexts[DocumentStatusIds.INCOMING] = "Por procesar";
 docStatusTexts[DocumentStatusIds.ON_IMPORT_PENDING] = "Por importar en XRT";
+docStatusTexts[DocumentStatusIds.ON_CONCILIATION_PENDING] = "Por conciliar en XRT";
+docStatusTexts[DocumentStatusIds.ON_CONCILIATION_DELETED] = "Eliminado en XRT";
 docStatusTexts[DocumentStatusIds.ON_CONCILIATION_COMPLETE] = "Conciliado en XRT";
 docStatusTexts[DocumentStatusIds.ON_PUBLISH] = "Transmitido a SotfLand";
+docStatusTexts[DocumentStatusIds.ON_DESTINATION] = "Encontrado en SotfLand";
 
 const Strings = Object.freeze({
     text_status_by_id:docStatusTexts,

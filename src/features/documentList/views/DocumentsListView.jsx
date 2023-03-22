@@ -8,6 +8,7 @@ import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../../_commons/Constants";
 import DropdownFilter from "../../../_commons/views/DropdownFilter";
+import statusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/StatusFilterValuesBuilder";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 const FIRST_PAGE = 1;
@@ -36,6 +37,7 @@ const COLUMNS_IDS = Object.freeze({
 export default class DocumentsListView extends Component 
 {
     constructor(props) {
+        
         super(props);
         this.state = {
             currentDocument:{},
@@ -49,14 +51,15 @@ export default class DocumentsListView extends Component
             currentPage:FIRST_PAGE, 
             totalItems:0,
             itemsPerPage:DOCUMENT_PER_PAGE,
-
-            filters_list:[{
-                id:"doc_id_filter",
-                name:Strings.documents_list_column_id,
-                component:<MaterialUI.TextField 
-                    size="small"
-                    onChange={event =>  this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,event.target.value)}
-                    />
+            //id_documento, estatus, tipo, id_documento_afv, usuario_creacion, fecha_creacion
+            filters_list:[
+                {
+                    id:"doc_id_filter",
+                    name:Strings.documents_list_column_id,
+                    component:<MaterialUI.TextField 
+                        size="small"
+                        onChange={event =>  this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,event.target.value)}
+                        />
                 
                 },
                 {
@@ -66,7 +69,7 @@ export default class DocumentsListView extends Component
                         labelId={'filter-status'}
                         label={"Estatus"}
                         defaultIndex={0}
-                        values={[{id:null, name:"Todos"},{id:-1,name:"Eliminados"}]}
+                        values={statusFilterValuesBuilder()}
                         onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.status.table_id,e.id)}
                         />
                 },
