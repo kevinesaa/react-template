@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 
 import * as MaterialUI from "@mui/material";
 import DataTable from 'react-data-table-component';
@@ -7,6 +7,7 @@ import DocumentDetailView from "../../documentDetails/views/DocumentDetailView";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../../_commons/Constants";
+import DropdownFilter from "../../../_commons/views/DropdownFilter";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 const FIRST_PAGE = 1;
@@ -30,6 +31,8 @@ const COLUMNS_IDS = Object.freeze({
     client_code:{table_id:'client_code',request_id:'client_code'},
 });
 
+
+
 export default class DocumentsListView extends Component 
 {
     constructor(props) {
@@ -43,15 +46,33 @@ export default class DocumentsListView extends Component
             companies:[], 
             documents:[],
             currentCompany: '',
-            currentPage:1, 
+            currentPage:FIRST_PAGE, 
             totalItems:0,
             itemsPerPage:DOCUMENT_PER_PAGE,
+
             filters_list:[{
                 id:"doc_id_filter",
                 name:Strings.documents_list_column_id,
-                component:<MaterialUI.TextField onChange={event =>  this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,event.target.value)}/>
+                component:<MaterialUI.TextField 
+                    size="small"
+                    onChange={event =>  this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,event.target.value)}
+                    />
                 
-            },{id:"status_filter",name:"Estatus",component:<></>},{id:"doc_type_filter",name:"Tipo",component:<></>}],
+                },
+                {
+                    id:"status_filter",
+                    name:"Estatus",
+                    component:<DropdownFilter
+                        labelId={'filter-status'}
+                        label={"Estatus"}
+                        defaultIndex={0}
+                        values={[{id:null, name:"Todos"},{id:-1,name:"Eliminados"}]}
+                        onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.status.table_id,e.id)}
+                        />
+                },
+                        
+            
+            {id:"doc_type_filter",name:"Tipo",component:<></>}],
             selected_filters:[],
             orderBy:{column:COLUMNS_IDS.created_at.request_id,order:'DESC'},
         };
@@ -215,11 +236,14 @@ export default class DocumentsListView extends Component
     }
 
     onHandleSelectFilters(event) {
+        
         const prevState = this.state.selected_filters;
         const value = event.target.value;
         this.setState({selected_filters:value},() => {
             const newState = this.state.selected_filters;
             if(newState.length < prevState.length) {
+                const filterToClean = prevState.filter(item => !newState.map(it => it.id).includes(item.id));
+                filterToClean.forEach(item => item.component);
                 this.handleOnChangePage('',FIRST_PAGE);
             }
         });
@@ -365,7 +389,8 @@ export default class DocumentsListView extends Component
                             {
                                 this.state.selected_filters.length > 0 &&
                                 this.state.selected_filters.map(item => {
-                                    return item.component
+                                    const c = <Fragment key={item.id}>{item.component}</Fragment>;
+                                    return c;
                                 })
                             }
 

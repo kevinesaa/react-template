@@ -41,7 +41,7 @@ const Strings = Object.freeze({
     text_search:"Buscar",
     text_status:"Estatus",
     text_permissions:"Permisos",
-    text_filters:"Filtros",
+    text_filters:"Filtrar",
     text_all:"Todos",
     text_activate_singular:"Activo",
     text_inactivate_singular:"Inactivo",
