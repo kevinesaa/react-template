@@ -9,28 +9,32 @@ import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../../_commons/Constants";
 import DropdownFilter from "../../../_commons/views/DropdownFilter";
 import statusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/StatusFilterValuesBuilder";
+import documentStatusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/documentTypeFilterValuesBuilder";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 const FIRST_PAGE = 1;
 
-const COLUMNS_IDS = Object.freeze({
-    created_at:{table_id:'created_at',request_id:'create_date'},
-    document_id:{table_id:'document_id', request_id:'id'},
-    doc_type:{table_id:'doc_type',request_id:'doc_type_id'},
-    doc_number:{table_id:'doc_number',request_id:'document_number'},
-    conciliation_date:{table_id:'conciliation_date',request_id:'conciliation_at'},
-    status:{table_id:'status',request_id:'status'},
-    created_by_code:{table_id:'created_by_code',request_id:'user_creation'},
-    created_by_name:{table_id:'created_by_name',request_id:'seller_name'},
-    zone:{table_id:'zone',request_id:'zone_name'},
-    document_date:{table_id:'document_date',request_id:'doc_date'},
-    document_reference:{table_id:'document_reference',request_id:'doc_ref'},
-    document_amount:{table_id:'document_amount',request_id:'amount'},
-    document_edit_amount:{table_id:'document_edit_amount',request_id:'edit_amount'},
-    bank:{table_id:'bank',request_id:'bank_name'},
-    bank_acc_number:{table_id:'bank_acc_number',request_id:'bank_account'},
-    client_code:{table_id:'client_code',request_id:'client_code'},
-});
+const COLUMNS_IDS = Object.freeze([
+    {table_id:'created_at',request_id:'create_date'},
+    {table_id:'document_id', request_id:'id'},
+    {table_id:'doc_type',request_id:'doc_type_id'},
+    {table_id:'doc_number',request_id:'document_number'},
+    {table_id:'conciliation_date',request_id:'conciliation_at'},
+    {table_id:'status',request_id:'status'},
+    {table_id:'created_by_code',request_id:'user_creation'},
+    {table_id:'created_by_name',request_id:'seller_name'},
+    {table_id:'zone',request_id:'zone_name'},
+    {table_id:'document_date',request_id:'doc_date'},
+    {table_id:'document_reference',request_id:'doc_ref'},
+    {table_id:'document_amount',request_id:'amount'},
+    {table_id:'document_edit_amount',request_id:'edit_amount'},
+    {table_id:'bank',request_id:'bank_name'},
+    {table_id:'bank_acc_number',request_id:'bank_account'},
+    {table_id:'client_code',request_id:'client_code'},
+].reduce((acc,item) => {
+    acc[item.table_id]=item;
+    return acc;
+}, {} ));
 
 
 
@@ -51,35 +55,81 @@ export default class DocumentsListView extends Component
             currentPage:FIRST_PAGE, 
             totalItems:0,
             itemsPerPage:DOCUMENT_PER_PAGE,
-            //id_documento, estatus, tipo, id_documento_afv, usuario_creacion, fecha_creacion
+            // usuario_creacion, fecha_creacion
             filters_list:[
                 {
                     id:"doc_id_filter",
                     name:Strings.documents_list_column_id,
-                    component:<MaterialUI.TextField 
+                    defualtValue:'',
+                    component:<MaterialUI.TextField
+                        label={'id documento'}
                         size="small"
-                        onChange={event =>  this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,event.target.value)}
+                        type={'number'}
+                        InputProps={{ inputProps: { min: 1, type: 'number',} }}
+                        onChange={event =>  {
+                            let value = event.target.value;
+                            if( !isNaN(value) ) {
+                                value = parseInt(value,10);
+                                if(value < 1 ) {
+                                    value = '';
+                                }
+                            }
+                            
+                            this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,value)
+                        }}
                         />
                 
                 },
                 {
                     id:"status_filter",
-                    name:"Estatus",
+                    name:Strings.text_status,
+                    defualtValue:statusFilterValuesBuilder()[0],
                     component:<DropdownFilter
                         labelId={'filter-status'}
-                        label={"Estatus"}
+                        label={Strings.text_status}
                         defaultIndex={0}
                         values={statusFilterValuesBuilder()}
                         onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.status.table_id,e.id)}
                         />
                 },
-                        
-            
-            {id:"doc_type_filter",name:"Tipo",component:<></>}],
+                {
+                    id:"doc_type_filter",
+                    name:Strings.documents_list_column_doc_type,
+                    defualtValue:documentStatusFilterValuesBuilder()[0],
+                    component:<DropdownFilter 
+                        labelId={'filter-doc-type'} 
+                        label={Strings.documents_list_column_doc_type} 
+                        defaultIndex={0} 
+                        values={documentStatusFilterValuesBuilder()}
+                        onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.doc_type.table_id,e.id)}/>
+                },
+                {
+                    id:"doc_id_afv_document_filter",
+                    name:Strings.documents_list_column_doc_number,
+                    defualtValue:'',
+                    component:<MaterialUI.TextField
+                        label={Strings.documents_list_column_doc_number}
+                        size="small"
+                        onChange={event => this.handledOnFilterChange(COLUMNS_IDS.doc_number.table_id,event.target.value)}
+                        />
+                
+                },
+                {
+                    id:"doc_filter",
+                    name:Strings.documents_list_column_created_by_code,
+                    defualtValue:'',
+                    component:<MaterialUI.TextField
+                        label={Strings.documents_list_column_created_by_code}
+                        size="small"
+                        onChange={event => this.handledOnFilterChange(COLUMNS_IDS.created_by_code.table_id,event.target.value)}
+                        />
+                
+                },
+            ],
             selected_filters:[],
             orderBy:{column:COLUMNS_IDS.created_at.request_id,order:'DESC'},
         };
-
+        
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.handleOnDocumentClickListener = this.handleOnDocumentClickListener.bind(this);
