@@ -28,7 +28,7 @@ export default Object.freeze([
         title:Strings.side_bar_documents, 
         icon:""
     },
-    {
+    /*{
         path:ROUTES.USERS,
         isSideBarItem:true,
         isNeedPermission:true,
@@ -63,5 +63,5 @@ export default Object.freeze([
         page: <UserProfileContainer userViewModel={new UserProfileViewModel()} changePassViewModel={new ChangePasswordViewModel()}/>, 
         title:Strings.side_bar_user_profile, 
         icon:""
-    }
+    }*/
 ]);

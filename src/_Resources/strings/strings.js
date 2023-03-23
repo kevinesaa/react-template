@@ -63,7 +63,7 @@ const Strings = Object.freeze({
     login_user_name_label:emailText,
     login_user_password_label:"Contraseña",
     login_button:"Ingresar",
-    login_fotgot_pass_button:"Olvide mi contraseña",
+    login_forgot_pass_button:"Olvide mi contraseña",
     forgot_pass_view_title:"Solicitar cambio de contraseña",
     forgot_pass_view_successful_message:"Su solicitud ha sido envida satisfactoriamente. Por favor, revise su correo electrónico.",
     side_bar_documents:documents,
