@@ -1,4 +1,6 @@
+import Constants from "../../_commons/Constants";
 import Permissions from "../../_commons/Permissions";
+import DocumentStatusIds from "../../_commons/DocumentStatusIds";
 
 const documents = "Documentos";
 const users = "Usuarios";
@@ -13,8 +15,22 @@ permissionsStrings[Permissions.ID_UPDATE_USERS] = "Editar usuarios";
 permissionsStrings[Permissions.ID_DISABLE_USERS] = "Desactivar usuarios";
 permissionsStrings[Permissions.ID_SEE_DOCUMENTS_PERMISSION] = "Ver documentos";
 
+const currencyStrings = {};
+currencyStrings[Constants.ID_BOLIVAR_CURRENCY] = "VEB";
+currencyStrings[Constants.ID_DOLLAR_CURRENCY] = "USD";
+
+const docStatusTexts = {};
+docStatusTexts[DocumentStatusIds.INCOMING] = "Por procesar";
+docStatusTexts[DocumentStatusIds.ON_IMPORT_PENDING] = "Por importar en XRT";
+docStatusTexts[DocumentStatusIds.ON_CONCILIATION_PENDING] = "Por conciliar en XRT";
+docStatusTexts[DocumentStatusIds.ON_CONCILIATION_DELETED] = "Eliminado en XRT";
+docStatusTexts[DocumentStatusIds.ON_CONCILIATION_COMPLETE] = "Conciliado en XRT";
+docStatusTexts[DocumentStatusIds.ON_PUBLISH] = "Transmitido a SotfLand";
+docStatusTexts[DocumentStatusIds.ON_DESTINATION] = "Encontrado en SotfLand";
 
 const Strings = Object.freeze({
+    text_status_by_id:docStatusTexts,
+    text_currencies_by_id:currencyStrings,
     text_yes:"Sí",
     text_no:"No",
     text_hide:"Ocultar",
@@ -28,6 +44,7 @@ const Strings = Object.freeze({
     text_search:"Buscar",
     text_status:"Estatus",
     text_permissions:"Permisos",
+    text_filters:"Filtrar",
     text_all:"Todos",
     text_activate_singular:"Activo",
     text_inactivate_singular:"Inactivo",
@@ -39,6 +56,7 @@ const Strings = Object.freeze({
     text_companies:"Compañias",
     text_electronic_document:"Recibo", 
     text_cash_document:"Anexo", 
+    text_created_date:"Fecha de creación",
     loading:"Cargando...",
     login_title:"Monitor de conciliaciones",
     login_subtitle:"Inicio de sesión",
@@ -60,7 +78,8 @@ const Strings = Object.freeze({
     documents_list_column_date_conciliated:"Fecha Conciliación",
     documents_list_column_status:"Estatus",
     documents_list_column_zone:"Ruta",
-    documents_list_column_created_by:"Creado por",
+    documents_list_column_created_by_code:"Código de Vendedor",
+    documents_list_column_created_by_name:"Vendedor",
     documents_list_column_document_date:"Fecha Documento",
     documents_list_column_document_ref:"Referencia",
     documents_list_column_document_amount:"Monto",

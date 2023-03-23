@@ -1,21 +1,135 @@
-import { Component } from "react";
+import { Component, Fragment } from "react";
 
 import * as MaterialUI from "@mui/material";
+import DataTable from 'react-data-table-component';
 import Dropdown from "../../../_commons/views/Dropdown";
-import TableHeader from "../../../_commons/views/tableComponents/TableHeader";
-import DocumentsTableAdapter from "./DocumentsTableAdapter";
 import DocumentDetailView from "../../documentDetails/views/DocumentDetailView";
 import LoadingScreen from "../../../_commons/views/LoadingScreen";
 import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../../_commons/Constants";
+import DropdownFilter from "../../../_commons/views/DropdownFilter";
+import statusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/StatusFilterValuesBuilder";
+import documentStatusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/documentTypeFilterValuesBuilder";
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
+const FIRST_PAGE = 1;
+
+const COLUMNS_IDS = Object.freeze([
+    {table_id:'created_at',request_id:'create_date'},
+    {table_id:'document_id', request_id:'id'},
+    {table_id:'doc_type',request_id:'doc_type_id'},
+    {table_id:'doc_number',request_id:'document_number'},
+    {table_id:'conciliation_date',request_id:'conciliation_at'},
+    {table_id:'status',request_id:'status'},
+    {table_id:'created_by_code',request_id:'user_creation'},
+    {table_id:'created_by_name',request_id:'seller_name'},
+    {table_id:'zone',request_id:'zone_name'},
+    {table_id:'document_date',request_id:'doc_date'},
+    {table_id:'document_reference',request_id:'doc_ref'},
+    {table_id:'document_amount',request_id:'amount'},
+    {table_id:'document_edit_amount',request_id:'edit_amount'},
+    {table_id:'bank',request_id:'bank_name'},
+    {table_id:'bank_acc_number',request_id:'bank_account'},
+    {table_id:'client_code',request_id:'client_code'},
+].reduce((acc,item) => {
+    acc[item.table_id]=item;
+    return acc;
+}, {} ));
+
+
 
 export default class DocumentsListView extends Component 
 {
     constructor(props) {
+        
         super(props);
-        this.state = {currentDocument:{},seeDetail:false, loading:false, companies:[], currentCompany: '',currentPage:0, totalItems:0,documents:[]};
+        this.state = {
+            currentDocument:{},
+            firstRequest:false,
+            seeDetail:false, 
+            loading_options:false,
+            loading_documents:false,
+            companies:[], 
+            documents:[],
+            currentCompany: '',
+            currentPage:FIRST_PAGE, 
+            totalItems:0,
+            itemsPerPage:DOCUMENT_PER_PAGE,
+            // usuario_creacion, fecha_creacion
+            filters_list:[
+                {
+                    id:"doc_id_filter",
+                    name:Strings.documents_list_column_id,
+                    defualtValue:'',
+                    component:<MaterialUI.TextField
+                        label={'id documento'}
+                        size="small"
+                        type={'number'}
+                        InputProps={{ inputProps: { min: 1, type: 'number',} }}
+                        onChange={event =>  {
+                            let value = event.target.value;
+                            if( !isNaN(value) ) {
+                                value = parseInt(value,10);
+                                if(value < 1 ) {
+                                    value = '';
+                                }
+                            }
+                            
+                            this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,value)
+                        }}
+                        />
+                
+                },
+                {
+                    id:"status_filter",
+                    name:Strings.text_status,
+                    defualtValue:statusFilterValuesBuilder()[0],
+                    component:<DropdownFilter
+                        labelId={'filter-status'}
+                        label={Strings.text_status}
+                        defaultIndex={0}
+                        values={statusFilterValuesBuilder()}
+                        onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.status.table_id,e.id)}
+                        />
+                },
+                {
+                    id:"doc_type_filter",
+                    name:Strings.documents_list_column_doc_type,
+                    defualtValue:documentStatusFilterValuesBuilder()[0],
+                    component:<DropdownFilter 
+                        labelId={'filter-doc-type'} 
+                        label={Strings.documents_list_column_doc_type} 
+                        defaultIndex={0} 
+                        values={documentStatusFilterValuesBuilder()}
+                        onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.doc_type.table_id,e.id)}/>
+                },
+                {
+                    id:"doc_id_afv_document_filter",
+                    name:Strings.documents_list_column_doc_number,
+                    defualtValue:'',
+                    component:<MaterialUI.TextField
+                        label={Strings.documents_list_column_doc_number}
+                        size="small"
+                        onChange={event => this.handledOnFilterChange(COLUMNS_IDS.doc_number.table_id,event.target.value)}
+                        />
+                
+                },
+                {
+                    id:"doc_filter",
+                    name:Strings.documents_list_column_created_by_code,
+                    defualtValue:'',
+                    component:<MaterialUI.TextField
+                        label={Strings.documents_list_column_created_by_code}
+                        size="small"
+                        onChange={event => this.handledOnFilterChange(COLUMNS_IDS.created_by_code.table_id,event.target.value)}
+                        />
+                
+                },
+            ],
+            selected_filters:[],
+            orderBy:{column:COLUMNS_IDS.created_at.request_id,order:'DESC'},
+        };
+        
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.handleOnDocumentClickListener = this.handleOnDocumentClickListener.bind(this);
@@ -24,57 +138,137 @@ export default class DocumentsListView extends Component
         this.showDocumentsList = this.showDocumentsList.bind(this);
         this.showSelectCompany = this.showSelectCompany.bind(this);
         this.showPageInfo = this.showPageInfo.bind(this);
-        this.showLoading = this.showLoading.bind(this);
+        this.showLoadingDocuments = this.showLoadingDocuments.bind(this);
+        this.showLoadingOptionsDocuments = this.showLoadingOptionsDocuments.bind(this);
+        this.amountColumnSelector = this.amountColumnSelector.bind(this);
+        this.handledOnSortDocuments = this.handledOnSortDocuments.bind(this);
+        this.onHandleSelectFilters = this.onHandleSelectFilters.bind(this);
+        this.renderSelectedFilters = this.renderSelectedFilters.bind(this);
+        this.handledOnFilterChange = this.handledOnFilterChange.bind(this);
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
        
         this.columns = [
                 {
-                    id:'',
-                    name:Strings.documents_list_column_id},
+                    id:COLUMNS_IDS.created_at.table_id,
+                    name:Strings.text_created_date,
+                    sortable: true,
+                    selector:row=>row.create_at.substring(0,10),
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_doc_type},    
+                    id:COLUMNS_IDS.document_id.table_id,
+                    name:Strings.documents_list_column_id,
+                    sortable: false,
+                    selector:row=>row.id_documento,
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_doc_number},
+                    id:COLUMNS_IDS.doc_type.table_id,
+                    name:Strings.documents_list_column_doc_type,
+                    selector: (row) => { 
+                        return ( row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ?
+                                    Strings.text_electronic_document:
+                                    row.tipo_documento == Constants.DOC_TYPE_RECIBO_ID?
+                                    Strings.text_cash_document:""
+                            )
+                        }
+                },    
                 {
-                    id:'',
-                    name:Strings.documents_list_column_date_conciliated},
+                    id:COLUMNS_IDS.doc_number.table_id,
+                    name:Strings.documents_list_column_doc_number,
+                    selector:row => row.detail.id_documento_afv
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_status},
+                    id:COLUMNS_IDS.conciliation_date.table_id,
+                    name:Strings.documents_list_column_date_conciliated,
+                    selector:row => row.estatus < 3?"-":row.fecha_conciliacion?`${row.fecha_conciliacion.substring(0,10)}`: `${row.update_at.substring(0,10)}`
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_created_by},
+                    
+                    id:COLUMNS_IDS.status.table_id,
+                    name:Strings.documents_list_column_status,
+                    selector:row => Strings.text_status_by_id[ row.estatus ]
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_zone},
+                    id:COLUMNS_IDS.created_by_code.table_id,
+                    name:Strings.documents_list_column_created_by_code,
+                    selector:row => row.usuario_creacion
+                },/*
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_date},
+                    id:COLUMNS_IDS.created_by_name.table_id,
+                    name:Strings.documents_list_column_created_by_name,
+                    selector:row => 
+                },*/
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_ref},
+                    id:COLUMNS_IDS.zone.table_id,
+                    name:Strings.documents_list_column_zone,
+                    selector:row => row.detail?.NOMBRE_ZONA
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_amount},
+                    id:COLUMNS_IDS.document_date.table_id,
+                    name:Strings.documents_list_column_document_date,
+                    selector:row => row.detail?.FECHA_DOCUMENTO.substring(0,10)
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_edit_amount},
+                    id:COLUMNS_IDS.document_reference.table_id,
+                    name:Strings.documents_list_column_document_ref,
+                    selector:row => row.referencia? row.referencia:row.detail?.REFERENCIA
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_bank_name}, 
+                    id:COLUMNS_IDS.document_amount.table_id,
+                    name:Strings.documents_list_column_document_amount,
+                    selector:row => this.amountColumnSelector(row)
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_bank_account_number},
+                    id:COLUMNS_IDS.document_edit_amount.table_id,
+                    name:Strings.documents_list_column_document_edit_amount,
+                    selector:row => row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? "-" : row.detail.MONTO_EDITADO == null ? "-":row.detail.MONTO_EDITADO
+                },
                 {
-                    id:'',
-                    name:Strings.documents_list_column_document_client_code}
+                    id:COLUMNS_IDS.bank.table_id,
+                    name:Strings.documents_list_column_document_bank_name,
+                    selector:row => row.detail.BANCO
+                }, 
+                {
+                    id:COLUMNS_IDS.bank_acc_number.table_id,
+                    name:Strings.documents_list_column_document_bank_account_number,
+                    selector:row => row.detail.NUMERO_CUENTA_BANCARIA
+                },
+                {
+                    id:COLUMNS_IDS.client_code.table_id,
+                    name:Strings.documents_list_column_document_client_code,
+                    selector:row => row.detail.CLIENTES.map(c => c.CODIGO_DE_CLIENTE).join(" ; ")
+                }
             ];
     }
 
-    showSelectCompany(company){
+    amountColumnSelector(row) {
+        
+        let amount = row.monto != null? row.monto:null;
+        let currency = row.moneda_transaccion;
+
+        if(currency == null) {
+            currency = Strings.text_currencies_by_id[row.detail?.ID_MONEDA];
+        }
+        
+        if (amount == null) {
+            
+            if(row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID) {
+                amount = row.detail?.MONTO;
+            }
+
+            if(row.tipo_documento == Constants.DOC_TYPE_RECIBO_ID) {
+                amount = row.detail?.MONTO_DOLAR;
+                if( row.detail.ID_MONEDA != Constants.ID_DOLLAR_CURRENCY)
+                {
+                    amount = row.detail.MONTO_LOCAL;
+                }
+            }
+        }
+        
+        return `${Number(amount).toFixed(2)} ${currency}`;
+    }
+
+    showSelectCompany(company) {
         
         this.setState ({currentCompany : company});
     }
@@ -88,17 +282,41 @@ export default class DocumentsListView extends Component
         
         this.setState({documents:documents});
     }
+    
+    handledOnFilterChange(column,filterValue) {
+        console.log(column)
+        console.log(filterValue)
+    }
+
+    onHandleSelectFilters(event) {
+        
+        const prevState = this.state.selected_filters;
+        const value = event.target.value;
+        this.setState({selected_filters:value},() => {
+            const newState = this.state.selected_filters;
+            if(newState.length < prevState.length) {
+                const filterToClean = prevState.filter(item => !newState.map(it => it.id).includes(item.id));
+                filterToClean.forEach(item => item.component);
+                this.handleOnChangePage('',FIRST_PAGE);
+            }
+        });
+    }
 
     showPageInfo(pageInfo) {
         
         this.setState({
+            itemsPerPage:pageInfo.limit,
             totalItems:pageInfo.totalItems,
-            currentPage:pageInfo.currentPage-1
+            currentPage:pageInfo.currentPage
         });
     }
     
-    showLoading(value) {
-        this.setState ({loading : value});
+    showLoadingOptionsDocuments(value) {
+        this.setState ({loading_options : value});
+    }
+
+    showLoadingDocuments(value) {
+        this.setState ({loading_documents : value});
     }
 
     onError(error) {
@@ -107,14 +325,28 @@ export default class DocumentsListView extends Component
     }
     
     handledOnSelectCompany(company) {
-        this.setState ({currentCompany : company, currentPage:0});
-        this.viewModel.requestDocuments(company,{page:1});
+        
+        this.setState ({currentCompany : company }, () =>{
+            
+            this.handleOnChangePage ( 0,FIRST_PAGE);
+        });
+    }
+
+    handledOnSortDocuments(selectedColumn,order,_) {
+        
+        const column = COLUMNS_IDS[selectedColumn.id].request_id;
+        const orderBy = {column,order};
+        this.setState ({orderBy}, () => {
+            this.handleOnChangePage('',FIRST_PAGE); 
+        });
     }
 
     handleOnChangePage ( _,newPage) {
         
         this.setState ({currentPage:newPage});
-        this.viewModel.requestDocuments(this.state.currentCompany,{page:newPage + 1});
+        const orderBy = this.state.orderBy;
+        //{page,filters,orderBy}
+        this.viewModel.requestDocuments(this.state.currentCompany,{page:newPage,orderBy });
     }
 
     handleOnDocumentClickListener(document) {
@@ -128,22 +360,37 @@ export default class DocumentsListView extends Component
 
     componentDidMount() {
         this.viewModel.subscribeOnCompanyData(this.setCompanies);
-        this.viewModel.subscribeOnLoading(this.showLoading);
+        this.viewModel.subscribeOnLoadingDocuments(this.showLoadingDocuments);
         this.viewModel.subscribeOnShowError(this.onError);
         this.viewModel.subscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.subscribeOnSelectCompany(this.showSelectCompany);
         
-        this.viewModel.requestCompanies();
+        this.viewModel.requestDocumentOptions();
     }
 
     componentWillUnmount() {
         this.viewModel.unsubscribeOnCompanyData(this.setCompanies);
-        this.viewModel.unsubscribeOnLoading(this.showLoading);
+        this.viewModel.unsubscribeOnLoadingDocuments(this.showLoadingDocuments);
         this.viewModel.unsubscribeOnShowError(this.onError);
         this.viewModel.unsubscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.unsubscribeOnSelectCompany(this.showSelectCompany);
+    }
+
+    renderSelectedFilters(selectedValues) {
+        
+        return(<>
+            <MaterialUI.Box
+                sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                
+                {selectedValues.map((item) => (
+                    <MaterialUI.Chip
+                        key={item.id}
+                        label={item.name}/>
+                ))}
+            </MaterialUI.Box>
+        </>);
     }
 
     render(){
@@ -185,52 +432,86 @@ export default class DocumentsListView extends Component
                             
                             
                         </MaterialUI.Grid>
-
+                        
                     </MaterialUI.Stack>
                 </MaterialUI.Box>
-                
+                <MaterialUI.Box sx={{ ml: 3 }}>
+                        
+
+                        <MaterialUI.Stack direction={{ xs: "column"}}>
+                            {
+                                this.state.selected_filters.length > 0 &&
+                                this.state.selected_filters.map(item => {
+                                    const c = <Fragment key={item.id}>{item.component}</Fragment>;
+                                    return c;
+                                })
+                            }
+
+                        </MaterialUI.Stack>                        
+
+                        <MaterialUI.FormControl sx={{ minWidth: 150 }}>
+                            <MaterialUI.InputLabel id={`label-select-general-documents-filters`}>
+                                {Strings.text_filters}
+                            </MaterialUI.InputLabel>
+                            <MaterialUI.Select 
+                                size="small"
+                                autoWidth
+                                labelId={`label-select-general-documents-filters`}
+                                label={Strings.text_filters}
+                                multiple={true}
+                                onChange={this.onHandleSelectFilters}
+                                renderValue={this.renderSelectedFilters}
+                                value={this.state.selected_filters}>
+
+                                {this.state.filters_list.length > 0 &&
+                                    this.state.filters_list.map(item => {
+                                            return(
+                                                <MaterialUI.MenuItem key={item.id} value={item}>
+                                                    {item.name}
+                                                </MaterialUI.MenuItem>
+                                            )}
+                                        )
+                                    
+                                }
+                            </MaterialUI.Select>
+                        </MaterialUI.FormControl>
+
+                </MaterialUI.Box>
                 {/* Tabla */}
                 <MaterialUI.Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
+                    
                     <MaterialUI.Box gridColumn="span 12">
-                        <MaterialUI.TableContainer sx={{ maxHeight: 440 }}>
-                            <MaterialUI.Table
-                                sx={{ minWidth: 700 }}
-                                stickyHeader
-                                aria-label="sticky table"
-                                size="small">
-                                
-                                <TableHeader columns={this.columns}></TableHeader>
-                                
-                                {this.state.documents.length === 0?<></>:
-                                    <MaterialUI.TableBody>
-                                        <DocumentsTableAdapter
-                                            onItemClickListener={this.handleOnDocumentClickListener}
-                                            items={this.state.documents}
-                                        />
-                                    </MaterialUI.TableBody>
-                                }
-                            </MaterialUI.Table>
-                            
-                        </MaterialUI.TableContainer>
                         
-                        {this.state.documents.length === 0?<></>:
-                           <MaterialUI.TablePagination
-                                rowsPerPageOptions={[
-                                    DOCUMENT_PER_PAGE,
-                                    //{ value: -1, label: "Todas" },
-                                ]}
-                                component="div" 
-                                count={this.state.totalItems}
-                                rowsPerPage={DOCUMENT_PER_PAGE}
-                                page={this.state.currentPage}
-                                onPageChange={this.handleOnChangePage}
-                            />
-                        }
+                        <DataTable 
+                            columns={this.columns}
+                            data={this.state.documents}
+                            progressPending={this.state.loading_documents}
+                            progressComponent={<MaterialUI.CircularProgress/> }
+                            persistTableHead
+                            noDataComponent={!this.state.firstRequest? "": (this.state.documents.length > 0 ? this.state.documents:Strings.text_not_data) }
+                            striped
+                            highlightOnHover
+                            pointerOnHover 
+                            pagination
+                            paginationPerPage={this.state.itemsPerPage}
+                            paginationTotalRows={this.state.totalItems}
+                            paginationServer 
+                            paginationComponentOptions={{
+                                selectAllRowsItem:false,
+                                noRowsPerPage:true
+                            }}
+                            sortServer
+                            defaultSortAsc={false}
+                            defaultSortFieldId={COLUMNS_IDS.created_at.table_id}
+                            onSort={this.handledOnSortDocuments}
+                            onChangePage={(page,totalRows) => this.handleOnChangePage(totalRows,page)}
+                            onRowClicked={this.handleOnDocumentClickListener} />
+                        
                     </MaterialUI.Box>
                 </MaterialUI.Box>
             </MaterialUI.Paper>
             {
-                !this.state.seeDetail?<></>:
+                this.state.seeDetail &&
                 <DocumentDetailView
                     viewModel={this.props.detailViewModel}
                     handleClose={this.handleOnCloseDetails}
@@ -239,7 +520,9 @@ export default class DocumentsListView extends Component
                     company={this.state.currentCompany}
                 />
             }
-            <LoadingScreen loading={this.state.loading}/>
+            
+            <LoadingScreen loading={this.state.loading_options}/>
+
         </>);
     }
 }
