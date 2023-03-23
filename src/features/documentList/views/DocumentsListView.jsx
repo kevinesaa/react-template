@@ -43,7 +43,7 @@ export default class DocumentsListView extends Component
     constructor(props) {
         
         super(props);
-        this.state = {
+        const state = {
             currentDocument:{},
             firstRequest:false,
             seeDetail:false, 
@@ -55,27 +55,22 @@ export default class DocumentsListView extends Component
             currentPage:FIRST_PAGE, 
             totalItems:0,
             itemsPerPage:DOCUMENT_PER_PAGE,
-            // usuario_creacion, fecha_creacion
+            
             filters_list:[
                 {
                     id:"doc_id_filter",
                     name:Strings.documents_list_column_id,
+                    column:COLUMNS_IDS.document_id,
                     defualtValue:'',
                     component:<MaterialUI.TextField
-                        label={'id documento'}
+                        label={Strings.documents_list_column_id}
                         size="small"
                         type={'number'}
                         InputProps={{ inputProps: { min: 1, type: 'number',} }}
                         onChange={event =>  {
                             let value = event.target.value;
-                            if( !isNaN(value) ) {
-                                value = parseInt(value,10);
-                                if(value < 1 ) {
-                                    value = '';
-                                }
-                            }
-                            
-                            this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,value)
+                            value = value.replace(/^[^0-9]+/g, '');
+                            this.handledOnFilterChange(COLUMNS_IDS.document_id.table_id,value)
                         }}
                         />
                 
@@ -83,29 +78,32 @@ export default class DocumentsListView extends Component
                 {
                     id:"status_filter",
                     name:Strings.text_status,
+                    column:COLUMNS_IDS.status,
                     defualtValue:statusFilterValuesBuilder()[0],
                     component:<DropdownFilter
                         labelId={'filter-status'}
                         label={Strings.text_status}
                         defaultIndex={0}
                         values={statusFilterValuesBuilder()}
-                        onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.status.table_id,e.id)}
+                        onSelectItem={ (value) => this.handledOnFilterChange(COLUMNS_IDS.status.table_id,value)}
                         />
                 },
                 {
                     id:"doc_type_filter",
                     name:Strings.documents_list_column_doc_type,
+                    column:COLUMNS_IDS.doc_type,
                     defualtValue:documentStatusFilterValuesBuilder()[0],
                     component:<DropdownFilter 
                         labelId={'filter-doc-type'} 
                         label={Strings.documents_list_column_doc_type} 
                         defaultIndex={0} 
                         values={documentStatusFilterValuesBuilder()}
-                        onSelectItem={ (e) => this.handledOnFilterChange(COLUMNS_IDS.doc_type.table_id,e.id)}/>
+                        onSelectItem={ (value) => this.handledOnFilterChange(COLUMNS_IDS.doc_type.table_id,value)}/>
                 },
                 {
                     id:"doc_id_afv_document_filter",
                     name:Strings.documents_list_column_doc_number,
+                    column:COLUMNS_IDS.doc_number,
                     defualtValue:'',
                     component:<MaterialUI.TextField
                         label={Strings.documents_list_column_doc_number}
@@ -117,6 +115,7 @@ export default class DocumentsListView extends Component
                 {
                     id:"doc_filter",
                     name:Strings.documents_list_column_created_by_code,
+                    column:COLUMNS_IDS.created_by_code,
                     defualtValue:'',
                     component:<MaterialUI.TextField
                         label={Strings.documents_list_column_created_by_code}
@@ -127,9 +126,13 @@ export default class DocumentsListView extends Component
                 },
             ],
             selected_filters:[],
+            filters:{},
             orderBy:{column:COLUMNS_IDS.created_at.request_id,order:'DESC'},
         };
-        
+        for(let f of state.filters_list) {
+            state.filters[f.column.request_id] = f.defualtValue;
+        }
+        this.state = state;
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
         this.handleOnChangePage = this.handleOnChangePage.bind(this);
         this.handleOnDocumentClickListener = this.handleOnDocumentClickListener.bind(this);
@@ -283,21 +286,33 @@ export default class DocumentsListView extends Component
         this.setState({documents:documents});
     }
     
-    handledOnFilterChange(column,filterValue) {
-        console.log(column)
-        console.log(filterValue)
+    handledOnFilterChange(columnTableId,filterValue) {
+        
+        const column = COLUMNS_IDS[columnTableId].request_id;
+        const filters = {...this.state.filters};
+        filters[column] = filterValue;
+        this.setState({filters},() => {
+            this.handleOnChangePage('',FIRST_PAGE);
+        });
     }
 
     onHandleSelectFilters(event) {
         
-        const prevState = this.state.selected_filters;
+        const selectedFiltersPrevState = this.state.selected_filters;
         const value = event.target.value;
         this.setState({selected_filters:value},() => {
-            const newState = this.state.selected_filters;
-            if(newState.length < prevState.length) {
-                const filterToClean = prevState.filter(item => !newState.map(it => it.id).includes(item.id));
-                filterToClean.forEach(item => item.component);
-                this.handleOnChangePage('',FIRST_PAGE);
+            const selectedFiltersNewState = this.state.selected_filters;
+            if(selectedFiltersNewState.length < selectedFiltersPrevState.length) {
+                
+                const filters = {...this.state.filters};
+                const filterToClean = selectedFiltersPrevState.filter(item => !selectedFiltersNewState.map(it => it.id).includes(item.id));
+                filterToClean.forEach(item => {
+                    filters[item.column.request_id] = item.defualtValue;
+                });
+
+                this.setState({filters},() => {
+                    this.handleOnChangePage('',FIRST_PAGE);
+                });
             }
         });
     }
@@ -345,8 +360,9 @@ export default class DocumentsListView extends Component
         
         this.setState ({currentPage:newPage});
         const orderBy = this.state.orderBy;
-        //{page,filters,orderBy}
-        this.viewModel.requestDocuments(this.state.currentCompany,{page:newPage,orderBy });
+        const filters = this.state.filters;
+        const params = {page:newPage,filters,orderBy };
+        this.viewModel.requestDocuments(this.state.currentCompany,params);
     }
 
     handleOnDocumentClickListener(document) {
