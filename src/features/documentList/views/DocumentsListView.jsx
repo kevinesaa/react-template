@@ -63,6 +63,8 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.document_id,
                     defualtValue:'',
                     component:<MaterialUI.TextField
+                        autoComplete="false"
+                        sx={{ m: 1, width: "25vh" }}
                         label={Strings.documents_list_column_id}
                         size="small"
                         type={'number'}
@@ -81,6 +83,7 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.status,
                     defualtValue:statusFilterValuesBuilder()[0],
                     component:<DropdownFilter
+                        sx={{ m: 1, width: "25vh" }}
                         labelId={'filter-status'}
                         label={Strings.text_status}
                         defaultIndex={0}
@@ -94,6 +97,7 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.doc_type,
                     defualtValue:documentStatusFilterValuesBuilder()[0],
                     component:<DropdownFilter 
+                        sx={{ m: 1, width: "25vh" }}
                         labelId={'filter-doc-type'} 
                         label={Strings.documents_list_column_doc_type} 
                         defaultIndex={0} 
@@ -106,6 +110,8 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.doc_number,
                     defualtValue:'',
                     component:<MaterialUI.TextField
+                        autoComplete="false"
+                        sx={{ m: 1, width: "25vh" }}
                         label={Strings.documents_list_column_doc_number}
                         size="small"
                         onChange={event => this.handledOnFilterChange(COLUMNS_IDS.doc_number.table_id,event.target.value)}
@@ -118,6 +124,8 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.created_by_code,
                     defualtValue:'',
                     component:<MaterialUI.TextField
+                        autoComplete="false"
+                        sx={{ m: 1, width: "25vh" }}
                         label={Strings.documents_list_column_created_by_code}
                         size="small"
                         onChange={event => this.handledOnFilterChange(COLUMNS_IDS.created_by_code.table_id,event.target.value)}
@@ -427,8 +435,8 @@ export default class DocumentsListView extends Component
                 </MaterialUI.Grid>
                 <MaterialUI.Divider variant="middle"/>
                 
-                {/* filters */}
-                <MaterialUI.Box sx={{ p: 2 }}>
+                {/* company filter */}
+                <MaterialUI.Box sx={{ ml: 2,mt:2, mb:1 }}>
                     
                     <MaterialUI.Stack direction={{ xs: "column", sm: "row" }}>
                         <MaterialUI.Grid
@@ -451,48 +459,48 @@ export default class DocumentsListView extends Component
                         
                     </MaterialUI.Stack>
                 </MaterialUI.Box>
-                <MaterialUI.Box sx={{ ml: 3 }}>
+                <MaterialUI.Box sx={{ flexGrow: 1, m: 3 }}>
                         
 
-                        <MaterialUI.Stack direction={{ xs: "column"}}>
-                            {
-                                this.state.selected_filters.length > 0 &&
-                                this.state.selected_filters.map(item => {
+                    <MaterialUI.Grid container spacing={{ xs: 1, md: 1 }}>
+                        {
+                            this.state.selected_filters.length > 0 &&
+                                this.state.selected_filters.reverse().map((item) => {
                                     const c = <Fragment key={item.id}>{item.component}</Fragment>;
                                     return c;
                                 })
+                        }
+                    </MaterialUI.Grid>                       
+
+                    <MaterialUI.FormControl sx={{ mt:1,minWidth: 150 }}>
+                        <MaterialUI.InputLabel id={`label-select-general-documents-filters`}>
+                            {Strings.text_filters}
+                        </MaterialUI.InputLabel>
+                        <MaterialUI.Select 
+                            size="small"
+                            autoWidth
+                            labelId={`label-select-general-documents-filters`}
+                            label={Strings.text_filters}
+                            multiple={true}
+                            onChange={this.onHandleSelectFilters}
+                            renderValue={this.renderSelectedFilters}
+                            value={this.state.selected_filters}>
+
+                            {this.state.filters_list.length > 0 &&
+                                this.state.filters_list.map(item => {
+                                        return(
+                                            <MaterialUI.MenuItem key={item.id} value={item}>
+                                                {item.name}
+                                            </MaterialUI.MenuItem>
+                                        )}
+                                    )
+                                
                             }
-
-                        </MaterialUI.Stack>                        
-
-                        <MaterialUI.FormControl sx={{ minWidth: 150 }}>
-                            <MaterialUI.InputLabel id={`label-select-general-documents-filters`}>
-                                {Strings.text_filters}
-                            </MaterialUI.InputLabel>
-                            <MaterialUI.Select 
-                                size="small"
-                                autoWidth
-                                labelId={`label-select-general-documents-filters`}
-                                label={Strings.text_filters}
-                                multiple={true}
-                                onChange={this.onHandleSelectFilters}
-                                renderValue={this.renderSelectedFilters}
-                                value={this.state.selected_filters}>
-
-                                {this.state.filters_list.length > 0 &&
-                                    this.state.filters_list.map(item => {
-                                            return(
-                                                <MaterialUI.MenuItem key={item.id} value={item}>
-                                                    {item.name}
-                                                </MaterialUI.MenuItem>
-                                            )}
-                                        )
-                                    
-                                }
-                            </MaterialUI.Select>
-                        </MaterialUI.FormControl>
+                        </MaterialUI.Select>
+                    </MaterialUI.FormControl>
 
                 </MaterialUI.Box>
+
                 {/* Tabla */}
                 <MaterialUI.Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
                     

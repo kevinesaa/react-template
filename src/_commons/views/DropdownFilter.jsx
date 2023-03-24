@@ -14,7 +14,7 @@ export default function DropdownFilter(props) {
     }
 
     return (
-        <MaterialUI.FormControl sx={{ minWidth: 150 }}>
+        <MaterialUI.FormControl sx={props.sx}>
             <MaterialUI.InputLabel id={props.labelId}>
                 {props.label}
             </MaterialUI.InputLabel>

@@ -78,7 +78,6 @@ export default class DocumentsViewModel
         
         if(company != null && company.id != null) {
             
-            console.log(params)
             const token = SessionRepository.getSessionToken();
             this.#onSelectCompany(company);
             this.#onLoadingDocuments(true);
