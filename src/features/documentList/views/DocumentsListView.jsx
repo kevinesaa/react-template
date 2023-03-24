@@ -113,7 +113,7 @@ export default class DocumentsListView extends Component
                 
                 },
                 {
-                    id:"doc_filter",
+                    id:"seller_code_filter",
                     name:Strings.documents_list_column_created_by_code,
                     column:COLUMNS_IDS.created_by_code,
                     defualtValue:'',

@@ -3,9 +3,6 @@ import ListListener from "../../../_commons/util/ListListenerContainer";
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import ErrorCodes from "../../../_commons/InternalErrorCodes";
 import API_END_POINTS from '../../../_commons/Api';
-import CompanyRepository from '../../../sessionManager/repository/CompanyRepository';
-import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
-import Constants from '../../../_commons/Constants';
 import Permissions from '../../../_commons/Permissions';
 import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
 
@@ -77,17 +74,24 @@ export default class DocumentsViewModel
         this.listenerOnCompanyData.execute(companies.sort((a,b) => a.id - b.id));
     }
 
-    async requestDocuments(company,filters) {
+    async requestDocuments(company,params) {
         
         if(company != null && company.id != null) {
-                
+            
+            console.log(params)
             const token = SessionRepository.getSessionToken();
             this.#onSelectCompany(company);
             this.#onLoadingDocuments(true);
             const response =  await this.#makeRequest({
                 token,
                 companyId:company.id, 
-                page:filters.page
+                page:params.page,
+                orderByColumn:params.orderBy.column,
+                orderByType:params.orderBy.order,
+                filters:{
+                    id:params.filters.id,
+                    doc_type_id:params.filters.doc_type_id.id
+                }
             });
             
             this.#onLoadingDocuments(false);
@@ -106,6 +110,7 @@ export default class DocumentsViewModel
                 const pagination = responseData.pagination ? responseData.pagination: {currentPage:1, totalItems: documents.length}
                 this.#onPageInfoData(pagination);
                 this.#onLoadDocumentsData(documents);
+                
             }
         }
     }
@@ -141,20 +146,48 @@ export default class DocumentsViewModel
 
     async #makeRequest(requestModel) {
         
+        const endpoint = "https://t3xbifs9f1.execute-api.us-east-1.amazonaws.com/v1/documentos/";
+        //const endpoint = API_END_POINTS.GET_DOCUMENT_LIST;
+        
         const company = `company_id=${requestModel.companyId}`;
         const page = `page=${requestModel.page}`;
-        let url = `${API_END_POINTS.GET_DOCUMENT_LIST}?${company}&${page}`;
-        
-        if(requestModel.doc_type_id) {
-            const docType = `doc_type_id=${requestModel.doc_type_id}`;
+        let url = `${endpoint}?${company}&${page}`;
+        const filters = requestModel.filters;
+
+        if(requestModel.orderByColumn) {
+            const orderBy =`orderBy=${requestModel.orderByColumn}`;
+            let orderType =`order=ASC`;
+            if(requestModel.orderByType) {
+                orderType =`order=${requestModel.orderByType}`;
+            }
+            url = `${url}&${orderBy}&${orderType}`;
+        }
+
+        if(filters.id) {
+            const id = `&id=${filters.id}`;
+            url = url.concat(id);
+        }
+
+        if(filters.doc_type_id) {
+            const docType = `&doc_type_id=${filters.doc_type_id}`;
             url = url.concat(docType);
         }
 
-        if(requestModel.status) {
-            const status = `status=${requestModel.status}`;
+        if(filters.status) {
+            const status = `&status=${filters.status}`;
             url = url.concat(status);
         }
         
+        if(filters.document_number) {
+            const docNumer = `&document_number=${filters.document_number}`;
+            url = url.concat(docNumer);
+        }
+
+        if(filters.user_creation) {
+            const createdBy = `&user_creation=${filters.user_creation}`;
+            url = url.concat(createdBy);
+        }
+
         try{
 
             const response = await axios.get(url, { 

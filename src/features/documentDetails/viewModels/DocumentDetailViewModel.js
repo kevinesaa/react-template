@@ -93,9 +93,11 @@ export default class DocumentDetailViewModel {
 
     async #makeDocumentDetailRequest(requestModel) {
         
+        //const endpoint = API_END_POINTS.GET_DOCUMENT_DETAIL;
+        const endpoint = "https://t3xbifs9f1.execute-api.us-east-1.amazonaws.com/v1/documentos/detalles/";
         const company = `company_id=${requestModel.companyId}`;
         const docId = `document_id=${requestModel.documentId}`;
-        const url = `${API_END_POINTS.GET_DOCUMENT_DETAIL}?${company}&${docId}`;
+        const url = `${endpoint}?${company}&${docId}`;
         
         try{
             
