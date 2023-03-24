@@ -169,9 +169,9 @@ export default class DocumentsListView extends Component
                     name:Strings.documents_list_column_doc_type,
                     selector: (row) => { 
                         return ( row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ?
-                                    Strings.text_electronic_document:
+                                    Strings.text_cash_document:
                                     row.tipo_documento == Constants.DOC_TYPE_RECIBO_ID?
-                                    Strings.text_cash_document:""
+                                    Strings.text_electronic_document:""
                             )
                         }
                 },    
