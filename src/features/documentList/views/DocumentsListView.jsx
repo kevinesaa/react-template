@@ -178,7 +178,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.doc_number.table_id,
                     name:Strings.documents_list_column_doc_number,
-                    selector:row => row.detail.id_documento_afv
+                    selector:row => row.id_documento_afv
                 },
                 {
                     id:COLUMNS_IDS.conciliation_date.table_id,
@@ -229,17 +229,17 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.bank.table_id,
                     name:Strings.documents_list_column_document_bank_name,
-                    selector:row => row.detail.BANCO
+                    selector:row => row.detail?.BANCO
                 }, 
                 {
                     id:COLUMNS_IDS.bank_acc_number.table_id,
                     name:Strings.documents_list_column_document_bank_account_number,
-                    selector:row => row.detail.NUMERO_CUENTA_BANCARIA
+                    selector:row => row.detail?.NUMERO_CUENTA_BANCARIA
                 },
                 {
                     id:COLUMNS_IDS.client_code.table_id,
                     name:Strings.documents_list_column_document_client_code,
-                    selector:row => row.detail.CLIENTES.map(c => c.CODIGO_DE_CLIENTE).join(" ; ")
+                    selector:row => row.detail?.CLIENTES.map(c => c.CODIGO_DE_CLIENTE).join(" ; ")
                 }
             ];
     }
