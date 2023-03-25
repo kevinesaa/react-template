@@ -63,7 +63,7 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.document_id,
                     defualtValue:'',
                     component:<MaterialUI.TextField
-                        autoComplete="false"
+                        autoComplete={false}
                         sx={{ m: 1, width: "25vh" }}
                         label={Strings.documents_list_column_id}
                         size="small"
@@ -110,7 +110,7 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.doc_number,
                     defualtValue:'',
                     component:<MaterialUI.TextField
-                        autoComplete="false"
+                        autoComplete={false}
                         sx={{ m: 1, width: "25vh" }}
                         label={Strings.documents_list_column_doc_number}
                         size="small"
@@ -124,7 +124,7 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.created_by_code,
                     defualtValue:'',
                     component:<MaterialUI.TextField
-                        autoComplete="false"
+                        autoComplete={false}
                         sx={{ m: 1, width: "25vh" }}
                         label={Strings.documents_list_column_created_by_code}
                         size="small"

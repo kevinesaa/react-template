@@ -89,7 +89,10 @@ export default class DocumentsViewModel
                 orderByType:params.orderBy.order,
                 filters:{
                     id:params.filters.id,
-                    doc_type_id:params.filters.doc_type_id.id
+                    doc_type_id:params.filters.doc_type_id.id,
+                    status:params.filters.status.id,
+                    document_number: params.filters.document_number,
+                    user_creation:params.filters.user_creation,
                 }
             });
             
@@ -155,9 +158,9 @@ export default class DocumentsViewModel
 
         if(requestModel.orderByColumn) {
             const orderBy =`orderBy=${requestModel.orderByColumn}`;
-            let orderType =`order=ASC`;
+            let orderType =`orderType=ASC`;
             if(requestModel.orderByType) {
-                orderType =`order=${requestModel.orderByType}`;
+                orderType =`orderType=${requestModel.orderByType}`;
             }
             url = `${url}&${orderBy}&${orderType}`;
         }
