@@ -1,6 +1,10 @@
+import axios from 'axios';
 import ListListener from "../../../_commons/util/ListListenerContainer";
-import delay from "../../../_commons/util/Delay";
+
 import UserRepository from "../../../sessionManager/repository/UserRepository";
+import API_END_POINTS from "../../../_commons/Api";
+import SessionRepository from "../../../sessionManager/repository/SessionRepository";
+import ErrorCodes from '../../../_commons/InternalErrorCodes';
 
 export default class ChangePasswordViewModel {
 
@@ -35,14 +39,39 @@ export default class ChangePasswordViewModel {
     }
 
     async changePassword(currentPass,newPass,validateNewPass) {
-        this.#onLoading(true);
-        await delay(1000);
-        
-        const user = UserRepository.getCurrentUser();
-        user.new_user = false;
-        UserRepository.saveCurrentUser(user);
-        this.#onLoading(false);
-        this.#onChangePassSuccessful();
+
+        if(currentPass != null && newPass != null && validateNewPass != null) {
+
+            if(newPass != validateNewPass) {
+                
+                this.#onError({errorCode:"confirm_pass_not_equal"});
+                return;
+            }
+
+            this.#onLoading(true);
+            const token = SessionRepository.getSessionToken();
+            const response = await this.#makeRequest({token,newPass,currentPass});
+            
+            if(response.status != 200)
+            {
+                this.#onError({errorCode:"fail_request"});
+                /*
+                this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
+                    sourceErrorCode:response?.data?.app_status,
+                    sourceErrorMessage:response?.data?.message
+                });
+                */
+            }
+            else 
+            {
+                const user = UserRepository.getCurrentUser();
+                user.new_user = false;
+                UserRepository.saveCurrentUser(user);
+                this.#onChangePassSuccessful();   
+            }
+            
+            this.#onLoading(false);
+        }
     }
 
     #onLoading(value) {
@@ -56,4 +85,32 @@ export default class ChangePasswordViewModel {
     #onError(error) {
         this.listenerShowError.execute(error);
     }
+
+    async #makeRequest(requestModel) {
+        
+        const url = `${API_END_POINTS.PROFILE_CHANGE_PASSWORD}`;
+        
+        try{
+
+            const response = await axios({
+                method:'put',
+                url:url, 
+                headers:{
+                    "Authorization": `Bearer ${requestModel.token}`,
+                    "Content-Type": "application/json"
+                },
+                data:JSON.stringify({
+                    "actual_password": requestModel.currentPass,
+                    "new_password": requestModel.newPass
+                })
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
+    }
+
 }

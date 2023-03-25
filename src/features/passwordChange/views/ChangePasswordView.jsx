@@ -12,7 +12,8 @@ export default class ChangePasswordView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {loading:false, currentPass:"", newPass:"",confirmPass:""};
+        this.state = { passStatus:"",
+            loading:false, currentPass:"", newPass:"",confirmPass:""};
         this.viewModel = props.viewModel;
         this.changePassSuccessful = this.changePassSuccessful.bind(this);
         this.showLoading = this.showLoading.bind(this);
@@ -21,6 +22,7 @@ export default class ChangePasswordView extends Component {
         this.handledNewPassChange = this.handledNewPassChange.bind(this);
         this.handledConfirmPassChange = this.handledConfirmPassChange.bind(this);
         this.handledChangePasswordClick = this.handledChangePasswordClick.bind(this);
+        this.checkEquals = this.checkEquals.bind(this);
     }
 
 
@@ -29,11 +31,16 @@ export default class ChangePasswordView extends Component {
     }
 
     handledNewPassChange(value) {
-        this.setState({newPass:value});
+        this.setState({newPass:value},() => {
+            this.checkEquals();
+        });
+        
     }
 
     handledConfirmPassChange(value) {
-        this.setState({confirmPass:value});
+        this.setState({confirmPass:value},() => {
+            this.checkEquals();
+        });
     }
     
     handledChangePasswordClick(event) {
@@ -53,6 +60,14 @@ export default class ChangePasswordView extends Component {
         if(this.props.onChangePassSuccessful) {
             this.props.onChangePassSuccessful();
         }
+    }
+
+    checkEquals() {
+        let passStatus="";
+        if (this.state.confirmPass != this.state.newPass) {
+            passStatus = "Su nueva contraseña debe ser igual la confirmación de contraseña";
+        }
+        this.setState({passStatus});
     }
 
     onError(error) {
@@ -78,10 +93,21 @@ export default class ChangePasswordView extends Component {
                 <TitleSection text={Strings.change_pass_title} />
                 <MaterialUI.Divider />
                 <form onSubmit={this.handledChangePasswordClick}>
+                    
+                   
+
                     <MaterialUI.Box sx={{ flexGrow: 1, m: 2 }}
                         noValidate
                         autoComplete="off"
                     >
+
+                        <MaterialUI.Typography 
+                            variant="p"
+                            color={'red'}> {
+                                this.state.passStatus
+                            }
+                        </MaterialUI.Typography>
+
                         <MaterialUI.Grid container
                             spacing={{ xs: 1, md: 1 }}
                         >
@@ -105,7 +131,7 @@ export default class ChangePasswordView extends Component {
                                 label={Strings.change_pass_confirm_pass} 
                                 tooltipHideText={Strings.text_hide}
                                 tooltipShowText={Strings.text_show}/>
-
+                            
                             <CustomButtonForm
                                 text={Strings.text_save} />
 
