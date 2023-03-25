@@ -165,8 +165,8 @@ export default class DocumentsViewModel
             url = `${url}&${orderBy}&${orderType}`;
         }
 
-        if(filters.id) {
-            const id = `&id=${filters.id}`;
+        if(filters.id != null && filters.id.trim()) {
+            const id = `&id=${filters.id.trim()}`;
             url = url.concat(id);
         }
 
@@ -180,13 +180,13 @@ export default class DocumentsViewModel
             url = url.concat(status);
         }
         
-        if(filters.document_number) {
-            const docNumer = `&document_number=${filters.document_number}`;
+        if(filters.document_number != null && filters.document_number.trim()) {
+            const docNumer = `&document_number=${filters.document_number.trim()}`;
             url = url.concat(docNumer);
         }
 
-        if(filters.user_creation) {
-            const createdBy = `&user_creation=${filters.user_creation}`;
+        if(filters.user_creation != null && filters.user_creation.trim()) {
+            const createdBy = `&user_creation=${filters.user_creation.trim()}`;
             url = url.concat(createdBy);
         }
 
