@@ -14,6 +14,7 @@ import documentStatusFilterValuesBuilder from "../../../_commons/views/filterVal
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 const FIRST_PAGE = 1;
 
+
 const COLUMNS_IDS = Object.freeze([
     {table_id:'created_at',request_id:'create_date'},
     {table_id:'document_id', request_id:'id'},
@@ -156,6 +157,8 @@ export default class DocumentsListView extends Component
         this.onHandleSelectFilters = this.onHandleSelectFilters.bind(this);
         this.renderSelectedFilters = this.renderSelectedFilters.bind(this);
         this.handledOnFilterChange = this.handledOnFilterChange.bind(this);
+        this.handledRequestDownloadReport = this.handledRequestDownloadReport.bind(this);
+        this.showReportDownloadLink = this.showReportDownloadLink.bind(this);
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
        
@@ -169,12 +172,13 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.document_id.table_id,
                     name:Strings.documents_list_column_id,
-                    sortable: false,
+                    sortable: true,
                     selector:row=>row.id_documento,
                 },
                 {
                     id:COLUMNS_IDS.doc_type.table_id,
                     name:Strings.documents_list_column_doc_type,
+                    sortable: true,
                     selector: (row) => { 
                         return ( row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ?
                                     Strings.text_cash_document:
@@ -186,6 +190,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.doc_number.table_id,
                     name:Strings.documents_list_column_doc_number,
+                    sortable: true,
                     selector:row => row.id_documento_afv
                 },
                 {
@@ -197,11 +202,13 @@ export default class DocumentsListView extends Component
                     
                     id:COLUMNS_IDS.status.table_id,
                     name:Strings.documents_list_column_status,
+                    sortable: true,
                     selector:row => Strings.text_status_by_id[ row.estatus ]
                 },
                 {
                     id:COLUMNS_IDS.created_by_code.table_id,
                     name:Strings.documents_list_column_created_by_code,
+                    sortable: true,
                     selector:row => row.usuario_creacion
                 },/*
                 {
@@ -232,7 +239,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.document_edit_amount.table_id,
                     name:Strings.documents_list_column_document_edit_amount,
-                    selector:row => row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? "-" : row.detail.MONTO_EDITADO == null ? "-":row.detail.MONTO_EDITADO
+                    selector:row => row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? "-" : row.detail?.MONTO_EDITADO == null ? "-":row.detail?.MONTO_EDITADO
                 },
                 {
                     id:COLUMNS_IDS.bank.table_id,
@@ -291,7 +298,20 @@ export default class DocumentsListView extends Component
 
     showDocumentsList(documents) {
         
-        this.setState({documents:documents});
+        this.setState({documents:documents,firstRequest:true});
+    }
+
+    handledRequestDownloadReport() {
+        const company = this.state.currentCompany;
+        const orderBy = this.state.orderBy;
+        const filters = this.state.filters;
+        const params = {filters,orderBy };
+        this.viewModel.downloadDocuementsReports(company,params);
+    }
+
+    showReportDownloadLink(link) {
+        console.log(link)
+        window.open(link, '_blank', 'noreferrer');
     }
     
     handledOnFilterChange(columnTableId,filterValue) {
@@ -389,7 +409,9 @@ export default class DocumentsListView extends Component
         this.viewModel.subscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.subscribeOnSelectCompany(this.showSelectCompany);
-        
+        this.viewModel.subscribeOnLoadingDocumentsOptions(this.showLoadingOptionsDocuments);
+        this.viewModel.subscribeOnDownloadReport(this.showReportDownloadLink);
+
         this.viewModel.requestDocumentOptions();
     }
 
@@ -400,6 +422,8 @@ export default class DocumentsListView extends Component
         this.viewModel.unsubscribeOnDocumentsData(this.showDocumentsList);
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
         this.viewModel.unsubscribeOnSelectCompany(this.showSelectCompany);
+        this.viewModel.unsubscribeOnLoadingDocumentsOptions(this.showLoadingOptionsDocuments);
+        this.viewModel.unsubscribeOnDownloadReport(this.showReportDownloadLink);
     }
 
     renderSelectedFilters(selectedValues) {
@@ -420,6 +444,7 @@ export default class DocumentsListView extends Component
     render(){
         return (
         <>
+            
             <MaterialUI.Paper
                 elevation={2}
                 sx={{
@@ -456,6 +481,17 @@ export default class DocumentsListView extends Component
                             
                             
                         </MaterialUI.Grid>
+                        
+                        { (this.state.documents.length > 0) && 
+                            <MaterialUI.Button
+                                onClick={this.handledRequestDownloadReport}
+                                sx={{
+                                    m:2,
+                                    color: "white.main",
+                                    textTransform: "none",
+                                }}
+                                size="small">{"Generar Reporte"}</MaterialUI.Button>
+                        }
                         
                     </MaterialUI.Stack>
                 </MaterialUI.Box>

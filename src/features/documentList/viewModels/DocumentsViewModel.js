@@ -9,69 +9,98 @@ import CompanyAndPermissionsRepository from '../../../sessionManager/repository/
 
 export default class DocumentsViewModel
 {
+    #selectedCompany;
+    #listenerOnLoadingDocuments;
+    #listenerOnLoadingDocumentsOptions;
+    #listenerShowError;
+    #listenerOnDocumentsData;
+    #listenerOnCompanyData;
+    #listenerOnSelectCompany;
+    #listenerOnPageInfoData;
+    #listenerOnDownloadReport;
+
     constructor() {
-        this.selectedCompany = undefined;
-        this.listenerOnLoadingDocuments = new ListListener();
-        this.listenerShowError = new ListListener();
-        this.listenerOnDocumentsData = new ListListener();
-        this.listenerOnCompanyData = new ListListener();
-        this.listenerOnSelectCompany = new ListListener();
-        this.listenerOnPageInfoData = new ListListener();
+        this.#selectedCompany = undefined;
+        this.#listenerOnLoadingDocuments = new ListListener();
+        this.#listenerShowError = new ListListener();
+        this.#listenerOnDocumentsData = new ListListener();
+        this.#listenerOnCompanyData = new ListListener();
+        this.#listenerOnSelectCompany = new ListListener();
+        this.#listenerOnPageInfoData = new ListListener();
+        this.#listenerOnDownloadReport = new ListListener();
+        this.#listenerOnLoadingDocumentsOptions = new ListListener();
     }
 
     unsubscribeOnLoadingDocuments(func) {
-        this.listenerOnLoadingDocuments.unsubscribe(func);
+        this.#listenerOnLoadingDocuments.unsubscribe(func);
     }
 
     subscribeOnLoadingDocuments(func) {
-        this.listenerOnLoadingDocuments.subscribe(func);
+        this.#listenerOnLoadingDocuments.subscribe(func);
+    }
+
+    unsubscribeOnLoadingDocumentsOptions(func) {
+        this.#listenerOnLoadingDocumentsOptions.unsubscribe(func);
+    }
+
+    subscribeOnLoadingDocumentsOptions(func) {
+        this.#listenerOnLoadingDocumentsOptions.subscribe(func);
     }
 
     unsubscribeOnShowError(func) {
-        this.listenerShowError.unsubscribe(func);
+        this.#listenerShowError.unsubscribe(func);
     }
 
     subscribeOnShowError(func) {
-        this.listenerShowError.subscribe(func);
+        this.#listenerShowError.subscribe(func);
     }
 
     unsubscribeOnDocumentsData(func) {
-        this.listenerOnDocumentsData.unsubscribe(func);
+        this.#listenerOnDocumentsData.unsubscribe(func);
     }
 
     subscribeOnDocumentsData(func) {
-        this.listenerOnDocumentsData.subscribe(func);
+        this.#listenerOnDocumentsData.subscribe(func);
     }
 
     unsubscribeOnCompanyData(func) {
-        this.listenerOnCompanyData.unsubscribe(func);
+        this.#listenerOnCompanyData.unsubscribe(func);
     }
 
     subscribeOnCompanyData(func) {
-        this.listenerOnCompanyData.subscribe(func);
+        this.#listenerOnCompanyData.subscribe(func);
     }
 
     unsubscribeOnSelectCompany(func) {
-        this.listenerOnSelectCompany.unsubscribe(func);
+        this.#listenerOnSelectCompany.unsubscribe(func);
     }
 
     subscribeOnSelectCompany(func) {
-        this.listenerOnSelectCompany.subscribe(func);
+        this.#listenerOnSelectCompany.subscribe(func);
     }
 
     unsubscribeOnPageInfoData(func) {
-        this.listenerOnPageInfoData.unsubscribe(func);
+        this.#listenerOnPageInfoData.unsubscribe(func);
     }
 
     subscribeOnPageInfoData(func) {
-        this.listenerOnPageInfoData.subscribe(func);
+        this.#listenerOnPageInfoData.subscribe(func);
+    }
+
+    unsubscribeOnDownloadReport(func) {
+        this.#listenerOnDownloadReport.unsubscribe(func);
+    }
+
+    subscribeOnDownloadReport(func) {
+        this.#listenerOnDownloadReport.subscribe(func);
     }
 
     async requestDocumentOptions() {
-        
+        this.#onLoadingDocumentsOptions(true);
         const companies = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_DOCUMENTS_PERMISSION]);
         
-        this.listenerOnCompanyData.execute(companies.sort((a,b) => a.id - b.id));
+        this.#listenerOnCompanyData.execute(companies.sort((a,b) => a.id - b.id));
+        this.#onLoadingDocumentsOptions(false);
     }
 
     async requestDocuments(company,params) {
@@ -81,7 +110,7 @@ export default class DocumentsViewModel
             const token = SessionRepository.getSessionToken();
             this.#onSelectCompany(company);
             this.#onLoadingDocuments(true);
-            const response =  await this.#makeRequest({
+            const response =  await this.#makeDocumentsRequest({
                 token,
                 companyId:company.id, 
                 page:params.page,
@@ -116,45 +145,121 @@ export default class DocumentsViewModel
             }
         }
     }
+
+    async downloadDocuementsReports(company,params) {
+        
+        if(company != null && company.id != null) {
+            
+            
+            const token = SessionRepository.getSessionToken();
+            this.#onLoadingDocumentsOptions(true);
+            
+            const response =  await this.#makeRequestDownloadReport({
+                token,
+                companyId:company.id,
+                orderByColumn:params.orderBy.column,
+                orderByType:params.orderBy.order,
+                filters:{
+                    id:params.filters.id,
+                    doc_type_id:params.filters.doc_type_id.id,
+                    status:params.filters.status.id,
+                    document_number: params.filters.document_number,
+                    user_creation:params.filters.user_creation,
+                }
+            });
+            
+            this.#onLoadingDocumentsOptions(false);
+            
+            if (response.status != 200) {
+                
+                this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
+                    sourceErrorCode:response.data.app_status,
+                    sourceErrorMessage:response.data.message
+                });
+
+            }
+            else {
+                const reportLink = response?.data?.data?.reportUrl;
+                this.#listenerOnDownloadReport.execute(reportLink);
+            }
+            
+        }
+    }
     
     #onLoadingDocuments(value) {
-        this.listenerOnLoadingDocuments.execute(value);
+        this.#listenerOnLoadingDocuments.execute(value);
+    }
+
+    #onLoadingDocumentsOptions(value) {
+        this.#listenerOnLoadingDocumentsOptions.execute(value);
     }
     
     #onError(error) {
-        this.listenerShowError.execute(error);
+        this.#listenerShowError.execute(error);
     }
     
     #onSelectCompany(company) 
     {
-        if((company == null && this.selectedCompany != null) 
-            || (company != null && this.selectedCompany == null)
-            || (company.id != null && company.id !== this.selectedCompany.id)
+        if((company == null && this.#selectedCompany != null) 
+            || (company != null && this.#selectedCompany == null)
+            || (company.id != null && company.id !== this.#selectedCompany.id)
           ) 
         {
-            this.selectedCompany = company;
-            this.listenerOnSelectCompany.execute(company);
+            this.#selectedCompany = company;
+            this.#listenerOnSelectCompany.execute(company);
         }
         
     }
 
     #onLoadDocumentsData(documents) {
-        this.listenerOnDocumentsData.execute(documents);
+        this.#listenerOnDocumentsData.execute(documents);
     }
 
     #onPageInfoData(pageInfo) {
-        this.listenerOnPageInfoData.execute(pageInfo);
+        this.#listenerOnPageInfoData.execute(pageInfo);
     }
 
-    async #makeRequest(requestModel) {
+    async #makeRequestDownloadReport(requestModel){
+        
+        const endpoint = "https://t3xbifs9f1.execute-api.us-east-1.amazonaws.com/v1/documentos/crear-reporte";
+        //const endpoint = API_END_POINTS.GET_DOCUMENT_REPORT;
+        const url = `${this.#buildParams(endpoint,requestModel)}`;
+        return await this.#makeRequest(url,requestModel.token);
+    }
+
+    async #makeDocumentsRequest(requestModel) {
         
         const endpoint = "https://t3xbifs9f1.execute-api.us-east-1.amazonaws.com/v1/documentos/";
         //const endpoint = API_END_POINTS.GET_DOCUMENT_LIST;
+        const page = `page=${requestModel.page}`;
+        const url = `${this.#buildParams(endpoint,requestModel)}&${page}`;
+        return await this.#makeRequest(url,requestModel.token);
+    }
+
+    async #makeRequest(url,token) {
+        
+        try{
+
+            const response = await axios.get(url, { 
+                headers:{
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
+    }
+
+    #buildParams(endpoint, requestModel) {
         
         const company = `company_id=${requestModel.companyId}`;
-        const page = `page=${requestModel.page}`;
-        let url = `${endpoint}?${company}&${page}`;
         const filters = requestModel.filters;
+        let url = `${endpoint}?${company}`;
 
         if(requestModel.orderByColumn) {
             const orderBy =`orderBy=${requestModel.orderByColumn}`;
@@ -189,23 +294,7 @@ export default class DocumentsViewModel
             const createdBy = `&user_creation=${filters.user_creation.trim()}`;
             url = url.concat(createdBy);
         }
-
-        try{
-
-            const response = await axios.get(url, { 
-                headers:{
-                    "Authorization": `Bearer ${requestModel.token}`,
-                    "Content-Type": "application/json"
-                }
-            });
-            
-            return response;
-        }
-        catch(error) {
-            console.error(error);
-            return error.response;
-        }
+        
+        return url;
     }
-
-    
 }
