@@ -490,7 +490,7 @@ export default class DocumentsListView extends Component
                                     color: "white.main",
                                     textTransform: "none",
                                 }}
-                                size="small">{"Generar Reporte"}</MaterialUI.Button>
+                                size="small">{Strings.text_get_report}</MaterialUI.Button>
                         }
                         
                     </MaterialUI.Stack>

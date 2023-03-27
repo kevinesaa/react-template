@@ -46,6 +46,7 @@ const Strings = Object.freeze({
     text_permissions:"Permisos",
     text_filters:"Filtrar",
     text_all:"Todos",
+    text_get_report:"Generar Reporte",
     text_activate_singular:"Activo",
     text_inactivate_singular:"Inactivo",
     text_activate_plural:"Activos",
