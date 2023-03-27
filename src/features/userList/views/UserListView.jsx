@@ -402,6 +402,7 @@ export default class UserListView extends Component
                                 highlightOnHover
                                 pointerOnHover
                                 pagination
+                                paginationDefaultPage={this.state.currentPage}
                                 paginationPerPage={this.state.itemsPerPage}
                                 paginationServer 
                                 paginationTotalRows={this.state.totalItems}
