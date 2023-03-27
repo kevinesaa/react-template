@@ -229,7 +229,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.document_reference.table_id,
                     name:Strings.documents_list_column_document_ref,
-                    selector:row => row.referencia? row.referencia:row.detail?.REFERENCIA
+                    selector:row => row.referencia != null ? row.referencia:row.detail?.REFERENCIA
                 },
                 {
                     id:COLUMNS_IDS.document_amount.table_id,
@@ -239,7 +239,7 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.document_edit_amount.table_id,
                     name:Strings.documents_list_column_document_edit_amount,
-                    selector:row => row.tipo_documento == Constants.DOC_TYPE_ANEXO_ID ? "-" : row.detail?.MONTO_EDITADO == null ? "-":row.detail?.MONTO_EDITADO
+                    selector:row => row.detail?.MONTO_EDITADO == null ? "-":row.detail?.MONTO_EDITADO
                 },
                 {
                     id:COLUMNS_IDS.bank.table_id,
@@ -542,7 +542,7 @@ export default class DocumentsListView extends Component
                     
                     <MaterialUI.Box gridColumn="span 12">
                         
-                        <DataTable 
+                        <DataTable
                             columns={this.columns}
                             data={this.state.documents}
                             progressPending={this.state.loading_documents}
@@ -553,6 +553,7 @@ export default class DocumentsListView extends Component
                             highlightOnHover
                             pointerOnHover 
                             pagination
+                            paginationDefaultPage={this.state.currentPage}
                             paginationPerPage={this.state.itemsPerPage}
                             paginationTotalRows={this.state.totalItems}
                             paginationServer 
