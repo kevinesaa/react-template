@@ -8,6 +8,7 @@ import AssociatedDocumentsAdapter from "./associatedDocumentsSecction/Associated
 import Constants from "../../../_commons/Constants";
 import AmountSectionAdapter from "./amountSection/AmountSectionAdapter";
 import Strings from "../../../_Resources/strings/strings";
+import DocumentStatusIds from "../../../_commons/DocumentStatusIds";
 
 export default class DocumentDetailView extends React.Component {
 
@@ -83,10 +84,10 @@ export default class DocumentDetailView extends React.Component {
                         <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_zone_title}</b> {this.state.docDetail?.detail?.NOMBRE_ZONA}</MaterialUI.Typography>
                     </MaterialUI.Stack>
                     <MaterialUI.Stack direction="row" spacing={2}>
-                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_conciliated_title}</b> {this.state.docDetail?.estatus > 2 ? Strings.text_yes:Strings.text_no}</MaterialUI.Typography>
+                        <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_status_title}</b> { Strings.text_status_by_id[ this.state.docDetail?.estatus ] }</MaterialUI.Typography>
                         {
-                            this.state.docDetail?.estatus > 2 && 
-                            <MaterialUI.Typography variant="body2"><b>{Strings.text_date_title} </b> 
+                            this.state.docDetail?.estatus >  DocumentStatusIds.ON_CONCILIATION_PENDING && 
+                            <MaterialUI.Typography variant="body2"><b>{Strings.documents_details_date_conciliated} </b> 
                                 { this.state.docDetail?.fecha_conciliacion? `${this.state.docDetail.fecha_conciliacion.substring(0,10)}`: `${this.state.docDetail?.update_at?.substring(0,10)}`}
                             </MaterialUI.Typography>
                         }

@@ -10,6 +10,8 @@ import Constants from "../../../_commons/Constants";
 import DropdownFilter from "../../../_commons/views/DropdownFilter";
 import statusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/StatusFilterValuesBuilder";
 import documentStatusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/documentTypeFilterValuesBuilder";
+import DocumentStatusIds from "../../../_commons/DocumentStatusIds";
+
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
 const FIRST_PAGE = 1;
@@ -196,13 +198,14 @@ export default class DocumentsListView extends Component
                 {
                     id:COLUMNS_IDS.conciliation_date.table_id,
                     name:Strings.documents_list_column_date_conciliated,
-                    selector:row => row.estatus < 3?"-":row.fecha_conciliacion?`${row.fecha_conciliacion.substring(0,10)}`: `${row.update_at.substring(0,10)}`
+                    selector:row => row.estatus < DocumentStatusIds.ON_CONCILIATION_COMPLETE ? "-":row.fecha_conciliacion?`${row.fecha_conciliacion.substring(0,10)}`: `${row.update_at.substring(0,10)}`
                 },
                 {
                     
                     id:COLUMNS_IDS.status.table_id,
                     name:Strings.documents_list_column_status,
                     sortable: true,
+                    grow:2,
                     selector:row => Strings.text_status_by_id[ row.estatus ]
                 },
                 {
