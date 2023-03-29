@@ -36,7 +36,9 @@ export default function Home(props)
     }
 
     const showFirstTimeChangePassword = () => {
+        console.log("aqui 3");
         setShowFirstPass(true);
+        console.log("aqui 4");
     }
 
     const onChangePassSuccesful = () => {
@@ -54,7 +56,9 @@ export default function Home(props)
         }
         
         viewModel.subscribeOnShowFirstTimePass(showFirstTimeChangePassword);
-        viewModel.checkFirstPasswordState();
+        setTimeout(() =>{
+            viewModel.checkFirstPasswordState();
+        }, 1000);
         return () => {
             viewModel.unsubscribeOnShowFirstTimePass(showFirstTimeChangePassword);
         }
