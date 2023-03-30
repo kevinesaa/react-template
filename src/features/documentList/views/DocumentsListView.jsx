@@ -67,8 +67,8 @@ export default class DocumentsListView extends Component
                     column:COLUMNS_IDS.created_at,
                     defualtValue:{start:'',end:''},
                     component:<DateRangeFilter
-                        startDateLabel={`Creados desde`}
-                        endDateLabel={`Creados hasta`}
+                        startDateLabel={Strings.documents_list_column_created_filter_start}
+                        endDateLabel={Strings.documents_list_column_created_filter_end}
                         minDate={'2023-01-01'}
                         minDefault={'2023-01-01'}
                         maxDate={Date.now()}

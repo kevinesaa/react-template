@@ -73,6 +73,8 @@ const Strings = Object.freeze({
     side_bar_logout:"Cerrar sesión",
     document_type_cash: "Deposito",
     documents_list_title: documents,
+    documents_list_column_created_filter_start:"Creados desde",
+    documents_list_column_created_filter_end:"Creados hasta",
     documents_list_column_id:"id",
     documents_list_column_doc_type:"Tipo",
     documents_list_column_doc_number:"Nro. Documento",
