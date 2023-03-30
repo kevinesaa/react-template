@@ -17,9 +17,9 @@ export default class HomeViewModel {
 
     checkFirstPasswordState() {
         const user = UserRepository.getCurrentUser();
-        console.log("aqui")
+        
         if(user.new_user) {
-            console.log("aqui 2")
+            
             this.listenerOnCheckFirstTimePass.execute(true);
         }
     }

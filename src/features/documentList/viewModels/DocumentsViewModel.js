@@ -122,6 +122,7 @@ export default class DocumentsViewModel
                     status:params.filters.status.id,
                     document_number: params.filters.document_number,
                     user_creation:params.filters.user_creation,
+                    create_date:params.filters?.create_date,
                 }
             });
             
@@ -165,6 +166,7 @@ export default class DocumentsViewModel
                     status:params.filters.status.id,
                     document_number: params.filters.document_number,
                     user_creation:params.filters.user_creation,
+                    create_date:params.filters?.create_date,
                 }
             });
             
@@ -293,6 +295,19 @@ export default class DocumentsViewModel
         if(filters.user_creation != null && filters.user_creation.trim()) {
             const createdBy = `&user_creation=${filters.user_creation.trim()}`;
             url = url.concat(createdBy);
+        }
+        
+        if(filters.create_date != null) {
+            
+            if(filters.create_date.start != null && filters.create_date.start.trim()) {
+                const createDateStart = `&create_date_start=${filters.create_date.start.trim()}`;
+                url = url.concat(createDateStart);
+            }
+            
+            if(filters.create_date.end && filters.create_date.end.trim()) {
+                const createDateEnd = `&create_date_end=${filters.create_date.end.trim()}`;
+                url = url.concat(createDateEnd);
+            }
         }
         
         return url;

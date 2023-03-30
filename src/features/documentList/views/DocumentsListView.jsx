@@ -11,6 +11,7 @@ import DropdownFilter from "../../../_commons/views/DropdownFilter";
 import statusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/StatusFilterValuesBuilder";
 import documentStatusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/documentTypeFilterValuesBuilder";
 import DocumentStatusIds from "../../../_commons/DocumentStatusIds";
+import DateRangeFilter from "../../../_commons/views/DateRangeFilter";
 
 
 const DOCUMENT_PER_PAGE = Constants.REGISTER_PER_PAGE;
@@ -60,6 +61,25 @@ export default class DocumentsListView extends Component
             itemsPerPage:DOCUMENT_PER_PAGE,
             
             filters_list:[
+                {
+                    id:"doc_create_date_filter",
+                    name:Strings.text_created_date,
+                    column:COLUMNS_IDS.created_at,
+                    defualtValue:{start:'',end:''},
+                    component:<DateRangeFilter
+                        startDateLabel={`Creados desde`}
+                        endDateLabel={`Creados hasta`}
+                        minDate={'2023-01-01'}
+                        minDefault={'2023-01-01'}
+                        maxDate={Date.now()}
+                        maxDefault={Date.now()}
+                        pickerWith={'27vh'} 
+                        onRangeDateChange={(startDate, endDate) => {
+                            this.handledOnFilterChange(COLUMNS_IDS.created_at.table_id,{start:startDate,end:endDate});
+                        }}
+                        />
+                
+                },
                 {
                     id:"doc_id_filter",
                     name:Strings.documents_list_column_id,

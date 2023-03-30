@@ -36,9 +36,9 @@ export default function Home(props)
     }
 
     const showFirstTimeChangePassword = () => {
-        console.log("aqui 3");
+        
         setShowFirstPass(true);
-        console.log("aqui 4");
+        
     }
 
     const onChangePassSuccesful = () => {
