@@ -2,7 +2,7 @@ import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../Constants";
 
 
-export default function documentStatusFilterValuesBuilder() {
+export default function documentTypeFilterValuesBuilder() {
     
     const status = [
         {id:null, name:Strings.text_all},

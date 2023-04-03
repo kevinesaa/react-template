@@ -81,7 +81,7 @@ export default class UserListView extends Component
         this.onError = this.onError.bind(this);
         this.onLoadingChangeHandled = this.onLoadingChangeHandled.bind(this);
         this.handledOnSelectCompany = this.handledOnSelectCompany.bind(this);
-        this.onPermissonsListener = this.onPermissonsListener.bind(this);
+        this.onPermissionsListener = this.onPermissionsListener.bind(this);
         this.createNewUser = this.createNewUser.bind(this);
         this.seeUserDetails = this.seeUserDetails.bind(this);
         this.setCompanies = this.setCompanies.bind(this);
@@ -133,7 +133,7 @@ export default class UserListView extends Component
         ];
     }
 
-    onPermissonsListener(permissions) {
+    onPermissionsListener(permissions) {
         
         this.setState({
             showCreateNewButton:permissions.creteUsers.length > 0,
@@ -263,7 +263,7 @@ export default class UserListView extends Component
     componentDidMount() {
         this.viewModel.subscribeOnLoading(this.onLoadingChangeHandled);
         this.viewModel.subscribeOnShowError(this.onError);
-        this.viewModel.subscribeOnRequestPermissionsList(this.onPermissonsListener);
+        this.viewModel.subscribeOnRequestPermissionsList(this.onPermissionsListener);
         this.viewModel.subscribeOnLoadUsersList(this.showUserList);
         this.viewModel.subscribeOnPageInfoData(this.showPageInfo);
 
@@ -273,7 +273,7 @@ export default class UserListView extends Component
     componentWillUnmount() {
         this.viewModel.unsubscribeOnLoading(this.onLoadingChangeHandled);
         this.viewModel.unsubscribeOnShowError(this.onError);
-        this.viewModel.unsubscribeOnRequestPermissionsList(this.onPermissonsListener);
+        this.viewModel.unsubscribeOnRequestPermissionsList(this.onPermissionsListener);
         this.viewModel.unsubscribeOnLoadUsersList(this.showUserList);
         this.viewModel.unsubscribeOnPageInfoData(this.showPageInfo);
     }

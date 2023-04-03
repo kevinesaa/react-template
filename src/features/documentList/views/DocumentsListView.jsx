@@ -9,7 +9,7 @@ import Strings from "../../../_Resources/strings/strings";
 import Constants from "../../../_commons/Constants";
 import DropdownFilter from "../../../_commons/views/DropdownFilter";
 import statusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/StatusFilterValuesBuilder";
-import documentStatusFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/documentTypeFilterValuesBuilder";
+import documentTypeFilterValuesBuilder from "../../../_commons/views/filterValuesGenerators/documentTypeFilterValuesBuilder";
 import DocumentStatusIds from "../../../_commons/DocumentStatusIds";
 import DateRangeFilter from "../../../_commons/views/DateRangeFilter";
 
@@ -118,13 +118,13 @@ export default class DocumentsListView extends Component
                     id:"doc_type_filter",
                     name:Strings.documents_list_column_doc_type,
                     column:COLUMNS_IDS.doc_type,
-                    defualtValue:documentStatusFilterValuesBuilder()[0],
+                    defualtValue:documentTypeFilterValuesBuilder()[0],
                     component:<DropdownFilter 
                         sx={{ m: 1, width: "25vh" }}
                         labelId={'filter-doc-type'} 
                         label={Strings.documents_list_column_doc_type} 
                         defaultIndex={0} 
-                        values={documentStatusFilterValuesBuilder()}
+                        values={documentTypeFilterValuesBuilder()}
                         onSelectItem={ (value) => this.handledOnFilterChange(COLUMNS_IDS.doc_type.table_id,value)}/>
                 },
                 {
