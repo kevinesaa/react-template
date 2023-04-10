@@ -221,18 +221,16 @@ export default class DocumentsViewModel
         this.#listenerOnPageInfoData.execute(pageInfo);
     }
 
-    async #makeRequestDownloadReport(requestModel){
-        
-        const endpoint = "https://t3xbifs9f1.execute-api.us-east-1.amazonaws.com/v1/documentos/crear-reporte";
-        //const endpoint = API_END_POINTS.GET_DOCUMENT_REPORT;
+    async #makeRequestDownloadReport(requestModel) {
+
+        const endpoint = API_END_POINTS.GET_DOCUMENT_REPORT;
         const url = `${this.#buildParams(endpoint,requestModel)}`;
         return await this.#makeRequest(url,requestModel.token);
     }
 
     async #makeDocumentsRequest(requestModel) {
         
-        const endpoint = "https://t3xbifs9f1.execute-api.us-east-1.amazonaws.com/v1/documentos/";
-        //const endpoint = API_END_POINTS.GET_DOCUMENT_LIST;
+        const endpoint = API_END_POINTS.GET_DOCUMENT_LIST;
         const page = `page=${requestModel.page}`;
         const url = `${this.#buildParams(endpoint,requestModel)}&${page}`;
         return await this.#makeRequest(url,requestModel.token);
@@ -309,7 +307,7 @@ export default class DocumentsViewModel
                 url = url.concat(createDateEnd);
             }
         }
-        
+
         return url;
     }
 }

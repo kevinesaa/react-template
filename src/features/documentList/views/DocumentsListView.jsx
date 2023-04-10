@@ -299,9 +299,9 @@ export default class DocumentsListView extends Component
 
             if(row.tipo_documento == Constants.DOC_TYPE_RECIBO_ID) {
                 amount = row.detail?.MONTO_DOLAR;
-                if( row.detail.ID_MONEDA != Constants.ID_DOLLAR_CURRENCY)
+                if( row.detail?.ID_MONEDA != Constants.ID_DOLLAR_CURRENCY)
                 {
-                    amount = row.detail.MONTO_LOCAL;
+                    amount = row.detail?.MONTO_LOCAL;
                 }
             }
         }
