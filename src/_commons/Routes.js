@@ -1,6 +1,7 @@
 
 const app = "/app/";
-const documents = app + "documentos";
+const documents = `${app}documentos/`;
+const users = `${app}usuarios/`;
 
 const ROUTES = Object.freeze({ 
     ROOT:"/",
@@ -9,10 +10,11 @@ const ROUTES = Object.freeze({
     BASE_APP_ROUTE:app,
     FIRST_PAGE_APP:documents,
     DOCUMENTS:documents,
-    USERS:app + "usuarios",
-    USER_DETAILS:app + "usuarios/:id",
-    USER_NEW:app + "usuarios/nuevo",
-    PROFILE:app + "perfil"
+    DOCUMENTS_MISSING:`${app}faltantes/`,
+    USERS:users,
+    USER_DETAILS:`${users}:id`,
+    USER_NEW:`${users}nuevo`,
+    PROFILE:`${users}perfil`
 });
 
 export default ROUTES;

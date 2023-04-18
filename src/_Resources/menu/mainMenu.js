@@ -1,4 +1,3 @@
-
 import DocumentsListView from "../../features/documentList/views/DocumentsListView";
 import UserListView from "../../features/userList/views/UserListView";
 import DocumentsViewModel from "../../features/documentList/viewModels/DocumentsViewModel";
@@ -15,9 +14,11 @@ import AddNewUserViewModel from "../../features/userAddNew/viewModels/AddNewUser
 import UserDetailsViewModel from "../../features/userDetails/viewModels/UserDetailsViewModel";
 import UserListViewModel from "../../features/userList/viewModels/UserListViewModel";
 import DesactivateUserViewModel from "../../features/usersDesactivate/viewModels/DesactivateUserViewModel";
+import DocumentMissingListView from "../../features/documentMissingList/views/DocumentsMissingListView";
+import DocumentMissingListViewModel from "../../features/documentMissingList/viewModels/DocumentsMissingListViewModel";
 
 
-
+//DocumentMissingListView
 export default Object.freeze([
     {
         path:ROUTES.DOCUMENTS, 
@@ -28,7 +29,16 @@ export default Object.freeze([
         title:Strings.side_bar_documents, 
         icon:""
     },
-    /*{
+    {
+        path:ROUTES.DOCUMENTS_MISSING, 
+        isSideBarItem:true,
+        isNeedPermission:true,
+        permissions:[Permissions.ID_ALL_PERMISSIONS,Permissions.ID_SEE_DOCUMENTS_PERMISSION],
+        page: <DocumentMissingListView detailViewModel={new DocumentDetailViewModel()} viewModel={new DocumentMissingListViewModel()}/>, 
+        title:Strings.side_bar_documents_missing, 
+        icon:""
+    }/*,
+    {
         path:ROUTES.USERS,
         isSideBarItem:true,
         isNeedPermission:true,

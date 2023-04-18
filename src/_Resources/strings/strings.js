@@ -68,6 +68,7 @@ const Strings = Object.freeze({
     forgot_pass_view_title:"Solicitar cambio de contraseña",
     forgot_pass_view_successful_message:"Su solicitud ha sido envida satisfactoriamente. Por favor, revise su correo electrónico.",
     side_bar_documents:documents,
+    side_bar_documents_missing:"Faltantes",
     side_bar_users:users,
     side_bar_user_profile:user_profile,
     side_bar_logout:"Cerrar sesión",
