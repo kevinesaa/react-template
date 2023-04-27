@@ -6,7 +6,6 @@ import API_END_POINTS from '../../../_commons/Api';
 import ErrorCodes from '../../../_commons/InternalErrorCodes';
 import Permissions from '../../../_commons/Permissions';
 
-import delay from "../../../_commons/util/Delay";
 
 export default class DesactivateUserViewModel {
 
@@ -46,24 +45,37 @@ export default class DesactivateUserViewModel {
 
     async desactivateUser(userId) {
         
-        this.#listenerOnLoading.execute(true);
-        const token = SessionRepository.getSessionToken();
-          
-        const response = await this.#makeRequest({
-            token,
-            userId
-        });
-            
-        this.#listenerOnLoading.execute(false);
-        if ( response.status != 200)
+        const deleteUsersByCompanyPermissions = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_DISABLE_USERS]);
+        if(deleteUsersByCompanyPermissions.lenght < 1)
         {
-            this.#listenerOnError.execute({errorCode:ErrorCodes.SOURCE_ERROR});
+            console.log("you do not have permissions to delete users");
+            this.#onError({errorCode:"fail_missing_permissions"});
         }
         else 
         {
-            const obj = {user:response?.data?.data};
-            this.#listenerOnOperationCompletedSuccessful.execute(obj);
+            this.#listenerOnLoading.execute(true);
+            const token = SessionRepository.getSessionToken();
+          
+            const response = await this.#makeRequest({
+                token,
+                userId
+            });
+            
+            this.#listenerOnLoading.execute(false);
+            if ( response.status != 200)
+            {
+                this.#onError({errorCode:"fail_request"});
+            }
+            else 
+            {
+                const obj = {user:response?.data?.data};
+                this.#listenerOnOperationCompletedSuccessful.execute(obj);
+            }
         }
+    }
+
+    #onError(error) {
+        this.#listenerOnError.execute(error);
     }
 
     async #makeRequest(requestModel) {
