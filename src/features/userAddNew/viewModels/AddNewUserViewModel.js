@@ -1,4 +1,5 @@
 import axios from 'axios';
+import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
 import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import API_END_POINTS from '../../../_commons/Api';
@@ -68,10 +69,9 @@ export default class AddNewUserViewModel {
         else { 
             
             const companiesIds = 
-                PermissionRepository
-                    .getPermissionList()
-                    .filter(item => item.permission_id == Permissions.ID_ALL_PERMISSIONS || item.permission_id == Permissions.ID_CREATE_USERS)
-                    .map(item => item.company_id);
+                CompanyAndPermissionsRepository
+                    .getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_CREATE_USERS])
+                    .map(item => item.id);
             
             const permissionsList = 
                 response.data.data
@@ -85,36 +85,56 @@ export default class AddNewUserViewModel {
 
     async createNewUser(newUser) {
         
-        this.#onLoading(true);
         
-        const token = SessionRepository.getSessionToken();
-        const permissions = newUser.pemissions == null ? [] : newUser.pemissions.map(p => p.id);
+        const creteUsersByCompanyPermissions = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_CREATE_USERS]);
         
-        const response = await this.#makeRequestCreateNewUser({
-            token,
-            email:newUser.email,
-            name:newUser.name,
-            lastName:newUser.lastName,
-            permissions:permissions
-        });
-        
-        this.#onLoading(false);
-        if (response.status != 200)
+        if(creteUsersByCompanyPermissions.lenght < 1)
         {
-            this.#onError({errorCode:"fail_request"});
+            console.log("you do not have permissions to create users");
+            this.#onError({errorCode:"fail_missing_permissions"});
         }
         else 
         {
-            const user = response.data.user;
-            const userResponse = {
-                userId:user.user_id,
-                name:user.userName,
-                lastName:user.userLastName,
-                email:user.email,
-                permissions:response.data.permissions,
-                companies:response.data.companies
-            };
-            this.#notifyCreateUserSuccessful(userResponse);
+            const userComapaniesIds = creteUsersByCompanyPermissions.map(c => c.id);
+            const newUserCompaniesIds = newUser.pemissions.map(p => p.IDCASA);
+            
+            if(!newUserCompaniesIds.every(elem => userComapaniesIds.includes(elem))) {
+                
+                console.log("you do not have permissions at one or more companies");
+                this.#onError({errorCode:"fail_missing_company_permissions"});
+            }
+            else {
+                
+                this.#onLoading(true);
+                const token = SessionRepository.getSessionToken();
+                const permissions = newUser.pemissions == null ? [] : newUser.pemissions.map(p => p.id);
+                const response = await this.#makeRequestCreateNewUser({
+                    token,
+                    email:newUser.email,
+                    name:newUser.name,
+                    lastName:newUser.lastName,
+                    permissions:permissions
+                });
+        
+                this.#onLoading(false);
+                if (response.status != 200)
+                {
+                    this.#onError({errorCode:"fail_request"});
+                }
+                else 
+                {
+                    const user = response.data.user;
+                    const userResponse = {
+                        userId:user.user_id,
+                        name:user.userName,
+                        lastName:user.userLastName,
+                        email:user.email,
+                        permissions:response.data.permissions,
+                        companies:response.data.companies
+                    };
+                    this.#notifyCreateUserSuccessful(userResponse);
+                }
+            }
         }
         
     }

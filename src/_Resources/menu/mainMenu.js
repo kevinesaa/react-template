@@ -28,7 +28,7 @@ export default Object.freeze([
         page: <DocumentsListView detailViewModel={new DocumentDetailViewModel()} viewModel={new DocumentsViewModel()}/>, 
         title:Strings.side_bar_documents, 
         icon:""
-    }/*,
+    },/*
     {
         path:ROUTES.DOCUMENTS_MISSING, 
         isSideBarItem:true,
@@ -37,7 +37,7 @@ export default Object.freeze([
         page: <DocumentMissingListView detailViewModel={new DocumentDetailViewModel()} viewModel={new DocumentMissingListViewModel()}/>, 
         title:Strings.side_bar_documents_missing, 
         icon:""
-    },
+    },*/
     {
         path:ROUTES.USERS,
         isSideBarItem:true,
@@ -73,5 +73,5 @@ export default Object.freeze([
         page: <UserProfileContainer userViewModel={new UserProfileViewModel()} changePassViewModel={new ChangePasswordViewModel()}/>, 
         title:Strings.side_bar_user_profile, 
         icon:""
-    }*/
+    }
 ]);
