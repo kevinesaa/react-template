@@ -84,7 +84,7 @@ export default class AddNewUserView extends Component
         this.setState({permission_list:permissions});
     }
 
-    onUserCreateSuccessful() {
+    onUserCreateSuccessful(user) {
         this.setState({userCreated:true});
     }
 
