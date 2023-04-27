@@ -45,19 +45,36 @@ export default class DesactivateUserViewModel {
     }
 
     async desactivateUser(userId) {
+        
         this.#listenerOnLoading.execute(true);
-        await delay(200);
+        const token = SessionRepository.getSessionToken();
+          
+        const response = await this.#makeRequest({
+            token,
+            userId
+        });
+            
         this.#listenerOnLoading.execute(false);
-        this.#listenerOnError.execute();
+        if ( response.status != 200)
+        {
+            this.#listenerOnError.execute({errorCode:ErrorCodes.SOURCE_ERROR});
+        }
+        else 
+        {
+            const obj = {user:response?.data?.data};
+            this.#listenerOnOperationCompletedSuccessful.execute(obj);
+        }
     }
 
-    async #makeRequest(requestModel){
+    async #makeRequest(requestModel) {
 
-        const url = API_END_POINTS.UPDATE_DESACTIVATE_USER;
-
+        const endpoint = API_END_POINTS.UPDATE_DESACTIVATE_USER;
+        const userId = `id=${requestModel.userId}`;
+        const url = `${endpoint}?${userId}`;
         try{
 
-            const response = await axios.get(url, { 
+            const response = await axios(url, { 
+                method: 'put',    
                 headers:{
                     "Authorization": `Bearer ${requestModel.token}`,
                     "Content-Type": "application/json"

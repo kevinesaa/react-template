@@ -10,7 +10,8 @@ const ENDPOINT_LIST = {
     PROFILE_CHANGE_PASSWORD:"/usuario/change-password/",
     GET_PERMISSIONS_LIST:"/usuario/get-all-permissions/",
     GET_USERS_LIST:"/usuario/get-users/",
-    UPDATE_DESACTIVATE_USER:"/",
+    UPDATE_DESACTIVATE_USER:"/usuario/enable-disable/",
+    CREATE_USER:"/usuario/add-user/",
 };
 
 const API_END_POINTS = Object.freeze(
