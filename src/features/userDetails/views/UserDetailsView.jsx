@@ -4,7 +4,7 @@ import FeatureContainer from "../../../_commons/views/FeatureContainer";
 import Strings from "../../../_Resources/strings/strings";
 import CustomTextField from "../../../_commons/views/CustomTextField";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
-import OperationCompletedDialog from "../../../_commons/views/OperationCompletedDialog";
+import CustomMessageDialog from "../../../_commons/views/CustomMessageDialog";
 import { Navigate } from "react-router-dom";
 import ROUTES from "../../../_commons/Routes";
 
@@ -20,7 +20,7 @@ export default class UserDetailsView extends Component
             loading:false,
             navigateToUsers:false,
             updateUser:false,
-            user:{id:userId ,email:'', name:'', lastName:'', status:0, permissions:[]},
+            user:{id:userId ,email:'', name:'', lastName:'', status:0},
             permission_list:[],
             selected_permissions:[],
             canDeleteUser:false,
@@ -42,11 +42,33 @@ export default class UserDetailsView extends Component
         this.handledNameInput = this.handledNameInput.bind(this);
         this.handledLastNameInput = this.handledLastNameInput.bind(this);
         this.showUserInfo = this.showUserInfo.bind(this);
+        this.handledNavigateToUserList = this.handledNavigateToUserList.bind(this);
+        this.handledDialogOnUpdateUserCompletedSuccessful = this.handledDialogOnUpdateUserCompletedSuccessful.bind(this);
         this.onDesativateUserCompletedSuccessful = this.onDesativateUserCompletedSuccessful.bind(this);
+        this.permissionToSelectHelper = this.permissionToSelectHelper.bind(this);
+    }
+
+    handledNavigateToUserList() {
+        this.setState({navigateToUsers:true});
+    }
+
+    handledDialogOnUpdateUserCompletedSuccessful() {
+        this.setState({
+            updateUser:false
+        });
     }
 
     handledOnSummit(event) {
         event.preventDefault();
+        //user:{id:userId ,email:'', name:'', lastName:'', status:0, permissions:[]},
+        const user = this.state.user;
+        this.viewModel.updateUser({
+            id:user.id,
+            email:user.email,
+            name:user.name,
+            lastName:user.lastName,
+            permissions:this.state.selected_permissions
+        });
     }
 
     handledRestoreUserView(event) {
@@ -54,7 +76,7 @@ export default class UserDetailsView extends Component
     }
 
     handledOnDesactivateUser() {
-        const user=this.state.user;
+        const user = this.state.user;
         user.status = user.status ^ 1;
         this.setState({user}, () => {
             
@@ -62,33 +84,35 @@ export default class UserDetailsView extends Component
         });
     }
 
-    onDesativateUserCompletedSuccessful(user) {
+    onDesativateUserCompletedSuccessful(userInfo) {
         
-        //const user = this.state.user;
-        //user.status = user.status ^ 1;
-        //this.setState({user});
+        const user = this.state.user;
+        user.status = userInfo.user.active;
+        this.setState({user});
     }
 
     onDesativateUserFail(error) {
+        console.log('ah que chimbo');
+        console.log(error);
         const user = this.state.user;
         user.status = user.status ^ 1;
         this.setState({user});
     }
 
     handledEmailInput(email) {
-        const user=this.state.user;
+        const user = this.state.user;
         user.email = email;
         this.setState({user});
     }
 
     handledNameInput(name) {
-        const user=this.state.user;
+        const user = this.state.user;
         user.name = name;
         this.setState({user});
     }
 
     handledLastNameInput(lastName) {
-        const user=this.state.user;
+        const user = this.state.user;
         user.lastName = lastName;
         this.setState({user});
     }
@@ -99,7 +123,7 @@ export default class UserDetailsView extends Component
     }
 
     showLoading(value) {
-        this.setState ({loading : value});
+        this.setState({loading : value});
     }
 
     onError(error) {
@@ -127,6 +151,14 @@ export default class UserDetailsView extends Component
     showUserPermissions(permissions) {
         
         this.setState({selected_permissions:permissions});
+    }
+
+    permissionToSelectHelper() {
+        //sorry, maybe the materialUI.select componet has a bug
+        const p = this.state.permission_list.filter(per => this.state.selected_permissions.map(i => i.id).includes(per.id));
+        const mis = this.state.selected_permissions.filter(per => !p.map(i => i.id).includes(per.id));
+        mis.push(...p)
+        return mis;
     }
 
     componentDidMount() {
@@ -257,7 +289,7 @@ export default class UserDetailsView extends Component
                                     multiple={true}
                                     onChange={this.onHandleSelectPermission}
                                     renderValue={this.renderSelectedPermissions}
-                                    value={this.state.selected_permissions}>
+                                    value={this.permissionToSelectHelper()}>
 
                                     {this.state.permission_list.length > 0 &&
                                         this.state.permission_list.map(item => {
@@ -314,11 +346,18 @@ export default class UserDetailsView extends Component
                     
                 </form>
                 
-                <OperationCompletedDialog 
+                <CustomMessageDialog 
                     open={this.state.updateUser}
-                    onClose={this.closeOperationSuccessfulDialog}/>
-
-            </FeatureContainer>
+                    message={Strings.text_operation_successful}
+                    onClose={this.handledDialogOnUpdateUserCompletedSuccessful}/>
+                
+                {!this.state.canSeeUser &&
+                   <CustomMessageDialog 
+                        open={!this.state.canSeeUser}
+                        message={Strings.missing_permission_see_users}
+                        onClose={this.handledNavigateToUserList}/>
+                }
+             </FeatureContainer>
         </>);
     }
 }

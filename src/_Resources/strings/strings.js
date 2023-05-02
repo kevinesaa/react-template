@@ -135,6 +135,7 @@ const Strings = Object.freeze({
     logout_view_title:"Cerrar Sesión",
     logout_view_message:"¿Estás seguro que quieres cerrar la sesión?",
     permissions_names_by_id:permissionsStrings,
+    missing_permission_see_users:"No tienes permisos suficientes para ver a este usuario",
 });
 
 

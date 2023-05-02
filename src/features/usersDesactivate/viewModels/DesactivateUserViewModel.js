@@ -68,7 +68,7 @@ export default class DesactivateUserViewModel {
             }
             else 
             {
-                const obj = {user:response?.data?.data};
+                const obj = {user:response?.data?.data?.user};
                 this.#listenerOnOperationCompletedSuccessful.execute(obj);
             }
         }

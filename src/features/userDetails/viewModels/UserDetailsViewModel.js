@@ -1,5 +1,4 @@
 import axios from 'axios';
-import PermissionRepository from '../../../sessionManager/repository/PermissionsRepository';
 import SessionRepository from "../../../sessionManager/repository/SessionRepository";
 import API_END_POINTS from '../../../_commons/Api';
 
@@ -7,68 +6,75 @@ import ListListener from "../../../_commons/util/ListListenerContainer";
 import AllUserPermissionsRepository from '../../userPermissions/repositories/AllUsersPermissionsRepository';
 import CompanyAndPermissionsRepository from '../../../sessionManager/repository/CompanyAndPermissionsRepository';
 import Permissions from '../../../_commons/Permissions';
-import { Rtt } from '@mui/icons-material';
+
 
 export default class UserDetailsViewModel {
 
-    
-    
+    #activateUserPermissions;
+    #selectablePermissions;
+
+    #listenerOnLoading;
+    #listenerOnSessionsPermissions;
+    #listenerShowUser;
+    #listenerShowUserPermissions;
+    #listenerShowError;
+    #listenerOnSessionSelectablePermissionsList;
     
     constructor() {
-        this.listenerOnLoading = new ListListener();
-        this.listenerOnSessionsPermissions = new ListListener();
-        this.listenerShowUser = new ListListener();
-        this.listenerShowUserPermissions = new ListListener();
-        this.listenerShowError = new ListListener();
-        this.listenerOnSessionSelectablePermissionsList = new ListListener();
+        this.#listenerOnLoading = new ListListener();
+        this.#listenerOnSessionsPermissions = new ListListener();
+        this.#listenerShowUser = new ListListener();
+        this.#listenerShowUserPermissions = new ListListener();
+        this.#listenerShowError = new ListListener();
+        this.#listenerOnSessionSelectablePermissionsList = new ListListener();
     }
 
     unsubscribeOnLoading(func) {
-        this.listenerOnLoading.unsubscribe(func);
+        this.#listenerOnLoading.unsubscribe(func);
     }
 
     subscribeOnLoading(func) {
-        this.listenerOnLoading.subscribe(func);
+        this.#listenerOnLoading.subscribe(func);
     }
 
     unsubscribeOnSessionPermissions(func) {
-        this.listenerOnSessionsPermissions.unsubscribe(func);
+        this.#listenerOnSessionsPermissions.unsubscribe(func);
     }
 
     subscribeOnSessionPermissions(func) {
-        this.listenerOnSessionsPermissions.subscribe(func);
+        this.#listenerOnSessionsPermissions.subscribe(func);
     }
 
     unsubscribeOnShowError(func) {
-        this.listenerShowError.unsubscribe(func);
+        this.#listenerShowError.unsubscribe(func);
     }
 
     subscribeOnShowError(func) {
-        this.listenerShowError.subscribe(func);
+        this.#listenerShowError.subscribe(func);
     }
     
     unsubscribeOnRequestSelectablePermissionsList(func) {
-        this.listenerOnSessionSelectablePermissionsList.unsubscribe(func);
+        this.#listenerOnSessionSelectablePermissionsList.unsubscribe(func);
     }
 
     subscribeOnRequestSelectablePermissionsList(func) {
-        this.listenerOnSessionSelectablePermissionsList.subscribe(func);
+        this.#listenerOnSessionSelectablePermissionsList.subscribe(func);
     }
 
     unsubscribeOnShowUser(func) {
-        this.listenerShowUser.unsubscribe(func);
+        this.#listenerShowUser.unsubscribe(func);
     }
 
     subscribeOnShowUser(func) {
-        this.listenerShowUser.subscribe(func);
+        this.#listenerShowUser.subscribe(func);
     }
 
     unsubscribeOnShowUserPermissions(func) {
-        this.listenerShowUserPermissions.unsubscribe(func);
+        this.#listenerShowUserPermissions.unsubscribe(func);
     }
 
     subscribeOnShowUserPermissions(func) {
-        this.listenerShowUserPermissions.subscribe(func);
+        this.#listenerShowUserPermissions.subscribe(func);
     }
 
     async requestUserDetails(userId) {
@@ -80,48 +86,82 @@ export default class UserDetailsViewModel {
         
         if (permissionResponse.status != 200) {
             
-            this.#onError({errorCode:"fail_request"});
+            this.#onError({
+                errorCode:"fail_request",
+                sourceErrorMessage:"fail to get permissions"
+            });
         }
         else { 
             
             const userDetailResponse = await this.#makeGetUserDetailRequest({token,userId});
             
-            const user = userDetailResponse?.data?.user;
-            const userPermissions = userDetailResponse?.data?.permissions;
-            const userCompanies = userDetailResponse?.data?.companies;
+            if (userDetailResponse.status != 200) {
             
-            
-            const sessionPermissionsList = 
-                permissionResponse.data.data
-                    .filter(item => sessionCompaniesByPermissions.editUsers.map(company => company.id).includes(item.IDCASA))    
-                    .sort((a,b) => a.IDCASA - b.IDCASA);
+                this.#onError({errorCode:"fail_request",
+                    sourceErrorMessage:"fail to get user info"
+                });
+            }
+            else { 
+
+                const user = userDetailResponse?.data?.user;
+                const userPermissions = userDetailResponse?.data?.permissions;
+                const userCompanies = userDetailResponse?.data?.companies;
+                
+                const sessionPermissionsList = 
+                    permissionResponse.data.data
+                        .filter(item => sessionCompaniesByPermissions.editUsers.map(company => company.id).includes(item.IDCASA))    
+                        .sort((a,b) => a.IDCASA - b.IDCASA);
 
             
-            const seeUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.seeUsers,userCompanies);
-            const deleteUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.deleteUsers,userCompanies);
-            const editUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.editUsers,userCompanies);
+                const seeUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.seeUsers,userCompanies);
+                const deleteUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.deleteUsers,userCompanies);
+                const editUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.editUsers,userCompanies);
 
-            
-            this.#notifyOnSessionPermissions({seeUsers,deleteUsers,editUsers});
-            this.#onShowSelectablePermissions(sessionPermissionsList);
-            this.#onShowUser(user);
-            this.#onShowUserPermissions(userPermissions);
-            
+                this.#notifyOnSessionPermissions({seeUsers,deleteUsers,editUsers});
+                if(seeUsers) {
+                    
+                    this.#activateUserPermissions = sessionPermissionsList
+                        .filter(p => userPermissions.map(i => i.id_casa_permiso).includes(p.id))
+                        .map(permission => {
+                            return {
+                                id:permission.id,
+                                id_company:permission.IDCASA,
+                                company:permission.CASA,
+                                id_permission:permission.IDPERMISO,
+                                permission:permission.PERMISO
+                            }
+                        });
+                    const userPermissionsFilter = userPermissions.filter(item => sessionCompaniesByPermissions.seeUsers.map(i => i.id).includes(item.company_id)); 
+                    this.#onShowUser(user);
+                    this.#onShowUserPermissions(userPermissionsFilter);
+                    if(editUsers) {
+                        this.#onShowSelectablePermissions(sessionPermissionsList);
+                    }
+                    
+                }
 
+            }
         }
         this.#onLoading(false);
     }
 
     async updateUser(user) {
-
+        console.log("update")
+        console.log(user)
+        const permissionsToEnable = user.permissions?.filter(p => this.#selectablePermissions.map(item => item.id).includes(p.id));
+        const permissionToDisable = this.#activateUserPermissions.filter(p => !permissionsToEnable.map(item => item.id).includes(p.id));
+        console.log("enable")
+        console.log(permissionsToEnable)
+        console.log("disable")
+        console.log(permissionToDisable)
     }
 
     #onLoading(value) {
-        this.listenerOnLoading.execute(value);
+        this.#listenerOnLoading.execute(value);
     }
     
     #onError(error) {
-        this.listenerShowError.execute(error);
+        this.#listenerShowError.execute(error);
     }
 
     #onShowSelectablePermissions(permissionsList) {
@@ -135,8 +175,8 @@ export default class UserDetailsViewModel {
                 permission:item.PERMISO
             }
         });
-        
-        this.listenerOnSessionSelectablePermissionsList.execute(permissions);
+        this.#selectablePermissions = permissions;
+        this.#listenerOnSessionSelectablePermissionsList.execute(permissions);
     }
 
     #onShowUser(userInfo) {
@@ -148,7 +188,7 @@ export default class UserDetailsViewModel {
             lastName:userInfo.userLastName, 
             status:userInfo.activo
         };
-        this.listenerShowUser.execute(user);
+        this.#listenerShowUser.execute(user);
     }
 
     #onShowUserPermissions(userPermissions) {
@@ -162,11 +202,12 @@ export default class UserDetailsViewModel {
                 permission:item.permission_name
             }
         });
-       this.listenerShowUserPermissions.execute(permissions);
+
+        this.#listenerShowUserPermissions.execute(permissions);
     }
 
     #notifyOnSessionPermissions(permissions) {
-        this.listenerOnSessionsPermissions.execute(permissions);
+        this.#listenerOnSessionsPermissions.execute(permissions);
     }
 
     #getSessionCompaniesPermissions() {
