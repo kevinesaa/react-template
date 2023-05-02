@@ -22,13 +22,18 @@ export default class UserDetailsView extends Component
             updateUser:false,
             user:{id:userId ,email:'', name:'', lastName:'', status:0, permissions:[]},
             permission_list:[],
-            selected_permissions:[]
+            selected_permissions:[],
+            canDeleteUser:false,
+            canEditUser:false,
+            canSeeUser:true
         };
         this.viewModel = props.viewModel;
         this.desactivateUserViewModel = props.desactivateUserViewModel;
         this.showLoading = this.showLoading.bind(this);
         this.onError = this.onError.bind(this);
-        this.showPermissionsList = this.showPermissionsList.bind(this);
+        this.onSessionPermissions = this.onSessionPermissions.bind(this);
+        this.showSelectablePermissionsList = this.showSelectablePermissionsList.bind(this);
+        this.showUserPermissions = this.showUserPermissions.bind(this);
         this.onHandleSelectPermission = this.onHandleSelectPermission.bind(this);
         this.handledOnSummit = this.handledOnSummit.bind(this);
         this.handledOnDesactivateUser = this.handledOnDesactivateUser.bind(this);
@@ -36,6 +41,8 @@ export default class UserDetailsView extends Component
         this.handledEmailInput = this.handledEmailInput.bind(this);
         this.handledNameInput = this.handledNameInput.bind(this);
         this.handledLastNameInput = this.handledLastNameInput.bind(this);
+        this.showUserInfo = this.showUserInfo.bind(this);
+        this.onDesativateUserCompletedSuccessful = this.onDesativateUserCompletedSuccessful.bind(this);
     }
 
     handledOnSummit(event) {
@@ -50,12 +57,20 @@ export default class UserDetailsView extends Component
         const user=this.state.user;
         user.status = user.status ^ 1;
         this.setState({user}, () => {
+            
             this.desactivateUserViewModel.desactivateUser(user.id);
         });
     }
 
-    onDesativateUserFail() {
-        const user=this.state.user;
+    onDesativateUserCompletedSuccessful(user) {
+        
+        //const user = this.state.user;
+        //user.status = user.status ^ 1;
+        //this.setState({user});
+    }
+
+    onDesativateUserFail(error) {
+        const user = this.state.user;
         user.status = user.status ^ 1;
         this.setState({user});
     }
@@ -92,19 +107,39 @@ export default class UserDetailsView extends Component
         console.error(error);
     }
 
-    showPermissionsList(permissions) {
+    onSessionPermissions(permissions) {
+        
+        this.setState({
+            canDeleteUser:permissions.deleteUsers,
+            canEditUser:permissions.editUsers,
+            canSeeUser:permissions.seeUsers 
+        });
+    }
+
+    showUserInfo(userInfo) {
+        this.setState({user:userInfo});
+    }
+
+    showSelectablePermissionsList(permissions) {
         this.setState({permission_list:permissions});
     }
 
-    showUserPermissions(permissiosn) {
-
+    showUserPermissions(permissions) {
+        
+        this.setState({selected_permissions:permissions});
     }
 
     componentDidMount() {
-        this.viewModel.subscribeOnLoading(this.showLoading);
-        this.viewModel.subscribeOnShowError(this.onError);
-        this.viewModel.subscribeOnRequestPermissionsList(this.showPermissionsList);
         
+        this.viewModel.subscribeOnLoading(this.showLoading);
+        this.viewModel.subscribeOnSessionPermissions(this.onSessionPermissions);
+
+        this.viewModel.subscribeOnShowError(this.onError);
+        this.viewModel.subscribeOnShowUser(this.showUserInfo);
+        this.viewModel.subscribeOnShowUserPermissions(this.showUserPermissions);
+        this.viewModel.subscribeOnRequestSelectablePermissionsList(this.showSelectablePermissionsList);
+        
+        this.desactivateUserViewModel.subscribeOnOperationCompletedSuccessful(this.onDesativateUserCompletedSuccessful);
         this.desactivateUserViewModel.subscribeOnError(this.onDesativateUserFail);
 
         this.viewModel.requestUserDetails(this.state.user.id);
@@ -112,9 +147,14 @@ export default class UserDetailsView extends Component
 
     componentWillUnmount() {
         this.viewModel.unsubscribeOnLoading(this.showLoading);
+        this.viewModel.unsubscribeOnSessionPermissions(this.onSessionPermissions);
+
         this.viewModel.unsubscribeOnShowError(this.onError);
-        this.viewModel.unsubscribeOnRequestPermissionsList(this.showPermissionsList);
+        this.viewModel.unsubscribeOnShowUser(this.showUserInfo);
+        this.viewModel.unsubscribeOnShowUserPermissions(this.showUserPermissions);
+        this.viewModel.unsubscribeOnRequestSelectablePermissionsList(this.showSelectablePermissionsList);
         this.desactivateUserViewModel.unsubscribeOnError(this.onDesativateUserFail);
+        this.desactivateUserViewModel.unsubscribeOnOperationCompletedSuccessful(this.onDesativateUserCompletedSuccessful);
     }
 
     renderSelectedPermissions(selectedValues) {
@@ -126,7 +166,7 @@ export default class UserDetailsView extends Component
                 {selectedValues.sort((a,b) => a.IDCASA - b.IDCASA).map((item) => (
                     <MaterialUI.Chip
                         key={item.id}
-                        label={`${item.CASA} - ${Strings.permissions_names_by_id[item.IDPERMISO]}`}/>
+                        label={`${item.company} - ${Strings.permissions_names_by_id[item.id_permission]}`}/>
                 ))}
             </MaterialUI.Box>
         </>);
@@ -157,6 +197,7 @@ export default class UserDetailsView extends Component
                                 <MaterialUI.Stack alignItems="center" direction={{ xs: "column", sm: "row" }}>
                                     <MaterialUI.Typography variant="body1">{Strings.text_inactivate_singular}</MaterialUI.Typography>
                                     <MaterialUI.Switch 
+                                        disabled={!this.state.canDeleteUser}
                                         checked={this.state.user.status !== 0}
                                         onChange={this.handledOnDesactivateUser} />
                                     <MaterialUI.Typography variant="body1">{Strings.text_activate_singular}</MaterialUI.Typography>
@@ -166,7 +207,8 @@ export default class UserDetailsView extends Component
                                     spacing={{ xs: 1, md: 1}} 
                                     sx={{ pt: 1 }}>
                                     
-                                    <CustomTextField 
+                                    <CustomTextField
+                                        disabled={!this.state.canEditUser}
                                         columnsInGrid={4}
                                         required={true}
                                         onChangeText={this.handledEmailInput}
@@ -175,6 +217,7 @@ export default class UserDetailsView extends Component
                                         label={Strings.text_email}/>
 
                                     <CustomTextField 
+                                        disabled={!this.state.canEditUser}
                                         columnsInGrid={4}
                                         required={true}
                                         onChangeText={this.handledNameInput}
@@ -182,7 +225,8 @@ export default class UserDetailsView extends Component
                                         textValue={this.state.user.name}
                                         label={Strings.text_name}/>
                                     
-                                    <CustomTextField 
+                                    <CustomTextField
+                                        disabled={!this.state.canEditUser} 
                                         columnsInGrid={4}
                                         required={true}
                                         onChangeText={this.handledLastNameInput}
@@ -206,6 +250,7 @@ export default class UserDetailsView extends Component
                                     {Strings.text_permissions}
                                 </MaterialUI.InputLabel>
                                 <MaterialUI.Select 
+                                    inputProps={{ readOnly: !this.state.canEditUser }}
                                     required={true}
                                     labelId={`label-select-permissions`}
                                     label={Strings.text_permissions}
@@ -218,7 +263,7 @@ export default class UserDetailsView extends Component
                                         this.state.permission_list.map(item => {
                                                 return(
                                                     <MaterialUI.MenuItem key={item.id} value={item}>
-                                                        {`${item.CASA} - ${Strings.permissions_names_by_id[item.IDPERMISO]}`}
+                                                        {`${item.company} - ${Strings.permissions_names_by_id[item.id_permission]}`}
                                                     </MaterialUI.MenuItem>
                                                 )}
                                             )
