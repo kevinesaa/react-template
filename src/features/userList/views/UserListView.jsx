@@ -29,13 +29,13 @@ const SELECT_ACTIVES = Object.freeze({
 });
 
 const StatusComponent = (props) => {
-                        
+                    
     const [status, setStatus] = useState(props.status);
 
-    const onChangeStatusListner = ()=> {
+    const onChangeStatusListener = () => {
         
-        if(props.onChangeStatusListner) {
-            props.onChangeStatusListner(props.index,setStatus)
+        if(props.onChangeStatusListener) {
+            props.onChangeStatusListener(props.index,setStatus)
         }
     };
 
@@ -43,7 +43,7 @@ const StatusComponent = (props) => {
         <MaterialUI.Stack alignItems="center" direction={{ xs: "column", sm: "row" }}>
             <MaterialUI.Typography variant="body2">{Strings.text_inactivate_singular}</MaterialUI.Typography>
             <MaterialUI.Switch 
-                onChange={onChangeStatusListner}
+                onChange={onChangeStatusListener}
                 disabled={!props.enable}
                 checked={status}
                 size="small"/>
@@ -123,7 +123,7 @@ export default class UserListView extends Component
                     return <>
                         <StatusComponent 
                             index={index}
-                            onChangeStatusListner={this.handledOnDesactivateUser}
+                            onChangeStatusListener={this.handledOnDesactivateUser}
                             status={row.ACTIVO !== 0}
                             enable={this.state.canDelete}
                         />
@@ -182,6 +182,7 @@ export default class UserListView extends Component
         
         if(!this.state.canDelete) {
            //todo show message, not have permissions 
+           console.log("you not have permissions to delete users");
         }
         else {
             

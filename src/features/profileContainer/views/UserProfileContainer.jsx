@@ -4,7 +4,7 @@ import Strings from "../../../_Resources/strings/strings";
 import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
 import UserProfile from "../../profile/views/UserProfile";
 import FeatureContainer from "../../../_commons/views/FeatureContainer";
-import OperationCompletedDialog from "../../../_commons/views/OperationCompletedDialog";
+import CustomMessageDialog from "../../../_commons/views/CustomMessageDialog";
 
 export default class UserProfileContainer extends Component 
 {
@@ -50,7 +50,7 @@ export default class UserProfileContainer extends Component
                                 onChangePassSuccessful={this.onRequestCompletedSuccessful}
                                 viewModel={this.changePassViewModel}/>
                         
-                            <OperationCompletedDialog 
+                            <CustomMessageDialog 
                                 open={this.state.showOperationSuccessful}
                                 onClose={this.closeOperationSuccessfulDialog}/>
                             

@@ -6,7 +6,6 @@ import API_END_POINTS from '../../../_commons/Api';
 import ErrorCodes from '../../../_commons/InternalErrorCodes';
 import Permissions from '../../../_commons/Permissions';
 
-import delay from "../../../_commons/util/Delay";
 
 export default class DesactivateUserViewModel {
 
@@ -45,19 +44,49 @@ export default class DesactivateUserViewModel {
     }
 
     async desactivateUser(userId) {
-        this.#listenerOnLoading.execute(true);
-        await delay(200);
-        this.#listenerOnLoading.execute(false);
-        this.#listenerOnError.execute();
+        
+        const deleteUsersByCompanyPermissions = CompanyAndPermissionsRepository.getCompaniesByPermissons([Permissions.ID_ALL_PERMISSIONS,Permissions.ID_DISABLE_USERS]);
+        if(deleteUsersByCompanyPermissions.lenght < 1)
+        {
+            console.log("you do not have permissions to delete users");
+            this.#onError({errorCode:"fail_missing_permissions"});
+        }
+        else 
+        {
+            this.#listenerOnLoading.execute(true);
+            const token = SessionRepository.getSessionToken();
+          
+            const response = await this.#makeRequest({
+                token,
+                userId
+            });
+            
+            this.#listenerOnLoading.execute(false);
+            if ( response.status != 200)
+            {
+                this.#onError({errorCode:"fail_request"});
+            }
+            else 
+            {
+                const obj = {user:response?.data?.data?.user};
+                this.#listenerOnOperationCompletedSuccessful.execute(obj);
+            }
+        }
     }
 
-    async #makeRequest(requestModel){
+    #onError(error) {
+        this.#listenerOnError.execute(error);
+    }
 
-        const url = API_END_POINTS.UPDATE_DESACTIVATE_USER;
+    async #makeRequest(requestModel) {
 
+        const endpoint = API_END_POINTS.UPDATE_DESACTIVATE_USER;
+        const userId = `id=${requestModel.userId}`;
+        const url = `${endpoint}?${userId}`;
         try{
 
-            const response = await axios.get(url, { 
+            const response = await axios(url, { 
+                method: 'put',    
                 headers:{
                     "Authorization": `Bearer ${requestModel.token}`,
                     "Content-Type": "application/json"

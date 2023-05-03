@@ -6,7 +6,7 @@ import CustomTextField from "../../../_commons/views/CustomTextField";
 import CustomButtonForm from "../../../_commons/views/CustomButtonForm";
 import { Navigate } from "react-router-dom";
 import ROUTES from "../../../_commons/Routes";
-import OperationCompletedDialog from "../../../_commons/views/OperationCompletedDialog";
+import CustomMessageDialog from "../../../_commons/views/CustomMessageDialog";
 
 
 export default class AddNewUserView extends Component 
@@ -84,7 +84,7 @@ export default class AddNewUserView extends Component
         this.setState({permission_list:permissions});
     }
 
-    onUserCreateSuccessful() {
+    onUserCreateSuccessful(user) {
         this.setState({userCreated:true});
     }
 
@@ -250,8 +250,9 @@ export default class AddNewUserView extends Component
                     
                 </form>
                 
-                <OperationCompletedDialog 
+                <CustomMessageDialog 
                     open={this.state.userCreated}
+                    message={Strings.text_operation_successful}
                     onClose={this.closeOperationSuccessfulDialog}/>
 
             </FeatureContainer>

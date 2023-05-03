@@ -1,7 +1,7 @@
 import * as MaterialUI from "@mui/material";
-import Strings from "../../_Resources/strings/strings";
 
-export default function OperationCompletedDialog(props) {
+
+export default function CustomMessageDialog(props) {
     
     return (<>
         <MaterialUI.Dialog
@@ -27,7 +27,7 @@ export default function OperationCompletedDialog(props) {
             <MaterialUI.DialogContent dividers={false} sx={{ width: 350 }}>
                 
                 <MaterialUI.Typography variant="body1" >
-                    {Strings.text_operation_successful}
+                    {props.message}
                 </MaterialUI.Typography>
             </MaterialUI.DialogContent>
             
