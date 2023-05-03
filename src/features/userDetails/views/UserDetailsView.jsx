@@ -45,6 +45,7 @@ export default class UserDetailsView extends Component
         this.handledNavigateToUserList = this.handledNavigateToUserList.bind(this);
         this.handledDialogOnUpdateUserCompletedSuccessful = this.handledDialogOnUpdateUserCompletedSuccessful.bind(this);
         this.onDesativateUserCompletedSuccessful = this.onDesativateUserCompletedSuccessful.bind(this);
+        this.onUpdateUserSuccessful = this.onUpdateUserSuccessful.bind(this);
         this.permissionToSelectHelper = this.permissionToSelectHelper.bind(this);
     }
 
@@ -59,8 +60,9 @@ export default class UserDetailsView extends Component
     }
 
     handledOnSummit(event) {
+        
         event.preventDefault();
-        //user:{id:userId ,email:'', name:'', lastName:'', status:0, permissions:[]},
+        
         const user = this.state.user;
         this.viewModel.updateUser({
             id:user.id,
@@ -140,6 +142,12 @@ export default class UserDetailsView extends Component
         });
     }
 
+    onUpdateUserSuccessful() {
+        this.setState({
+            updateUser:true
+        });
+    }
+
     showUserInfo(userInfo) {
         this.setState({user:userInfo});
     }
@@ -170,6 +178,7 @@ export default class UserDetailsView extends Component
         this.viewModel.subscribeOnShowUser(this.showUserInfo);
         this.viewModel.subscribeOnShowUserPermissions(this.showUserPermissions);
         this.viewModel.subscribeOnRequestSelectablePermissionsList(this.showSelectablePermissionsList);
+        this.viewModel.subscribeOnUpdateUserComplete(this.onUpdateUserSuccessful);
         
         this.desactivateUserViewModel.subscribeOnOperationCompletedSuccessful(this.onDesativateUserCompletedSuccessful);
         this.desactivateUserViewModel.subscribeOnError(this.onDesativateUserFail);
@@ -178,6 +187,7 @@ export default class UserDetailsView extends Component
     }
 
     componentWillUnmount() {
+        
         this.viewModel.unsubscribeOnLoading(this.showLoading);
         this.viewModel.unsubscribeOnSessionPermissions(this.onSessionPermissions);
 
@@ -185,6 +195,8 @@ export default class UserDetailsView extends Component
         this.viewModel.unsubscribeOnShowUser(this.showUserInfo);
         this.viewModel.unsubscribeOnShowUserPermissions(this.showUserPermissions);
         this.viewModel.unsubscribeOnRequestSelectablePermissionsList(this.showSelectablePermissionsList);
+        this.viewModel.unsubscribeOnUpdateUserComplete(this.onUpdateUserSuccessful);
+       
         this.desactivateUserViewModel.unsubscribeOnError(this.onDesativateUserFail);
         this.desactivateUserViewModel.unsubscribeOnOperationCompletedSuccessful(this.onDesativateUserCompletedSuccessful);
     }

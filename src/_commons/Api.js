@@ -11,6 +11,7 @@ const ENDPOINT_LIST = {
     GET_PERMISSIONS_LIST:"/usuario/get-all-permissions/",
     GET_USERS_LIST:"/usuario/get-users/",
     GET_USER_DETAILS:"/usuario/get-user-details/",
+    UPDATE_USER:"/usuario/update-user-permissions/",
     UPDATE_DESACTIVATE_USER:"/usuario/enable-disable/",
     CREATE_USER:"/usuario/add-user/",
 };

@@ -11,12 +11,14 @@ import Permissions from '../../../_commons/Permissions';
 export default class UserDetailsViewModel {
 
     #activateUserPermissions;
+    #userCompanies;
     #selectablePermissions;
 
     #listenerOnLoading;
     #listenerOnSessionsPermissions;
     #listenerShowUser;
     #listenerShowUserPermissions;
+    #listenerOnUpdateUserComplete;
     #listenerShowError;
     #listenerOnSessionSelectablePermissionsList;
     
@@ -25,6 +27,7 @@ export default class UserDetailsViewModel {
         this.#listenerOnSessionsPermissions = new ListListener();
         this.#listenerShowUser = new ListListener();
         this.#listenerShowUserPermissions = new ListListener();
+        this.#listenerOnUpdateUserComplete = new ListListener();
         this.#listenerShowError = new ListListener();
         this.#listenerOnSessionSelectablePermissionsList = new ListListener();
     }
@@ -51,6 +54,14 @@ export default class UserDetailsViewModel {
 
     subscribeOnShowError(func) {
         this.#listenerShowError.subscribe(func);
+    }
+
+    unsubscribeOnUpdateUserComplete(func) {
+        this.#listenerOnUpdateUserComplete.unsubscribe(func);
+    }
+
+    subscribeOnUpdateUserComplete(func) {
+        this.#listenerOnUpdateUserComplete.subscribe(func);
     }
     
     unsubscribeOnRequestSelectablePermissionsList(func) {
@@ -106,7 +117,9 @@ export default class UserDetailsViewModel {
                 const user = userDetailResponse?.data?.user;
                 const userPermissions = userDetailResponse?.data?.permissions;
                 const userCompanies = userDetailResponse?.data?.companies;
+                this.#userCompanies = userCompanies;
                 
+
                 const sessionPermissionsList = 
                     permissionResponse.data.data
                         .filter(item => sessionCompaniesByPermissions.editUsers.map(company => company.id).includes(item.IDCASA))    
@@ -146,14 +159,39 @@ export default class UserDetailsViewModel {
     }
 
     async updateUser(user) {
-        console.log("update")
-        console.log(user)
-        const permissionsToEnable = user.permissions?.filter(p => this.#selectablePermissions.map(item => item.id).includes(p.id));
-        const permissionToDisable = this.#activateUserPermissions.filter(p => !permissionsToEnable.map(item => item.id).includes(p.id));
-        console.log("enable")
-        console.log(permissionsToEnable)
-        console.log("disable")
-        console.log(permissionToDisable)
+        
+        const sessionCompaniesByPermissions = this.#getSessionCompaniesPermissions();
+        const editUsers = this.#sessionPermissionHelper(sessionCompaniesByPermissions.editUsers,this.#userCompanies);
+        
+        if(!editUsers) {
+            console.log("you do not have permissions to edit this users");
+            this.#onError({errorCode:"fail_missing_permissions"});
+        }
+        else {
+            this.#onLoading(true);
+            const token = SessionRepository.getSessionToken();
+            const permissionsToEnable = user.permissions?.filter(p => this.#selectablePermissions.map(item => item.id).includes(p.id));
+            const permissionToDisable = this.#activateUserPermissions.filter(p => !permissionsToEnable.map(item => item.id).includes(p.id));
+            const response = await this.#makeEditUserRequest({
+                token,
+                userId:user.id,
+                email:user.email,
+                name:user.name,
+                lastName:user.lastName,
+                permissionsToEnable,
+                permissionToDisable
+            });
+            this.#onLoading(false);
+            if ( response.status != 200)
+            {
+                this.#onError({errorCode:"fail_request"});
+            }
+            else 
+            {
+                const data = response.data;
+                this.#onEditUserSuccessful(data);
+            }
+        }
     }
 
     #onLoading(value) {
@@ -162,6 +200,27 @@ export default class UserDetailsViewModel {
     
     #onError(error) {
         this.#listenerShowError.execute(error);
+    }
+
+    #onEditUserSuccessful(userInfo) {
+        
+        const sessionCompaniesByPermissions = this.#getSessionCompaniesPermissions();
+        const sessionPermissionsList = this.#selectablePermissions;
+
+        const user = userInfo.user;
+        const userPermissions = userInfo.permissions;
+        this.#userCompanies = userInfo.companies;
+
+        const userPermissionsFilter = userPermissions
+                .filter(item => sessionCompaniesByPermissions.seeUsers.map(i => i.id).includes(item.company_id)); 
+        
+        
+        this.#activateUserPermissions = sessionPermissionsList
+                .filter(p => userPermissions.map(i => i.id_casa_permiso).includes(p.id));
+        
+        this.#listenerOnUpdateUserComplete.execute();
+        this.#onShowUser(user);
+        this.#onShowUserPermissions(userPermissionsFilter);
     }
 
     #onShowSelectablePermissions(permissionsList) {
@@ -251,6 +310,37 @@ export default class UserDetailsViewModel {
             console.error(error);
             return error.response;
         }
+    }
+
+    async #makeEditUserRequest(requestModel) {
+        
+        const url = API_END_POINTS.UPDATE_USER;
+        
+        try{
+
+            const response = await axios(url, { 
+                method: 'put',    
+                headers:{
+                    "Authorization": `Bearer ${requestModel.token}`,
+                    "Content-Type": "application/json"
+                },
+                data:JSON.stringify({
+                    id:requestModel.userId,
+                    email:requestModel.email,
+                    name:requestModel.name,
+                    last_name:requestModel.lastName,
+                    enable_perm:requestModel.permissionsToEnable.map(item => item.id),
+                    disable_perm:requestModel.permissionToDisable.map(item => item.id)
+                })
+            });
+            
+            return response;
+        }
+        catch(error) {
+            console.error(error);
+            return error.response;
+        }
+        
     }
 
 }
