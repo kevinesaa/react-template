@@ -7,6 +7,7 @@ const ENDPOINT_LIST = {
     GET_DOCUMENT_LIST:"/documentos/",
     GET_DOCUMENT_DETAIL:"/documentos/detalles/",
     GET_DOCUMENT_REPORT:"/documentos/crear-reporte/",
+    PROFILE_UPDATE:"/usuario/update-profile/",
     PROFILE_CHANGE_PASSWORD:"/usuario/change-password/",
     GET_PERMISSIONS_LIST:"/usuario/get-all-permissions/",
     GET_USERS_LIST:"/usuario/get-users/",
