@@ -164,14 +164,14 @@ export default class Login extends Component {
                                                     text={Strings.login_button} />
                                             </MaterialUI.Box>
                                         </form>
-                                        {/*
+                                        
                                         <MaterialUI.Button
                                             onClick={this.handledOnForgotPassClick}
                                             >
                                             {Strings.login_forgot_pass_button}
                                         </MaterialUI.Button>
                                         <br/>
-                                        */}
+                                        
                                 </MaterialUI.Box>
                             </MaterialUI.Grid>
                         </MaterialUI.Grid>

@@ -3,6 +3,7 @@ BASE_URL = BASE_URL.endsWith('/')?BASE_URL.substring(0,BASE_URL.length-1):BASE_U
 
 const ENDPOINT_LIST = { 
     LOGIN:"/login/",
+    FORGOT_PASSWORD:"/usuario/reset-password",
     VERIFY_TOKEN_SESSION:"/login/session-token/",
     GET_DOCUMENT_LIST:"/documentos/",
     GET_DOCUMENT_DETAIL:"/documentos/detalles/",
