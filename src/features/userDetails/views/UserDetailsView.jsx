@@ -36,6 +36,7 @@ export default class UserDetailsView extends Component
         this.showUserPermissions = this.showUserPermissions.bind(this);
         this.onHandleSelectPermission = this.onHandleSelectPermission.bind(this);
         this.handledOnSummit = this.handledOnSummit.bind(this);
+        this.handledRestoreUserView = this.handledRestoreUserView.bind(this);
         this.handledOnDesactivateUser = this.handledOnDesactivateUser.bind(this);
         this.onDesativateUserFail = this.onDesativateUserFail.bind(this);
         this.handledEmailInput = this.handledEmailInput.bind(this);
@@ -56,6 +57,8 @@ export default class UserDetailsView extends Component
     handledDialogOnUpdateUserCompletedSuccessful() {
         this.setState({
             updateUser:false
+        },() => {
+            this.handledNavigateToUserList();
         });
     }
 
@@ -75,6 +78,7 @@ export default class UserDetailsView extends Component
 
     handledRestoreUserView(event) {
         event.preventDefault();
+        this.handledNavigateToUserList();
     }
 
     handledOnDesactivateUser() {
