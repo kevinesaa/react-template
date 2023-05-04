@@ -86,16 +86,18 @@ export default class LoginViewModel
 
     async #makeLoginRequest(email,pass){
         
+        const url = API_END_POINTS.LOGIN;
+
         try{
 
-            const response = await axios(API_END_POINTS.LOGIN, { 
+            const response = await axios(url, { 
                 method: 'post',    
                 headers:{
                     "Content-Type": "application/json"
                 },
                 data:JSON.stringify({
-                    "email": email,
-                    "password": pass
+                    email: email,
+                    password: pass
                 })
             });
             
