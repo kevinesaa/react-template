@@ -52,6 +52,7 @@ export default class UserProfileContainer extends Component
                         
                             <CustomMessageDialog 
                                 open={this.state.showOperationSuccessful}
+                                message={Strings.text_operation_successful}
                                 onClose={this.closeOperationSuccessfulDialog}/>
                             
                         </MaterialUI.Stack>
