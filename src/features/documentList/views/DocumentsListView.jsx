@@ -20,6 +20,8 @@ const FIRST_PAGE = 1;
 
 const COLUMNS_IDS = Object.freeze([
     {table_id:'created_at',request_id:'create_date'},
+    {table_id:'update_at',request_id:'update_date'},
+    {table_id:'update_at_time',request_id:'update_time'},
     {table_id:'document_id', request_id:'id'},
     {table_id:'doc_type',request_id:'doc_type_id'},
     {table_id:'doc_number',request_id:'document_number'},
@@ -229,16 +231,23 @@ export default class DocumentsListView extends Component
                     selector:row => Strings.text_status_by_id[ row.estatus ]
                 },
                 {
+                    id:COLUMNS_IDS.update_at.table_id,
+                    name:Strings.text_update_date,
+                    sortable: true,
+                    selector:row=>row.update_at.substring(0,10),
+                },
+                {
+                    id:COLUMNS_IDS.update_at_time.table_id,
+                    name:Strings.text_update_time,
+                    sortable: false,
+                    selector:row=>row.update_at.substring(11,16),
+                },
+                {
                     id:COLUMNS_IDS.created_by_code.table_id,
                     name:Strings.documents_list_column_created_by_code,
                     sortable: true,
                     selector:row => row.usuario_creacion
-                },/*
-                {
-                    id:COLUMNS_IDS.created_by_name.table_id,
-                    name:Strings.documents_list_column_created_by_name,
-                    selector:row => 
-                },*/
+                },
                 {
                     id:COLUMNS_IDS.zone.table_id,
                     name:Strings.documents_list_column_zone,
