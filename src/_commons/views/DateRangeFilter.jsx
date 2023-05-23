@@ -47,7 +47,7 @@ export default function DateRangeFilter(props) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             
-            <MaterialUI.Box sx={{ flexGrow: 1}}>
+            <MaterialUI.Box>
                 
                 <DatePicker 
                     label={props.startDateLabel}
