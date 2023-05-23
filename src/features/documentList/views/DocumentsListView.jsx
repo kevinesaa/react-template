@@ -183,6 +183,7 @@ export default class DocumentsListView extends Component
         this.handledOnFilterChange = this.handledOnFilterChange.bind(this);
         this.handledRequestDownloadReport = this.handledRequestDownloadReport.bind(this);
         this.showReportDownloadLink = this.showReportDownloadLink.bind(this);
+        this.handledRefrestRequest = this.handledRefrestRequest.bind(this);
         this.onError = this.onError.bind(this);
         this.viewModel = props.viewModel;
        
@@ -425,6 +426,10 @@ export default class DocumentsListView extends Component
         this.viewModel.requestDocuments(this.state.currentCompany,params);
     }
 
+    handledRefrestRequest() {
+        this.handleOnChangePage (0,this.state.currentPage);
+    }
+
     handleOnDocumentClickListener(document) {
         
         this.setState ({currentDocument:document,seeDetail:true});
@@ -555,7 +560,7 @@ export default class DocumentsListView extends Component
                             value={this.state.selected_filters}>
 
                             {this.state.filters_list.length > 0 &&
-                                this.state.filters_list.map(item => {
+                                this.state.filters_list.reverse().map(item => {
                                         return(
                                             <MaterialUI.MenuItem key={item.id} value={item}>
                                                 {item.name}
@@ -566,7 +571,17 @@ export default class DocumentsListView extends Component
                             }
                         </MaterialUI.Select>
                     </MaterialUI.FormControl>
-
+                    
+                    <MaterialUI.Button
+                        onClick={this.handledRefrestRequest}
+                        sx={{
+                            m:2,
+                            color: "white.main",
+                            textTransform: "none",
+                        }}
+                        size="small">{"Recargar"}
+                    </MaterialUI.Button>
+                    
                 </MaterialUI.Box>
 
                 {/* Tabla */}

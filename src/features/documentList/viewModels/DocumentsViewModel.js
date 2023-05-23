@@ -107,6 +107,7 @@ export default class DocumentsViewModel
         
         if(company != null && company.id != null) {
             
+            //todo validate session permission seeDocuments
             const token = SessionRepository.getSessionToken();
             this.#onSelectCompany(company);
             this.#onLoadingDocuments(true);

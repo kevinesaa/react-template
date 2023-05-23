@@ -77,7 +77,7 @@ export default class UserListViewModel {
     async requestUserList(company, params) {
         
         if(company != null && company.id != null) {
-                
+            //todo validate session permission seeUsers
             const token = SessionRepository.getSessionToken();
             this.#onLoading(true);
             

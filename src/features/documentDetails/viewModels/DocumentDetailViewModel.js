@@ -46,6 +46,7 @@ export default class DocumentDetailViewModel {
         }
         else 
         {
+            //todo validate session permission seeDocuments
             const token = SessionRepository.getSessionToken();
             this.#onLoading(true);
             const response = await this.#makeDocumentDetailRequest({

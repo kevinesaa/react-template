@@ -73,6 +73,9 @@ export default class ChangePasswordView extends Component {
     onError(error) {
         console.log("ah que chimbo!");
         console.error(error);
+        if(this.props.onNotifyError) {
+            this.props.onNotifyError(error);
+        }
     }
 
     componentDidMount() {

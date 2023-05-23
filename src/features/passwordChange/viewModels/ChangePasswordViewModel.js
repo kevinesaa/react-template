@@ -54,13 +54,12 @@ export default class ChangePasswordViewModel {
             
             if(response.status != 200)
             {
-                this.#onError({errorCode:"fail_request"});
-                /*
+                
                 this.#onError({errorCode:ErrorCodes.SOURCE_ERROR,
                     sourceErrorCode:response?.data?.app_status,
-                    sourceErrorMessage:response?.data?.message
+                    sourceErrorMessage:response?.data?.error
                 });
-                */
+                
             }
             else 
             {

@@ -10,12 +10,15 @@ import logo from "../../../_Resources/images/logo.png"
 import ChangePasswordView from "../../passwordChange/views/ChangePasswordView";
 import LoadingScreen from '../../../_commons/views/LoadingScreen';
 import Strings from '../../../_Resources/strings/strings';
+import CustomMessageDialog from '../../../_commons/views/CustomMessageDialog';
 
 export default function Home(props)
 {
     const [firstPasswordLoading,setFirstPasswordLoading] = useState(false);
     const [showFirstPass,setShowFirstPass] = useState(false);
     const [changeFirstPassSuccessful,setChangeFirstPassSuccessful] = useState(false);
+    const [showChangePassErrorDialog,setShowChangePassErrorDialog] = useState(false);
+    const [changePassErrorMessage,setChangePassErrorMessage] = useState("");
     const [drawerWidth,setDrawerWidth ] = useState(240); 
     const [openLogout,setOpenLogout] = React.useState(false);
     const [openMenu,setOpenMenu] = React.useState(true);
@@ -47,7 +50,22 @@ export default function Home(props)
             setShowFirstPass(false);
             setChangeFirstPassSuccessful(false);
         }, 2000);
-    }
+    };
+
+    const onChangePassError = (error) => {
+
+        setChangePassErrorMessage(Strings.text_operation_general_error);
+        if(error?.sourceErrorCode == -9) {
+            setChangePassErrorMessage(Strings.change_pass_error_not_valid_current_pass);
+        }
+        setShowChangePassErrorDialog(true);
+
+    };
+
+    const closeChangePassErrorDialog = () => {
+        setShowChangePassErrorDialog(false);
+        setChangePassErrorMessage("");
+    };
 
     useEffect(() => {
         
@@ -135,7 +153,8 @@ export default function Home(props)
                                     {Strings.change_pass_external_successful}
                                 </MaterialUI.Typography>
                                 :
-                                <ChangePasswordView 
+                                <ChangePasswordView
+                                    onNotifyError={onChangePassError}
                                     viewModel={changePassViewModel}
                                     onLoadingChangeListener ={setFirstPasswordLoading}
                                     onChangePassSuccessful = {onChangePassSuccesful}/>
@@ -146,6 +165,11 @@ export default function Home(props)
                     <LoadingScreen loading={firstPasswordLoading}/>
                 </MaterialUI.Dialog>
             }
+
+            <CustomMessageDialog 
+                open={showChangePassErrorDialog}
+                message={changePassErrorMessage}
+                onClose={closeChangePassErrorDialog}/>
 
            
         </MaterialUI.Box>
