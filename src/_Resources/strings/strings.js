@@ -61,6 +61,7 @@ const Strings = Object.freeze({
     text_created_date:"Fecha de creación",
     text_update_date:"Fecha de última actualización",
     text_update_time:"Hora de última actualización",
+    text_refresh:"Recargar",
     loading:"Cargando...",
     login_title:"Monitor de conciliaciones",
     login_subtitle:"Inicio de sesión",

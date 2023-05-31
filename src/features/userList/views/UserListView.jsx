@@ -93,6 +93,8 @@ export default class UserListView extends Component
         this.handledOnSerchStatus = this.handledOnSerchStatus.bind(this);
         this.onItemClick = this.onItemClick.bind(this);
         this.handledOnDesactivateUser = this.handledOnDesactivateUser.bind(this);
+        this.handledRefrestRequest = this.handledRefrestRequest.bind(this);
+        
         this.columns = [
             { 
                 id:COLUMNS_IDS.user_name.table_id, 
@@ -207,6 +209,10 @@ export default class UserListView extends Component
                 this.desactivateUserViewModel.desactivateUser(user.IDUSUARIO);
             });
         }
+    }
+
+    handledRefrestRequest() {
+        this.handleOnChangePage(0,this.state.page);
     }
 
     handleOnChangePage( _ , page) {
@@ -384,6 +390,16 @@ export default class UserListView extends Component
                                 </MaterialUI.Select>
                             </MaterialUI.FormControl>
                             
+                            <MaterialUI.Button
+                                onClick={this.handledRefrestRequest}
+                                sx={{
+                                    m:2,
+                                    color: "white.main",
+                                    textTransform: "none",
+                                }}
+                                size="small">
+                                    {Strings.text_refresh}
+                            </MaterialUI.Button>
 
                         </MaterialUI.Stack>
                     </MaterialUI.Box>

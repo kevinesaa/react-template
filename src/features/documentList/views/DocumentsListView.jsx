@@ -579,7 +579,8 @@ export default class DocumentsListView extends Component
                             color: "white.main",
                             textTransform: "none",
                         }}
-                        size="small">{"Recargar"}
+                        size="small">
+                            {Strings.text_refresh}
                     </MaterialUI.Button>
                     
                 </MaterialUI.Box>
